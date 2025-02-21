@@ -1,36 +1,75 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Moje Portfolio
 
-## Getting Started
+To repozytorium zawiera kod źródłowy mojej strony internetowej - portfolio, zbudowanej przy użyciu Next.js, ShadCN UI, Tailwind CSS v4 oraz Framer Motion.
 
-First, run the development server:
+## 📌 Technologie
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- [Next.js](https://nextjs.org/) - Framework do Reacta zapewniający SSR, ISR i optymalizację wydajności.
+- [ShadCN UI](https://ui.shadcn.com/) - Nowoczesna biblioteka komponentów UI oparta na Radix UI.
+- [Tailwind CSS v4](https://tailwindcss.com/) - Utility-first CSS framework do stylizacji.
+- [Framer Motion](https://www.framer.com/motion/) - Biblioteka do animacji w React.
+
+## 🔧 Instalacja
+
+1. Sklonuj repozytorium:
+   ```bash
+   git clone https://github.com/twoje-repo/portfolio.git
+   ```
+2. Przejdź do katalogu projektu:
+   ```bash
+   cd portfolio
+   ```
+3. Zainstaluj zależności:
+   ```bash
+   npm install
+   ```
+4. Uruchom projekt w trybie deweloperskim:
+   ```bash
+   npm run dev
+   ```
+
+Strona powinna być dostępna pod adresem `http://localhost:3000/`.
+
+## 📁 Struktura projektu
+
+```
+portfolio/
+│-- public/       # Statyczne zasoby (obrazy, ikony, czcionki)
+│-- src/
+│   │-- app/      # Strona główna i podstrony
+│   │-- components/ # Komponenty UI
+│   │-- styles/   # Style globalne i konfiguracja Tailwind CSS
+│   │-- lib/      # Logika pomocnicza
+│-- .gitignore
+│-- package.json
+│-- README.md
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🎨 Stylizacja
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Tailwind CSS v4 jest używany do zarządzania stylami, a komponenty UI pochodzą z ShadCN UI, co pozwala na łatwe dostosowywanie wyglądu strony.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## ✨ Animacje
 
-## Learn More
+Framer Motion zapewnia płynne animacje komponentów, poprawiając UX i estetykę interakcji.
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Deployment
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Aby wdrożyć stronę, skorzystaj z jednej z platform hostujących Next.js, np.:
+- [Vercel](https://vercel.com/)
+- [Netlify](https://www.netlify.com/)
+- [Cloudflare Pages](https://pages.cloudflare.com/)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+W przypadku Vercel:
+```bash
+npm run build
+vercel deploy
+```
 
-## Deploy on Vercel
+## 📄 Licencja
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Projekt jest udostępniony na licencji MIT. Możesz go dowolnie modyfikować i używać.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📞 Kontakt
+
+Jeśli masz pytania lub sugestie, skontaktuj się ze mną poprzez [email/linkedin/github].
