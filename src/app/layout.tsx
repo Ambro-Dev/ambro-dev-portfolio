@@ -3,51 +3,52 @@ import { Geist, Geist_Mono, Inter, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
 import { baseURL, home, style } from "./resources";
 import { cx } from "class-variance-authority";
+import { ThemeProvider } from "@/components/theme-provider";
 
 const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
+  variable: "--font-geist-sans",
+  subsets: ["latin"],
 });
 
 const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
-	metadataBase: new URL(`https://${baseURL}`),
-	title: home.title,
-	description: home.description,
-	openGraph: {
-		title: `Ambro-Dev | ${home.title}`,
-		description:
-			"Automatyzacja procesów, chmurowe rowziązania, administracja serwerami, tworzenie stron internetowych i aplikacji webowych",
-		url: baseURL,
-		siteName: `Ambro-Dev`,
-		locale: "pl_PL",
-		type: "website",
-	},
-	robots: {
-		index: true,
-		follow: true,
-		googleBot: {
-			index: true,
-			follow: true,
-			"max-video-preview": -1,
-			"max-image-preview": "large",
-			"max-snippet": -1,
-		},
-	},
+  metadataBase: new URL(`https://${baseURL}`),
+  title: home.title,
+  description: home.description,
+  openGraph: {
+    title: `Ambro-Dev | ${home.title}`,
+    description:
+      "Automatyzacja procesów, chmurowe rowziązania, administracja serwerami, tworzenie stron internetowych i aplikacji webowych",
+    url: baseURL,
+    siteName: `Ambro-Dev`,
+    locale: "pl_PL",
+    type: "website",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
 };
 
 const primary = Inter({
-	variable: "--font-primary",
-	subsets: ["latin"],
-	display: "swap",
+  variable: "--font-primary",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 type FontConfig = {
-	variable: string;
+  variable: string;
 };
 
 /*
@@ -60,40 +61,48 @@ const tertiary: FontConfig | undefined = undefined;
  */
 
 const code = Source_Code_Pro({
-	variable: "--font-code",
-	subsets: ["latin"],
-	display: "swap",
+  variable: "--font-code",
+  subsets: ["latin"],
+  display: "swap",
 });
 
 export default function RootLayout({
-	children,
+  children,
 }: Readonly<{
-	children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-	return (
-		<html
-			lang="pl"
-			data-neutral={style.neutral}
-			data-brand={style.brand}
-			data-accent={style.accent}
-			data-solid={style.solid}
-			data-solid-style={style.solidStyle}
-			data-theme={style.theme}
-			data-border={style.border}
-			data-surface={style.surface}
-			data-transition={style.transition}
-			className={cx(
-				primary.variable,
-				secondary ? secondary.variable : "",
-				tertiary ? tertiary.variable : "",
-				code.variable,
-			)}
-		>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
-				{children}
-			</body>
-		</html>
-	);
+  return (
+    <html
+      lang="pl"
+      data-neutral={style.neutral}
+      data-brand={style.brand}
+      data-accent={style.accent}
+      data-solid={style.solid}
+      data-solid-style={style.solidStyle}
+      data-theme={style.theme}
+      data-border={style.border}
+      data-surface={style.surface}
+      data-transition={style.transition}
+      className={cx(
+        primary.variable,
+        secondary ? secondary.variable : "",
+        tertiary ? tertiary.variable : "",
+        code.variable
+      )}
+      suppressHydrationWarning
+    >
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="dark"
+          enableSystem
+          disableTransitionOnChange
+        >
+          {children}
+        </ThemeProvider>
+      </body>
+    </html>
+  );
 }
