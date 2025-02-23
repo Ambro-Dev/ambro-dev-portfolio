@@ -1,8 +1,6 @@
 "use client";
 
-import React from "react";
-import { Column, Flex, Text } from "@/once-ui/components";
-import styles from "./about.module.scss";
+import type React from "react";
 
 interface TableOfContentsProps {
   structure: {
@@ -18,7 +16,10 @@ interface TableOfContentsProps {
   };
 }
 
-const TableOfContents: React.FC<TableOfContentsProps> = ({ structure, about }) => {
+const TableOfContents: React.FC<TableOfContentsProps> = ({
+  structure,
+  about,
+}) => {
   const scrollTo = (id: string, offset: number) => {
     const element = document.getElementById(id);
     if (element) {
@@ -35,54 +36,35 @@ const TableOfContents: React.FC<TableOfContentsProps> = ({ structure, about }) =
   if (!about.tableOfContent.display) return null;
 
   return (
-    <Column
-      left="0"
-      style={{
-        top: "50%",
-        transform: "translateY(-50%)",
-        whiteSpace: "nowrap",
-      }}
-      position="fixed"
-      paddingLeft="24"
-      gap="32"
-      hide="m"
-    >
+    <nav className="fixed left-0 top-1/2 -translate-y-1/2 pl-6 space-y-8 whitespace-nowrap hidden lg:block">
       {structure
         .filter((section) => section.display)
         .map((section, sectionIndex) => (
-          <Column key={sectionIndex} gap="12">
-            <Flex
-              cursor="interactive"
-              className={styles.hover}
-              gap="8"
-              vertical="center"
+          <div key={sectionIndex} className="space-y-3">
+            <div
+              className="flex items-center gap-2 cursor-pointer hover:text-primary transition-colors"
               onClick={() => scrollTo(section.title, 80)}
             >
-              <Flex height="1" minWidth="16" background="neutral-strong"></Flex>
-              <Text>{section.title}</Text>
-            </Flex>
+              <div className="h-px w-4 bg-gray-400"></div>
+              <span>{section.title}</span>
+            </div>
             {about.tableOfContent.subItems && (
-              <>
+              <div className="pl-6 space-y-2">
                 {section.items.map((item, itemIndex) => (
-                  <Flex
-                    hide="l"
+                  <div
                     key={itemIndex}
-                    style={{ cursor: "pointer" }}
-                    className={styles.hover}
-                    gap="12"
-                    paddingLeft="24"
-                    vertical="center"
+                    className="flex items-center gap-3 cursor-pointer hover:text-primary transition-colors"
                     onClick={() => scrollTo(item, 80)}
                   >
-                    <Flex height="1" minWidth="8" background="neutral-strong"></Flex>
-                    <Text>{item}</Text>
-                  </Flex>
+                    <div className="h-px w-2 bg-gray-400"></div>
+                    <span className="text-sm">{item}</span>
+                  </div>
                 ))}
-              </>
+              </div>
             )}
-          </Column>
+          </div>
         ))}
-    </Column>
+    </nav>
   );
 };
 

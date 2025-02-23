@@ -1,7 +1,7 @@
 import { baseURL, home, person } from "./resources";
 import Starfield from "@/components/home/starfield";
 import DynamicAnimatedContent from "@/components/home/DynamicAnimatedContent";
-import AdminPanel from "@/components/home/AnimatedPanel";
+import HomeServices from "@/components/home/HomeServices";
 
 export async function generateMetadata() {
   const title = home.title;
@@ -63,12 +63,12 @@ export default function Home() {
       >
         <Starfield />
         <div className="relative z-10 container py-16 px-2 sm:px-2 bg-transparent">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-            <div className="flex flex-col justify-center space-y-4 text-center lg:text-left">
+          <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-center">
+            <div className="flex flex-col justify-center space-y-4 text-center lg:text-left col-span-2">
               <DynamicAnimatedContent />
             </div>
-            <div>
-              <AdminPanel />
+            <div className="flex justify-center items-center w-full h-full col-span-3">
+              <HomeServices />
             </div>
           </div>
         </div>

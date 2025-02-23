@@ -1,12 +1,11 @@
-import { MDXRemote, MDXRemoteProps } from "next-mdx-remote/rsc";
-import React, { ReactNode } from "react";
-
-import { SmartImage, SmartLink, Text } from "@/once-ui/components";
-import { CodeBlock } from "@/once-ui/modules";
-import { HeadingLink } from "@/components";
-
-import { TextProps } from "@/once-ui/interfaces";
-import { SmartImageProps } from "@/once-ui/components/SmartImage";
+import { MDXRemote, type MDXRemoteProps } from "next-mdx-remote/rsc";
+import type React from "react";
+import type { ReactNode } from "react";
+import Image, { ImageProps } from "next/image";
+import Link from "next/link";
+import { cn } from "@/lib/utils";
+import { CodeBlock } from "@/components/code-blocks";
+import { Heading } from "@/components/heading";
 
 type TableProps = {
   data: {
@@ -16,18 +15,24 @@ type TableProps = {
 };
 
 function Table({ data }: TableProps) {
-  const headers = data.headers.map((header, index) => <th key={index}>{header}</th>);
+  const headers = data.headers.map((header, index) => (
+    <th key={index} className="px-4 py-2">
+      {header}
+    </th>
+  ));
   const rows = data.rows.map((row, index) => (
     <tr key={index}>
       {row.map((cell, cellIndex) => (
-        <td key={cellIndex}>{cell}</td>
+        <td key={cellIndex} className="border px-4 py-2">
+          {cell}
+        </td>
       ))}
     </tr>
   ));
 
   return (
-    <table>
-      <thead>
+    <table className="min-w-full border-collapse border border-gray-300 my-4">
+      <thead className="bg-gray-100">
         <tr>{headers}</tr>
       </thead>
       <tbody>{rows}</tbody>
@@ -43,43 +48,49 @@ type CustomLinkProps = React.AnchorHTMLAttributes<HTMLAnchorElement> & {
 function CustomLink({ href, children, ...props }: CustomLinkProps) {
   if (href.startsWith("/")) {
     return (
-      <SmartLink href={href} {...props}>
+      <Link href={href} {...props} className="text-blue-600 hover:underline">
         {children}
-      </SmartLink>
+      </Link>
     );
   }
 
   if (href.startsWith("#")) {
     return (
-      <a href={href} {...props}>
+      <a href={href} {...props} className="text-blue-600 hover:underline">
         {children}
       </a>
     );
   }
 
   return (
-    <a href={href} target="_blank" rel="noopener noreferrer" {...props}>
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      {...props}
+      className="text-blue-600 hover:underline"
+    >
       {children}
     </a>
   );
 }
 
-function createImage({ alt, src, ...props }: SmartImageProps & { src: string }) {
+function CustomImage({ alt, src, ...props }: ImageProps) {
   if (!src) {
-    console.error("SmartImage requires a valid 'src' property.");
+    console.error("Image requires a valid 'src' property.");
     return null;
   }
 
   return (
-    <SmartImage
-      className="my-20"
-      enlarge
-      radius="m"
-      aspectRatio="16 / 9"
-      alt={alt}
-      src={src}
-      {...props}
-    />
+    <div className="my-8 relative aspect-video">
+      <Image
+        fill
+        src={src || "/placeholder.svg"}
+        alt={alt || ""}
+        className="object-cover rounded-md"
+        {...props}
+      />
+    </div>
   );
 }
 
@@ -87,25 +98,23 @@ function slugify(str: string): string {
   return str
     .toString()
     .toLowerCase()
-    .trim() // Remove whitespace from both ends of a string
-    .replace(/\s+/g, "-") // Replace spaces with -
-    .replace(/&/g, "-and-") // Replace & with 'and'
-    .replace(/[^\w\-]+/g, "") // Remove all non-word characters except for -
-    .replace(/\-\-+/g, "-"); // Replace multiple - with single -
+    .trim()
+    .replace(/\s+/g, "-")
+    .replace(/&/g, "-and-")
+    .replace(/[^\w-]+/g, "")
+    .replace(/--+/g, "-");
 }
 
 function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
-  const CustomHeading = ({ children, ...props }: TextProps) => {
+  const CustomHeading = ({
+    children,
+    ...props
+  }: React.HTMLAttributes<HTMLHeadingElement>) => {
     const slug = slugify(children as string);
     return (
-      <HeadingLink
-        style={{ marginTop: "var(--static-space-24)", marginBottom: "var(--static-space-12)" }}
-        level={level}
-        id={slug}
-        {...props}
-      >
+      <Heading as={`h${level}`} id={slug} {...props}>
         {children}
-      </HeadingLink>
+      </Heading>
     );
   };
 
@@ -114,41 +123,44 @@ function createHeading(level: 1 | 2 | 3 | 4 | 5 | 6) {
   return CustomHeading;
 }
 
-function createParagraph({ children }: TextProps) {
-  return (
-    <Text
-      style={{ lineHeight: "175%" }}
-      variant="body-default-m"
-      onBackground="neutral-medium"
-      marginTop="8"
-      marginBottom="12"
+const components = {
+  p: ({
+    children,
+    className,
+    ...props
+  }: React.HTMLAttributes<HTMLParagraphElement>) => (
+    <p
+      className={cn("leading-7 [&:not(:first-child)]:mt-6", className)}
+      {...props}
     >
       {children}
-    </Text>
-  );
-}
-
-const components = {
-  p: createParagraph as any,
-  h1: createHeading(1) as any,
-  h2: createHeading(2) as any,
-  h3: createHeading(3) as any,
-  h4: createHeading(4) as any,
-  h5: createHeading(5) as any,
-  h6: createHeading(6) as any,
-  img: createImage as any,
-  a: CustomLink as any,
+    </p>
+  ),
+  h1: createHeading(1),
+  h2: createHeading(2),
+  h3: createHeading(3),
+  h4: createHeading(4),
+  h5: createHeading(5),
+  h6: createHeading(6),
+  img: CustomImage,
+  a: CustomLink,
   Table,
-  CodeBlock,
+  pre: ({ children }: { children: React.ReactElement }) => {
+    const { children: code, className } = children.props;
+    const language = className?.replace(/language-/, "");
+    return <CodeBlock code={code} language={language || "text"} />;
+  },
 };
 
-type CustomMDXProps = MDXRemoteProps & {
+type CustomMDXProps = Omit<MDXRemoteProps, "components"> & {
   components?: typeof components;
 };
 
 export function CustomMDX(props: CustomMDXProps) {
   return (
-    // @ts-ignore: Suppressing type error for MDXRemote usage
-    <MDXRemote {...props} components={{ ...components, ...(props.components || {}) }} />
+    <MDXRemote
+      {...props}
+      components={{ ...components, ...(props.components || {}) }}
+    />
   );
 }
