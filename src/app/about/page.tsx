@@ -4,7 +4,15 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Calendar, ChevronRight, Globe } from "lucide-react";
+import {
+  Calendar,
+  ChevronRight,
+  Github,
+  Globe,
+  Linkedin,
+  Mail,
+  X,
+} from "lucide-react";
 import TableOfContents from "@/components/old/TableOfContents";
 import { person, about, social } from "@/app/resources/content";
 
@@ -62,7 +70,7 @@ export default function About() {
   ];
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pb-8 pt-32">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
@@ -139,8 +147,14 @@ export default function About() {
                       item.link && (
                         <Button key={item.name} variant="outline" asChild>
                           <Link href={item.link}>
-                            {item.icon && (
-                              <span className="mr-2">{item.icon}</span>
+                            {item.icon && item.icon === "email" ? (
+                              <Mail className="w-4 h-4" />
+                            ) : item.icon === "x" ? (
+                              <X className="w-4 h-4" />
+                            ) : item.icon === "github" ? (
+                              <Github className="w-4 h-4" />
+                            ) : (
+                              <Linkedin className="w-4 h-4" />
                             )}
                             {item.name}
                           </Link>

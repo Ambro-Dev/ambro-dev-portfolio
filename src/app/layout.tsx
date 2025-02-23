@@ -4,6 +4,7 @@ import "./globals.css";
 import { baseURL, home, style } from "./resources";
 import { cx } from "class-variance-authority";
 import { ThemeProvider } from "@/components/theme-provider";
+import Header from "@/components/header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,7 +88,8 @@ export default function RootLayout({
         primary.variable,
         secondary ? secondary.variable : "",
         tertiary ? tertiary.variable : "",
-        code.variable
+        code.variable,
+        "dark"
       )}
       suppressHydrationWarning
     >
@@ -97,9 +99,10 @@ export default function RootLayout({
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
-          enableSystem
+          enableSystem={false}
           disableTransitionOnChange
         >
+          <Header />
           {children}
         </ThemeProvider>
       </body>

@@ -35,7 +35,7 @@ export default function Work() {
   const allProjects = getPosts(["src", "app", "work", "projects"]);
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 pb-8 pt-32">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
