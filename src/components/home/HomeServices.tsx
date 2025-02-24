@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import DelayedText from "../svg/DelayedText";
 import TypingAnimation from "../svg/TypingAnimation";
 import AnimatedGradientBorder from "../svg/AnimatedGradientBorder";
+import AnimatedPath from "../svg/AnimatedPath";
 
 const HomeServices = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -1300,20 +1301,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           data-item-order={1000000000}
           transform="translate(344.5, 208)"
         >
-          <g
-            id="cu_8iam1j9l9u0-stroke"
-            fill="none"
-            strokeLinecap="butt"
-            strokeLinejoin="miter"
-            strokeMiterlimit={4}
-            stroke="#ababab"
-            strokeWidth={1}
-            strokeDasharray="2.5, 3.5"
-          >
-            <g>
-              <path d="M 40 124L 37 124L 36.9 124C 25.357251 124.000006 16.000001 114.642757 16.000002 103.100004L 16 103L 16 91C 15.991897 87.057448 16.772194 82.71493 18.299996 78.200001C 19.233103 75.485395 21.606563 71.51782 25.000003 67C 28.393444 62.48218 30.766904 58.514605 31.700003 55.8C 33.227801 51.285071 34.008097 46.942553 33.999999 43L 34 42.9L 34 30.9C 33.999998 19.357248 24.64275 10 13.1 10L 13 10L 10 10" />
-            </g>
-          </g>
+          <AnimatedPath path="M 40 124L 37 124L 36.9 124C 25.357251 124.000006 16.000001 114.642757 16.000002 103.100004L 16 103L 16 91C 15.991897 87.057448 16.772194 82.71493 18.299996 78.200001C 19.233103 75.485395 21.606563 71.51782 25.000003 67C 28.393444 62.48218 30.766904 58.514605 31.700003 55.8C 33.227801 51.285071 34.008097 46.942553 33.999999 43L 34 42.9L 34 30.9C 33.999998 19.357248 24.64275 10 13.1 10L 13 10L 10 10" />
         </g>
         <g
           id="g-root-cu_v47zby1j9l9n3-stroke"

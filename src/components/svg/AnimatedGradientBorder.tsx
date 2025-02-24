@@ -13,8 +13,9 @@ type IntermittentShineBorderProps = {
   strokeWidth?: number;
   baseStroke?: string;
   gradientStops?: GradientStop[];
-  shineStart: number; // Where along the path (in units) the shine should begin
-  shineLength: number; // How long the shining segment should be
+  totalLength?: number; // Approximate total length of the path
+  shineStart: number; // Starting offset (in the same units) along the path for the shine segment
+  shineLength: number; // Length of the shining segment
   shineDuration?: number; // Duration of the flash (in seconds)
   shineRepeatDelay?: number; // Delay between flashes (in seconds)
   gradientDirection?: {
@@ -30,21 +31,22 @@ const IntermittentShineBorder: React.FC<IntermittentShineBorderProps> = ({
   width = "100%",
   height = "100%",
   strokeWidth = 1,
-  // Use neon pink as the base color by default.
+  // Base stroke uses neon pink
   baseStroke = "#ff1493",
-  // Neon gradient with a white center for extra glow.
+  // Neon gradient stops with a white center for extra glow
   gradientStops = [
     { offset: "0%", color: "#ff1493" },
     { offset: "50%", color: "#ffffff" },
     { offset: "100%", color: "#ff1493" },
   ],
+  totalLength = 400,
   shineStart,
   shineLength,
-  shineDuration = 0.5,
-  shineRepeatDelay = 3.5,
+  shineDuration = 0.5, // Flash duration (flash in/out cycle)
+  shineRepeatDelay = 3.5, // Time between flashes
   gradientDirection = { x1: "0", y1: "0", x2: "1", y2: "0" },
 }) => {
-  // Generate a unique ID for the gradient so that multiple instances won't conflict.
+  // Generate a unique gradient ID so multiple instances don't conflict.
   const gradientId = useId();
 
   return (
@@ -68,19 +70,17 @@ const IntermittentShineBorder: React.FC<IntermittentShineBorderProps> = ({
         strokeLinejoin="miter"
         strokeMiterlimit={4}
       >
-        {/* Base border (static) */}
+        {/* Base (static) border */}
         <path d={pathData} stroke={baseStroke} strokeWidth={strokeWidth} />
-        {/* Animated shine appears only once on the path.
-            The dash array is set as:
-            - A gap of length 'shineStart'
-            - A dash (visible shine) of length 'shineLength'
-            - A huge gap (e.g., 10000) that prevents the pattern from repeating */}
+        {/* Intermittent shine on the selected segment */}
         <motion.path
           d={pathData}
           stroke={`url(#gradient-${gradientId})`}
           strokeWidth={strokeWidth}
-          strokeDasharray={`${shineStart} ${shineLength} 10000`}
-          strokeDashoffset={0}
+          // The dash array creates a visible segment (shineLength) and an invisible gap (totalLength - shineLength)
+          strokeDasharray={`${shineLength} ${totalLength - shineLength}`}
+          // Offset the dash so the visible segment starts at the desired point along the path.
+          strokeDashoffset={-shineStart}
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 0] }}
           transition={{
