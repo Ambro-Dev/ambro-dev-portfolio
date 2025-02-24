@@ -3,9 +3,16 @@ import { motion } from "framer-motion";
 type PacketPathProps = {
   path: string;
   packetColor?: string;
+  interval?: number; // Time it takes for the stroke to complete an animation cycle
+  delay?: number; // Initial delay before animation starts
 };
 
-const PacketPath = ({ path, packetColor = "#ff1493" }: PacketPathProps) => (
+const PacketPath = ({
+  path,
+  packetColor = "#ff1493",
+  interval = 3,
+  delay = 0,
+}: PacketPathProps) => (
   <>
     <defs>
       {/* Optional neon glow filter */}
@@ -24,7 +31,10 @@ const PacketPath = ({ path, packetColor = "#ff1493" }: PacketPathProps) => (
       strokeLinejoin="miter"
       strokeMiterlimit="4"
     >
+      {/* Base path in gray */}
       <path d={path} stroke="#ababab" strokeWidth="1" />
+
+      {/* Animated path */}
       <motion.path
         d={path}
         stroke={packetColor}
@@ -33,9 +43,10 @@ const PacketPath = ({ path, packetColor = "#ff1493" }: PacketPathProps) => (
         filter="url(#neon)"
         animate={{ strokeDashoffset: [0, 310] }}
         transition={{
-          duration: 3,
+          duration: interval,
           repeat: Infinity,
           ease: "linear",
+          delay: delay,
         }}
       />
     </g>

@@ -7,6 +7,7 @@ import DelayedText from "../svg/DelayedText";
 import TypingAnimation from "../svg/TypingAnimation";
 import AnimatedGradientBorder from "../svg/AnimatedGradientBorder";
 import AnimatedPath from "../svg/AnimatedPath";
+import NeonPulse from "../svg/NeonPulse";
 
 const HomeServices = (props: SVGProps<SVGSVGElement>) => (
   <svg
@@ -129,35 +130,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(148.5, 133)"
         >
           <g id="tx_wdraanie_htdy1q1j9fo5n-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={13.31} y={33} dominantBaseline="ideographic">
-                  {"Wdra\u017Canie technologii"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Wdrażanie technologii"
+              xPosition={13.31}
+              yPosition={33}
+              delay={2}
+            />
           </g>
         </g>
         <g
@@ -166,35 +144,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(540.5, 121)"
         >
           <g id="tx_rozwizan_de6x0e1j9fls4-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={12.06} y={33} dominantBaseline="ideographic">
-                  {"Rozwi\u0105zania AWS"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Optymalizacja procesów"
+              xPosition={12.06}
+              yPosition={33}
+              delay={1}
+            />
           </g>
         </g>
         <g
@@ -203,35 +158,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(540.5, 157)"
         >
           <g id="tx_integrac_4ijwri1j9fmkt-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={15.37} y={33} dominantBaseline="ideographic">
-                  {"Integracja z systemami"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Integracja z systemami"
+              xPosition={15.37}
+              yPosition={33}
+              delay={2}
+            />
           </g>
         </g>
         <g
@@ -260,35 +192,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(100.5, 595)"
         >
           <g id="tx_wsparcie_1cvhztq1j9fnda-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={13.37} y={33} dominantBaseline="ideographic">
-                  {"Wsparcie dla u\u017Cytkownik\xF3w"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Wsparcie dla użytkowników"
+              xPosition={13.37}
+              yPosition={33}
+              delay={1}
+            />
           </g>
         </g>
         <g
@@ -297,38 +206,18 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(56.5, 247)"
         >
           <g id="tx_zarzdzan_1d3m5y61j9e9se-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={17.27} y={33} dominantBaseline="ideographic">
-                  {"Zarz\u0105dzanie serwerami "}
-                </tspan>
-                <tspan x={68.27} y={57} dominantBaseline="ideographic">
-                  {"pocztowymi"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Zarządzanie serwerami"
+              xPosition={17.27}
+              yPosition={33}
+              delay={1}
+            />
+            <DelayedText
+              text="pocztowymi"
+              xPosition={68.27}
+              yPosition={57}
+              delay={1}
+            />
           </g>
         </g>
         <g
@@ -362,35 +251,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(608.5, 271)"
         >
           <g id="tx_konfigur_qn5j1a1j9focg-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={14.15} y={33} dominantBaseline="ideographic">
-                  {"Konfiguracja firewalli"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Konfiguracja firewalli"
+              xPosition={14.15}
+              yPosition={33}
+              delay={1}
+            />
           </g>
         </g>
         <g
@@ -399,38 +265,18 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(56.5, 307)"
         >
           <g id="tx_zarzdzan_zisja61j9fmrz-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={12.54} y={33} dominantBaseline="ideographic">
-                  {"Zarz\u0105dzanie maszynami "}
-                </tspan>
-                <tspan x={70.54} y={57} dominantBaseline="ideographic">
-                  {"wirtualnymi"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Zarządzanie maszynami"
+              xPosition={12.54}
+              yPosition={33}
+              delay={2}
+            />
+            <DelayedText
+              text="wirtualnymi"
+              xPosition={70.54}
+              yPosition={57}
+              delay={2}
+            />
           </g>
         </g>
         <g
@@ -444,35 +290,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(608.5, 307)"
         >
           <g id="tx_zarzdzan_hs4zvi1j9flzd-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={15.32} y={33} dominantBaseline="ideographic">
-                  {"Zarz\u0105dzanie VPN"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Zarządzanie VPN"
+              xPosition={15.32}
+              yPosition={33}
+              delay={2}
+            />
           </g>
         </g>
         <g
@@ -495,36 +318,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           data-item-order={1000000000}
           transform="translate(614.5, 370.470947265625)"
         >
-          <g id="tx_tworzeni_3cvq61j9csn9-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={14.3} y={33} dominantBaseline="ideographic">
-                  {"Tworzenie aplikacji webowych"}
-                </tspan>
-              </text>
-            </g>
+          <g id="tx_tworzeni_3cvq61j9csn9-fill" stroke="none" fill="#b7b7b7">
+            <TypingAnimation
+              text="Tworzenie aplikacji webowych"
+              xPosition={14.3}
+              yPosition={33}
+            />
           </g>
         </g>
         <g
@@ -533,35 +332,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(546.5, 571)"
         >
           <g id="tx_automaty_140hgny1j9fls0-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={12.42} y={33} dominantBaseline="ideographic">
-                  {"Automatyzacja proces\xF3w"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Automatyzacja procesów"
+              xPosition={12.42}
+              yPosition={33}
+              delay={1}
+            />
           </g>
         </g>
         <g
@@ -595,35 +371,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(44.5, 445)"
         >
           <g id="tx_architek_1q6yi721j9flsc-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={16.04} y={33} dominantBaseline="ideographic">
-                  {"Architektura infrastruktury"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Architektura infrastruktury"
+              xPosition={16.04}
+              yPosition={33}
+              delay={1}
+            />
           </g>
         </g>
         <g
@@ -642,35 +395,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(626.5, 422.5)"
         >
           <g id="tx_projekto_2qen21j9fnd2-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={16.42} y={33} dominantBaseline="ideographic">
-                  {"Projektowanie aplikacji"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Projektowanie aplikacji"
+              xPosition={16.42}
+              yPosition={33}
+              delay={1}
+            />
           </g>
         </g>
         <g
@@ -679,35 +409,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(632.5, 458.5)"
         >
           <g id="tx_rozwjapl_1q87gda1j9fnyn-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={16.43} y={33} dominantBaseline="ideographic">
-                  {"Rozw\xF3j aplikacji"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Rozwój aplikacji"
+              xPosition={16.43}
+              yPosition={33}
+              delay={2}
+            />
           </g>
         </g>
         <g
@@ -716,35 +423,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(104.5, 481)"
         >
           <g id="tx_administ_1lr502m1j9fmkl-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={17.1} y={33} dominantBaseline="ideographic">
-                  {"Administracja sieci"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Administrator sieci"
+              xPosition={17.1}
+              yPosition={33}
+              delay={2}
+            />
           </g>
         </g>
         <g
@@ -758,35 +442,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(540.5, 607)"
         >
           <g id="tx_monitoro_v4ugf21j9fmkp-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={17.02} y={33} dominantBaseline="ideographic">
-                  {"Monitorowanie baz danych"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Monitorowanie baz danych"
+              xPosition={17.02}
+              yPosition={33}
+              delay={2}
+            />
           </g>
         </g>
         <g
@@ -795,35 +456,12 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           transform="translate(100.5, 631)"
         >
           <g id="tx_rozwizyw_18fohpa1j9fo5j-fill" stroke="none" fill="#f4f4f4">
-            <g>
-              <text
-                style={{
-                  fontStyle: "normal",
-                  fontVariantCaps: "normal",
-                  fontWeight: "normal",
-                  fontStretch: "normal",
-                  fontSize: 20,
-                  lineHeight: "normal",
-                  fontFamily: "Arial, Helvetica, sans-serif",
-                  fontSizeAdjust: "none",
-                  fontKerning: "auto",
-                  fontVariantAlternates: "normal",
-                  fontVariantLigatures: "normal",
-                  fontVariantNumeric: "normal",
-                  fontVariantEastAsian: "normal",
-                  fontVariantPosition: "normal",
-                  fontVariantEmoji: "normal",
-                  fontFeatureSettings: "normal",
-                  fontOpticalSizing: "auto",
-                  fontVariationSettings: "normal",
-                  whiteSpace: "pre",
-                }}
-              >
-                <tspan x={15.2} y={33} dominantBaseline="ideographic">
-                  {"Rozwi\u0105zywanie problem\xF3w"}
-                </tspan>
-              </text>
-            </g>
+            <DelayedText
+              text="Rozwiązywanie problemów"
+              xPosition={15.2}
+              yPosition={33}
+              delay={2}
+            />
           </g>
         </g>
         <g
@@ -1301,7 +939,18 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           data-item-order={1000000000}
           transform="translate(344.5, 208)"
         >
-          <AnimatedPath path="M 40 124L 37 124L 36.9 124C 25.357251 124.000006 16.000001 114.642757 16.000002 103.100004L 16 103L 16 91C 15.991897 87.057448 16.772194 82.71493 18.299996 78.200001C 19.233103 75.485395 21.606563 71.51782 25.000003 67C 28.393444 62.48218 30.766904 58.514605 31.700003 55.8C 33.227801 51.285071 34.008097 46.942553 33.999999 43L 34 42.9L 34 30.9C 33.999998 19.357248 24.64275 10 13.1 10L 13 10L 10 10" />
+          <g
+            id="cu_qoeh7i1j9lafg-stroke"
+            fill="none"
+            strokeLinecap="butt"
+            strokeLinejoin="miter"
+            strokeMiterlimit={4}
+            stroke="#ababab"
+            strokeWidth={1}
+            strokeDasharray="2.5, 3.5"
+          >
+            <AnimatedPath path="M 40 124L 37 124L 36.9 124C 25.357251 124.000006 16.000001 114.642757 16.000002 103.100004L 16 103L 16 91C 15.991897 87.057448 16.772194 82.71493 18.299996 78.200001C 19.233103 75.485395 21.606563 71.51782 25.000003 67C 28.393444 62.48218 30.766904 58.514605 31.700003 55.8C 33.227801 51.285071 34.008097 46.942553 33.999999 43L 34 42.9L 34 30.9C 33.999998 19.357248 24.64275 10 13.1 10L 13 10L 10 10" />
+          </g>
         </g>
         <g
           id="g-root-cu_v47zby1j9l9n3-stroke"
@@ -1338,9 +987,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
             strokeWidth={1}
             strokeDasharray="2.5, 3.5"
           >
-            <g>
-              <path d="M 10 100L 12.8 100L 12.9 100C 23.724781 100.000005 32.500001 91.224785 32.500001 80.400004L 32.5 80.3L 32.5 77.4C 32.514073 73.945997 32.144288 70.113681 31.399999 65.999999C 30.940522 63.545609 29.743631 59.673316 27.999999 54.999997C 26.256366 50.326679 25.059476 46.454386 24.599999 43.999998C 23.85571 39.886317 23.485925 36.054 23.5 32.599999L 23.5 32.5L 23.5 29.6C 23.499999 18.775219 32.275219 10 43.1 10L 43.2 10L 46 10" />
-            </g>
+            <AnimatedPath path="M 10 100L 12.8 100L 12.9 100C 23.724781 100.000005 32.500001 91.224785 32.500001 80.400004L 32.5 80.3L 32.5 77.4C 32.514073 73.945997 32.144288 70.113681 31.399999 65.999999C 30.940522 63.545609 29.743631 59.673316 27.999999 54.999997C 26.256366 50.326679 25.059476 46.454386 24.599999 43.999998C 23.85571 39.886317 23.485925 36.054 23.5 32.599999L 23.5 32.5L 23.5 29.6C 23.499999 18.775219 32.275219 10 43.1 10L 43.2 10L 46 10" />
           </g>
         </g>
         <g
@@ -1448,9 +1095,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
             strokeWidth={1}
             strokeDasharray="2.5, 3.5"
           >
-            <g>
-              <path d="M 18 208L 18 195.6L 18 133C 18.004097 129.307854 17.668342 125.211641 17.000003 120.8C 16.580731 118.13864 15.527668 113.996593 13.999998 109.000001C 12.472328 104.003409 11.419266 99.861363 10.999998 97.200001C 10.331663 92.788358 9.995908 88.692146 10.000002 85L 10 84.9L 10 30.9C 10 19.357248 19.357248 10 30.899998 10L 31 10L 34 10" />
-            </g>
+            <AnimatedPath path="M 18 208L 18 195.6L 18 133C 18.004097 129.307854 17.668342 125.211641 17.000003 120.8C 16.580731 118.13864 15.527668 113.996593 13.999998 109.000001C 12.472328 104.003409 11.419266 99.861363 10.999998 97.200001C 10.331663 92.788358 9.995908 88.692146 10.000002 85L 10 84.9L 10 30.9C 10 19.357248 19.357248 10 30.899998 10L 31 10L 34 10" />
           </g>
         </g>
         <g
@@ -1503,9 +1148,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
             strokeWidth={1}
             strokeDasharray="2.5, 3.5"
           >
-            <g>
-              <path d="M 34 10L 32.5 10L 32.4 10C 26.656239 10 22 14.656238 22 20.4L 22 20.5L 22 41.6C 22.000001 47.343764 17.343762 52.000003 11.6 52.000002L 11.5 52L 10 52" />
-            </g>
+            <AnimatedPath path="M 34 10L 32.5 10L 32.4 10C 26.656239 10 22 14.656238 22 20.4L 22 20.5L 22 41.6C 22.000001 47.343764 17.343762 52.000003 11.6 52.000002L 11.5 52L 10 52" />
           </g>
         </g>
         <g
@@ -1539,7 +1182,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
             strokeLinecap="butt"
             strokeLinejoin="miter"
             strokeMiterlimit={4}
-            stroke="#f4f4f4"
+            stroke="#b7b7b7"
             strokeWidth={1}
           >
             <g>
@@ -1572,9 +1215,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
             strokeWidth={1}
             strokeDasharray="2.5, 3.5"
           >
-            <g>
-              <path d="M 10 10L 34 10L 58 10" />
-            </g>
+            <AnimatedPath path="M 10 10L 34 10L 58 10" />
           </g>
         </g>
         <g
@@ -1592,9 +1233,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
             strokeWidth={1}
             strokeDasharray="2.5, 3.5"
           >
-            <g>
-              <path d="M 26 10L 26 19.4L 26 61C 25.995908 64.692145 26.331663 68.788358 27.000002 73.199999C 27.419267 75.861362 28.472329 80.003408 29.999999 85.000001C 31.52767 89.996593 32.580732 94.138639 32.999999 96.800001C 33.668342 101.211641 34.004097 105.307853 34.000003 108.999999L 34 109.1L 34 139.1C 34.000002 150.642765 24.642752 160.000015 13.1 160.000014L 13 160L 10 160" />
-            </g>
+            <AnimatedPath path="M 26 10L 26 19.4L 26 61C 25.995908 64.692145 26.331663 68.788358 27.000002 73.199999C 27.419267 75.861362 28.472329 80.003408 29.999999 85.000001C 31.52767 89.996593 32.580732 94.138639 32.999999 96.800001C 33.668342 101.211641 34.004097 105.307853 34.000003 108.999999L 34 109.1L 34 139.1C 34.000002 150.642765 24.642752 160.000015 13.1 160.000014L 13 160L 10 160" />
           </g>
         </g>
         <g
@@ -1612,9 +1251,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
             strokeWidth={1}
             strokeDasharray="2.5, 3.5"
           >
-            <g>
-              <path d="M 24 10L 24 17.9L 24 49C 23.995362 52.821417 23.387702 57.041272 22.199997 61.499999C 21.503131 64.157329 19.667343 68.217246 17 73.000005C 14.332658 77.782765 12.496869 81.842682 11.799999 84.500006C 10.61229 88.958725 10.004631 93.17858 9.999995 96.999998L 10 97.1L 10 115.1C 10.000001 126.642752 19.357249 136.000001 30.900001 136.000001L 31 136L 34 136" />
-            </g>
+            <AnimatedPath path="M 24 10L 24 17.9L 24 49C 23.995362 52.821417 23.387702 57.041272 22.199997 61.499999C 21.503131 64.157329 19.667343 68.217246 17 73.000005C 14.332658 77.782765 12.496869 81.842682 11.799999 84.500006C 10.61229 88.958725 10.004631 93.17858 9.999995 96.999998L 10 97.1L 10 115.1C 10.000001 126.642752 19.357249 136.000001 30.900001 136.000001L 31 136L 34 136" />
           </g>
         </g>
         <g
@@ -1732,9 +1369,7 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
             strokeWidth={1}
             strokeDasharray="2.5, 3.5"
           >
-            <g>
-              <path d="M 14 232L 14 218.1L 14 145C 14.000947 140.974825 14.885449 136.55232 16.599997 131.999997C 17.610275 129.297297 20.238954 125.389801 23.999998 120.999994C 27.761041 116.610187 30.38972 112.702691 31.399998 109.999995C 33.114547 105.447675 33.999048 101.02517 33.999998 96.999998L 34 96.9L 34 30.9C 33.999998 19.357248 24.64275 10 13.1 10L 13 10L 10 10" />
-            </g>
+            <AnimatedPath path="M 14 232L 14 218.1L 14 145C 14.000947 140.974825 14.885449 136.55232 16.599997 131.999997C 17.610275 129.297297 20.238954 125.389801 23.999998 120.999994C 27.761041 116.610187 30.38972 112.702691 31.399998 109.999995C 33.114547 105.447675 33.999048 101.02517 33.999998 96.999998L 34 96.9L 34 30.9C 33.999998 19.357248 24.64275 10 13.1 10L 13 10L 10 10" />
           </g>
         </g>
         <g
@@ -1915,19 +1550,11 @@ const HomeServices = (props: SVGProps<SVGSVGElement>) => (
           data-item-order={2000000000}
           transform="translate(358.5, 541)"
         >
-          <g
-            id="wren_1hckg4e1j9jtor-stroke"
-            fill="none"
-            strokeLinecap="butt"
-            strokeLinejoin="miter"
-            strokeMiterlimit={4}
-            stroke="#b7b7b7"
-            strokeWidth={1}
-          >
-            <g>
-              <path d="M 30.799999 15.5525C 30.800753 13.64623 29.862949 11.861786 28.2925 10.78125C 28.092964 10.652753 27.839186 10.643468 27.630795 10.757042C 27.422401 10.870616 27.29266 11.088919 27.2925 11.32625L 27.2925 13.94125C 27.292501 15.183891 26.285141 16.19125 25.0425 16.19125L 25.0425 16.19125C 23.79986 16.19125 22.7925 15.183891 22.7925 13.94125L 22.7925 11.28C 22.793333 11.042135 22.664173 10.822812 22.455751 10.708179C 22.247328 10.593548 21.992935 10.601916 21.7925 10.73C 20.011633 11.91696 19.029947 13.988832 19.239225 16.118752C 19.448503 18.248674 20.814669 20.089855 22.7925 20.907499L 22.7925 31.875L 27.2875 31.875L 27.2875 20.875C 29.416792 19.962212 30.79805 17.869192 30.799999 15.5525ZM 16.25 39.375L 33.75 39.375M 24.375 36.875L 24.375 39.375M 10.625 31.875L 39.375 31.875M 33.75 14.375L 37.5 14.375C 38.535534 14.375 39.375 15.214466 39.375 16.25L 39.375 35C 39.375 36.035534 38.535534 36.875 37.5 36.875L 12.5 36.875C 11.464466 36.875 10.625 36.035534 10.625 35L 10.625 16.25C 10.625 15.214466 11.464466 14.375 12.5 14.375L 16.25 14.375" />
-            </g>
-          </g>
+          <NeonPulse
+            pathData="M 30.799999 15.5525C 30.800753 13.64623 29.862949 11.861786 28.2925 10.78125C 28.092964 10.652753 27.839186 10.643468 27.630795 10.757042C 27.422401 10.870616 27.29266 11.088919 27.2925 11.32625L 27.2925 13.94125C 27.292501 15.183891 26.285141 16.19125 25.0425 16.19125L 25.0425 16.19125C 23.79986 16.19125 22.7925 15.183891 22.7925 13.94125L 22.7925 11.28C 22.793333 11.042135 22.664173 10.822812 22.455751 10.708179C 22.247328 10.593548 21.992935 10.601916 21.7925 10.73C 20.011633 11.91696 19.029947 13.988832 19.239225 16.118752C 19.448503 18.248674 20.814669 20.089855 22.7925 20.907499L 22.7925 31.875L 27.2875 31.875L 27.2875 20.875C 29.416792 19.962212 30.79805 17.869192 30.799999 15.5525ZM 16.25 39.375L 33.75 39.375M 24.375 36.875L 24.375 39.375M 10.625 31.875L 39.375 31.875M 33.75 14.375L 37.5 14.375C 38.535534 14.375 39.375 15.214466 39.375 16.25L 39.375 35C 39.375 36.035534 38.535534 36.875 37.5 36.875L 12.5 36.875C 11.464466 36.875 10.625 36.035534 10.625 35L 10.625 16.25C 10.625 15.214466 11.464466 14.375 12.5 14.375L 16.25 14.375"
+            color="#ff1493"
+            interval={3.4}
+          />
         </g>
         <g
           id="g-root-tx_utrzyman_1d1qqou1j98kr0-stroke"
