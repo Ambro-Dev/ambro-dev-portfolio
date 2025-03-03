@@ -2,6 +2,7 @@ import DynamicAnimatedContent from "@/components/home/DynamicAnimatedContent";
 import HomeServices from "@/components/home/HomeServices";
 import Starfield from "@/components/home/starfield";
 import { baseURL, home, person } from "./resources";
+import Script from "next/script";
 
 export async function generateMetadata() {
 	const title = home.title;
@@ -35,30 +36,31 @@ export async function generateMetadata() {
 export default function Home() {
 	return (
 		<>
-			<script
+			<Script
+				id="schema-structured-data"
 				type="application/ld+json"
-				suppressHydrationWarning
-				dangerouslySetInnerHTML={{
-					__html: JSON.stringify({
-						"@context": "https://schema.org",
-						"@type": "WebPage",
-						name: home.title,
-						description: home.description,
-						url: `https://${baseURL}`,
-						image: `${baseURL}/og?title=${encodeURIComponent(home.title)}`,
-						publisher: {
-							"@type": "Person",
-							name: person.name,
-							image: {
-								"@type": "ImageObject",
-								url: `${baseURL}${person.avatar}`,
-							},
+				strategy="afterInteractive"
+			>
+				{JSON.stringify({
+					"@context": "https://schema.org",
+					"@type": "WebPage",
+					name: home.title,
+					description: home.description,
+					url: `https://${baseURL}`,
+					image: `${baseURL}/og?title=${encodeURIComponent(home.title)}`,
+					publisher: {
+						"@type": "Person",
+						name: person.name,
+						image: {
+							"@type": "ImageObject",
+							url: `${baseURL}${person.avatar}`,
 						},
-					}),
-				}}
-			/>
+					},
+				})}
+			</Script>
+
 			<section
-				className="w-full relative min-h-svh flex flex-col justify-center items-center sm:px-2  overflow-x-hidden"
+				className="w-full relative min-h-svh flex flex-col justify-center items-center sm:px-2 overflow-x-hidden"
 				id="home"
 			>
 				<Starfield />

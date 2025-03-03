@@ -60,7 +60,7 @@ export const Header = () => {
 	const location = "Warsaw, Poland"; // Example location
 
 	return (
-		<header className="fixed top-0 w-full p-4 flex justify-between items-center z-10 bg-transparent">
+		<header className="fixed top-0 w-full p-4 flex justify-between items-center z-20 bg-transparent">
 			<div className="hidden sm:flex items-center space-x-2">
 				<MapPinIcon className="h-5 w-5 text-gray-500" />
 				<span className="text-sm font-medium ">{location}</span>

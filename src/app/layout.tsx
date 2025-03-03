@@ -1,10 +1,20 @@
 import type { Metadata } from "next";
-import { Inter, Source_Code_Pro } from "next/font/google";
+import { Geist, Geist_Mono, Inter, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cx } from "class-variance-authority";
 import { baseURL, home, style } from "./resources";
+
+const geistSans = Geist({
+	variable: "--font-geist-sans",
+	subsets: ["latin"],
+});
+
+const geistMono = Geist_Mono({
+	variable: "--font-geist-mono",
+	subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
 	metadataBase: new URL(`https://${baseURL}`),
@@ -83,12 +93,15 @@ export default function RootLayout({
 			)}
 			suppressHydrationWarning
 		>
-			<body className="antialiased">
+			<body
+				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+			>
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="dark"
 					enableSystem={false}
 					disableTransitionOnChange
+					forcedTheme="dark"
 				>
 					<Header />
 					{children}
