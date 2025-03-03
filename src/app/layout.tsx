@@ -1,20 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Inter, Source_Code_Pro } from "next/font/google";
+import { Inter, Source_Code_Pro } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cx } from "class-variance-authority";
 import { baseURL, home, style } from "./resources";
-
-const geistSans = Geist({
-	variable: "--font-geist-sans",
-	subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-	variable: "--font-geist-mono",
-	subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
 	metadataBase: new URL(`https://${baseURL}`),
@@ -25,7 +15,7 @@ export const metadata: Metadata = {
 		description:
 			"Automatyzacja procesów, chmurowe rowziązania, administracja serwerami, tworzenie stron internetowych i aplikacji webowych",
 		url: baseURL,
-		siteName: `Ambro-Dev`,
+		siteName: "Ambro-Dev",
 		locale: "pl_PL",
 		type: "website",
 	},
@@ -93,9 +83,7 @@ export default function RootLayout({
 			)}
 			suppressHydrationWarning
 		>
-			<body
-				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-			>
+			<body className="antialiased">
 				<ThemeProvider
 					attribute="class"
 					defaultTheme="dark"
