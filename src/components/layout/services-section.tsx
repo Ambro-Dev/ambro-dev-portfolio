@@ -5,37 +5,42 @@ import {
   RevealText,
 } from "@/components/EnhancedUI";
 import EnhancedServiceCards from "@/components/services/ServiceCards";
+import { NeoGlassSection } from "@/components/glass-components";
 
 const ServicesSection = () => {
   return (
-    <div id="services" className="bg-gradient-to-b from-gray-900 to-gray-950">
-      <AnimatedSection className="py-24">
-        <div className="container mx-auto px-6">
-          <RevealText className="mb-16 text-center">
-            <h2 className="text-3xl md:text-5xl font-bold mb-6 tracking-tight">
-              <GradientText
-                from="blue-400"
-                via="indigo-500"
-                to="violet-500"
-                className="p-5"
-              >
-                Moje Usługi
-              </GradientText>
-            </h2>
-            <p className="text-lg md:text-xl text-gray-300/90 max-w-2xl mx-auto leading-relaxed">
-              Specjalizuję się w dostarczaniu kompleksowych rozwiązań IT, które
-              optymalizują procesy, zwiększają bezpieczeństwo i wspierają rozwój
-              biznesu.
-            </p>
-          </RevealText>
+    <NeoGlassSection
+      id="services"
+      variant="blue"
+      glow="subtle"
+      pattern={true}
+      className="py-28"
+    >
+      <AnimatedSection className="container mx-auto px-6">
+        <RevealText className="mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-light tracking-tight mb-5">
+            <GradientText
+              from="blue-400"
+              via="indigo-400"
+              to="violet-400"
+              className="p-4"
+            >
+              Moje Usługi
+            </GradientText>
+          </h2>
+          <p className="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed font-light">
+            Specjalizuję się w dostarczaniu kompleksowych rozwiązań IT, które
+            optymalizują procesy, zwiększają bezpieczeństwo i wspierają rozwój
+            biznesu.
+          </p>
+        </RevealText>
 
-          {/* Subtle divider */}
-          <div className="w-24 h-1 mx-auto mb-16 rounded-full bg-gradient-to-r from-blue-500/30 via-indigo-500/30 to-violet-500/30" />
+        {/* Subtelny separator */}
+        <div className="w-16 h-px mx-auto mb-16 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent opacity-50" />
 
-          <EnhancedServiceCards />
-        </div>
+        <EnhancedServiceCards />
       </AnimatedSection>
-    </div>
+    </NeoGlassSection>
   );
 };
 

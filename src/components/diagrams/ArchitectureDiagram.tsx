@@ -20,6 +20,9 @@ import {
   Terminal,
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
+import { EliteGlassPanel, GlassCard } from "@/components/glass-components";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 // Types
 interface ArchitectureNode {
@@ -86,7 +89,7 @@ interface CategoryFilterProps {
   onToggleCategory: (category: ArchitectureNode["category"]) => void;
 }
 
-// Architecture nodes data
+// Architecture nodes data with refined, more subtle colors
 const architectureNodes: ArchitectureNode[] = [
   {
     id: "user",
@@ -95,7 +98,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Użytkownicy końcowi korzystający z aplikacji i usług. Dostęp przez przeglądarkę lub aplikacje mobilne.",
     position: { x: 100, y: 100 },
-    color: "#3B82F6",
+    color: "#818cf8", // indigo-400
     category: "frontend",
   },
   {
@@ -105,7 +108,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Równoważy ruch sieciowy między serwerami aplikacji. Zapewnia wysoką dostępność i skalowalność.",
     position: { x: 300, y: 100 },
-    color: "#10B981",
+    color: "#4ade80", // green-400
     category: "infrastructure",
   },
   {
@@ -115,7 +118,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Klaster kontenerowy Kubernetes z autoskalowaniem. Elastyczna platforma dla mikrousług.",
     position: { x: 500, y: 100 },
-    color: "#6366F1",
+    color: "#a5b4fc", // indigo-300
     category: "backend",
   },
   {
@@ -125,7 +128,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Zarządzanie API, autoryzacja i limitowanie zapytań. Centralny punkt dostępu do mikrousług.",
     position: { x: 700, y: 100 },
-    color: "#EC4899",
+    color: "#c084fc", // violet-400
     category: "backend",
   },
   {
@@ -135,7 +138,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Klastrowana baza danych z replikacją i automatycznymi backupami. Wysoka dostępność i odporność na awarie.",
     position: { x: 700, y: 300 },
-    color: "#F59E0B",
+    color: "#f59e0b", // amber-500
     category: "backend",
   },
   {
@@ -145,7 +148,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Warstwa cache (Redis) dla zwiększenia wydajności i redukcji obciążenia bazy danych. Szybki dostęp do często używanych danych.",
     position: { x: 500, y: 300 },
-    color: "#8B5CF6",
+    color: "#c084fc", // violet-400
     category: "backend",
   },
   {
@@ -155,7 +158,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Skalowalny magazyn plików z wersjonowaniem. Przechowywanie mediów, dokumentów i kopii zapasowych.",
     position: { x: 300, y: 300 },
-    color: "#F43F5E",
+    color: "#fb7185", // rose-400
     category: "infrastructure",
   },
   {
@@ -165,7 +168,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "System monitorowania z alertami i wizualizacją metryk. Prometheus, Grafana i ELK Stack dla pełnej widoczności.",
     position: { x: 100, y: 300 },
-    color: "#14B8A6",
+    color: "#2dd4bf", // teal-400
     category: "monitoring",
   },
   {
@@ -175,7 +178,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Firewall, WAF i VPN dla bezpiecznego dostępu. Ochrona przed atakami DDOS i innymi zagrożeniami.",
     position: { x: 100, y: 500 },
-    color: "#EF4444",
+    color: "#f87171", // red-400
     category: "security",
   },
   {
@@ -185,7 +188,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Potok wdrożeniowy dla automatyzacji budowania i wdrażania. Ciągła integracja i wdrażanie z GitLab CI lub GitHub Actions.",
     position: { x: 300, y: 500 },
-    color: "#0EA5E9",
+    color: "#38bdf8", // sky-400
     category: "infrastructure",
   },
   {
@@ -195,7 +198,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Automatyczne kopie zapasowe i strategia odzyskiwania po awarii. Regularne testy przywracania dla pewności.",
     position: { x: 500, y: 500 },
-    color: "#22C55E",
+    color: "#4ade80", // green-400
     category: "infrastructure",
   },
   {
@@ -205,7 +208,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Centralizacja logów i analityka w czasie rzeczywistym. Identyfikacja problemów i trendów.",
     position: { x: 700, y: 500 },
-    color: "#A855F7",
+    color: "#a78bfa", // violet-400
     category: "monitoring",
   },
   {
@@ -215,7 +218,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Sieć dostarczania treści dla szybkiego udostępniania statycznych zasobów. Globalny zasięg i buforowanie na brzegu.",
     position: { x: 100, y: 700 },
-    color: "#FB923C",
+    color: "#fb923c", // orange-400
     category: "infrastructure",
   },
   {
@@ -225,7 +228,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "System uwierzytelniania i autoryzacji. OAuth2, OIDC i SSO dla bezpiecznego dostępu.",
     position: { x: 300, y: 700 },
-    color: "#7C3AED",
+    color: "#a78bfa", // violet-400
     category: "security",
   },
   {
@@ -235,7 +238,7 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Zarządzanie kontenerami z Kubernetes. Automatyczne skalowanie, samoleczenie i wdrażanie.",
     position: { x: 500, y: 700 },
-    color: "#2563EB",
+    color: "#60a5fa", // blue-400
     category: "infrastructure",
   },
   {
@@ -245,66 +248,66 @@ const architectureNodes: ArchitectureNode[] = [
     description:
       "Izolowane środowiska rozwojowe dla zespołów. Narzędzia współpracy i zarządzania kodem.",
     position: { x: 700, y: 700 },
-    color: "#9333EA",
+    color: "#c084fc", // violet-400
     category: "infrastructure",
   },
 ];
 
-// Connections between nodes
+// Connections with more subtle styling
 const connections: Connection[] = [
   {
     from: "user",
     to: "lb",
     label: "HTTPS",
     animate: true,
-    speed: 6,
-    thickness: 3,
-    color: "#3B82F6",
+    speed: 5,
+    thickness: 1.5,
+    color: "#818cf8", // indigo-400
   },
   {
     from: "lb",
     to: "webapp",
     label: "HTTP",
     animate: true,
-    speed: 6,
-    thickness: 3,
-    color: "#10B981",
+    speed: 4,
+    thickness: 1.5,
+    color: "#4ade80", // green-400
   },
   {
     from: "webapp",
     to: "api",
     label: "HTTP/gRPC",
     animate: true,
-    speed: 5,
-    thickness: 2,
-    color: "#6366F1",
+    speed: 4,
+    thickness: 1,
+    color: "#a5b4fc", // indigo-300
   },
   {
     from: "api",
     to: "db",
     label: "TCP",
     animate: true,
-    speed: 4,
-    thickness: 2,
-    color: "#EC4899",
+    speed: 3,
+    thickness: 1,
+    color: "#c084fc", // violet-400
   },
   {
     from: "api",
     to: "cache",
     label: "Redis",
     animate: true,
-    speed: 8,
-    thickness: 2,
-    color: "#8B5CF6",
+    speed: 4,
+    thickness: 1,
+    color: "#c084fc", // violet-400
   },
   {
     from: "webapp",
     to: "cache",
     label: "Redis",
     animate: true,
-    speed: 8,
-    thickness: 2,
-    color: "#8B5CF6",
+    speed: 4,
+    thickness: 1,
+    color: "#c084fc", // violet-400
   },
   {
     from: "webapp",
@@ -312,8 +315,8 @@ const connections: Connection[] = [
     label: "S3 API",
     animate: true,
     speed: 3,
-    thickness: 2,
-    color: "#F43F5E",
+    thickness: 1,
+    color: "#fb7185", // rose-400
   },
   {
     from: "monitoring",
@@ -321,8 +324,8 @@ const connections: Connection[] = [
     label: "Metrics",
     animate: true,
     speed: 2,
-    thickness: 1,
-    color: "#14B8A6",
+    thickness: 0.5,
+    color: "#2dd4bf", // teal-400
   },
   {
     from: "monitoring",
@@ -330,8 +333,8 @@ const connections: Connection[] = [
     label: "Metrics",
     animate: true,
     speed: 2,
-    thickness: 1,
-    color: "#14B8A6",
+    thickness: 0.5,
+    color: "#2dd4bf", // teal-400
   },
   {
     from: "monitoring",
@@ -339,8 +342,8 @@ const connections: Connection[] = [
     label: "Metrics",
     animate: true,
     speed: 2,
-    thickness: 1,
-    color: "#14B8A6",
+    thickness: 0.5,
+    color: "#2dd4bf", // teal-400
   },
   {
     from: "security",
@@ -348,26 +351,26 @@ const connections: Connection[] = [
     label: "Rules",
     animate: true,
     speed: 1,
-    thickness: 1,
-    color: "#EF4444",
+    thickness: 0.5,
+    color: "#f87171", // red-400
   },
   {
     from: "cicd",
     to: "webapp",
     label: "Deploy",
     animate: true,
-    speed: 3,
-    thickness: 2,
-    color: "#0EA5E9",
+    speed: 2,
+    thickness: 1,
+    color: "#38bdf8", // sky-400
   },
   {
     from: "cicd",
     to: "api",
     label: "Deploy",
     animate: true,
-    speed: 3,
-    thickness: 2,
-    color: "#0EA5E9",
+    speed: 2,
+    thickness: 1,
+    color: "#38bdf8", // sky-400
   },
   {
     from: "backup",
@@ -375,8 +378,8 @@ const connections: Connection[] = [
     label: "Schedule",
     animate: true,
     speed: 1,
-    thickness: 1,
-    color: "#22C55E",
+    thickness: 0.5,
+    color: "#4ade80", // green-400
   },
   {
     from: "backup",
@@ -384,102 +387,102 @@ const connections: Connection[] = [
     label: "Schedule",
     animate: true,
     speed: 1,
-    thickness: 1,
-    color: "#22C55E",
+    thickness: 0.5,
+    color: "#4ade80", // green-400
   },
   {
     from: "logs",
     to: "webapp",
     label: "Collect",
     animate: true,
-    speed: 4,
-    thickness: 1,
-    color: "#A855F7",
+    speed: 3,
+    thickness: 0.5,
+    color: "#a78bfa", // violet-400
   },
   {
     from: "logs",
     to: "api",
     label: "Collect",
     animate: true,
-    speed: 4,
-    thickness: 1,
-    color: "#A855F7",
+    speed: 3,
+    thickness: 0.5,
+    color: "#a78bfa", // violet-400
   },
   {
     from: "logs",
     to: "db",
     label: "Collect",
     animate: true,
-    speed: 4,
-    thickness: 1,
-    color: "#A855F7",
+    speed: 3,
+    thickness: 0.5,
+    color: "#a78bfa", // violet-400
   },
   {
     from: "user",
     to: "cdn",
     label: "Assets",
     animate: true,
-    speed: 7,
-    thickness: 2,
-    color: "#FB923C",
+    speed: 4,
+    thickness: 1,
+    color: "#fb923c", // orange-400
   },
   {
     from: "cdn",
     to: "storage",
     label: "Fetch",
     animate: true,
-    speed: 4,
-    thickness: 1,
-    color: "#FB923C",
+    speed: 3,
+    thickness: 0.5,
+    color: "#fb923c", // orange-400
   },
   {
     from: "auth",
     to: "api",
     label: "Validate",
     animate: true,
-    speed: 5,
-    thickness: 2,
-    color: "#7C3AED",
+    speed: 3,
+    thickness: 1,
+    color: "#a78bfa", // violet-400
   },
   {
     from: "auth",
     to: "user",
     label: "Identity",
     animate: true,
-    speed: 5,
-    thickness: 2,
-    color: "#7C3AED",
+    speed: 3,
+    thickness: 1,
+    color: "#a78bfa", // violet-400
   },
   {
     from: "containers",
     to: "webapp",
     label: "Host",
     animate: true,
-    speed: 2,
-    thickness: 3,
-    color: "#2563EB",
+    speed: 1,
+    thickness: 1,
+    color: "#60a5fa", // blue-400
   },
   {
     from: "containers",
     to: "api",
     label: "Host",
     animate: true,
-    speed: 2,
-    thickness: 3,
-    color: "#2563EB",
+    speed: 1,
+    thickness: 1,
+    color: "#60a5fa", // blue-400
   },
   {
     from: "devenv",
     to: "cicd",
     label: "Commit",
     animate: true,
-    speed: 3,
-    thickness: 1,
-    color: "#9333EA",
+    speed: 2,
+    thickness: 0.5,
+    color: "#c084fc", // violet-400
   },
 ];
 
-// Individual architecture node component
+// Individual architecture node component with refined styling
 const ArchitectureNode: React.FC<ArchitectureNodeProps> = ({
   node,
   isSelected,
@@ -492,26 +495,26 @@ const ArchitectureNode: React.FC<ArchitectureNodeProps> = ({
   const controls = useAnimation();
   const pulseControls = useAnimation();
   const scaleMotionValue = useMotionValue(1);
-  const scale = useSpring(scaleMotionValue, { stiffness: 300, damping: 20 });
+  const scale = useSpring(scaleMotionValue, { stiffness: 250, damping: 25 });
 
   useEffect(() => {
     if (isSelected) {
-      scaleMotionValue.set(1.1);
+      scaleMotionValue.set(1.08); // Subtle scale-up
       controls.start({
-        boxShadow: `0 0 30px ${node.color}80`,
+        boxShadow: `0 0 15px ${node.color}50`, // More subtle shadow
       });
       pulseControls.start({
-        scale: [1, 1.15, 1],
-        opacity: [0.7, 0.5, 0.7],
+        scale: [1, 1.08, 1], // Smaller pulse
+        opacity: [0.4, 0.3, 0.4], // More transparent
         repeatCount: Number.POSITIVE_INFINITY,
-        repeatDur: 2,
+        repeatDur: 3,
       });
     } else if (hovered) {
-      scaleMotionValue.set(1.05);
+      scaleMotionValue.set(1.03); // Smaller hover effect
       controls.start({
-        boxShadow: `0 0 20px ${node.color}60`,
+        boxShadow: `0 0 10px ${node.color}40`, // Even more subtle shadow
       });
-      pulseControls.start({ scale: 1, opacity: 0.5 });
+      pulseControls.start({ scale: 1, opacity: 0.3 });
     } else {
       scaleMotionValue.set(1);
       controls.start({
@@ -539,53 +542,56 @@ const ArchitectureNode: React.FC<ArchitectureNodeProps> = ({
         transform: "translate(-50%, -50%)",
         opacity: opacityValue,
       }}
-      initial={{ opacity: 0, y: 20 }}
+      initial={{ opacity: 0, y: 15 }}
       animate={{ opacity: opacityValue, y: 0 }}
-      transition={{ type: "spring", damping: 20, stiffness: 100 }}
+      transition={{ type: "spring", damping: 25, stiffness: 150 }}
       onClick={() => onClick(node.id)}
       onMouseEnter={() => onHover(node.id)}
       onMouseLeave={() => onHover(null)}
     >
       <div className="flex flex-col items-center relative">
-        {/* Pulse animation background */}
+        {/* Pulse animation background - more subtle */}
         <motion.div
           className="absolute rounded-full"
           style={{
-            backgroundColor: `${node.color}30`,
-            width: "70px",
-            height: "70px",
+            backgroundColor: `${node.color}20`,
+            width: "60px", // Smaller pulse effect
+            height: "60px",
           }}
           animate={pulseControls}
         />
 
         <motion.div
-          className="flex items-center justify-center w-16 h-16 rounded-full z-10 relative"
+          className="flex items-center justify-center w-14 h-14 rounded-full z-10 relative" // Smaller node
           style={{
             scale,
-            backgroundColor: `${node.color}20`,
+            backgroundColor: `${node.color}10`, // More transparent
           }}
           animate={controls}
         >
           <motion.div
-            className="flex items-center justify-center w-12 h-12 rounded-full"
-            style={{ backgroundColor: node.color }}
-            whileHover={{ scale: 1.05 }}
+            className="flex items-center justify-center w-10 h-10 rounded-full" // Smaller inner circle
+            style={{ backgroundColor: `${node.color}70` }} // More transparent color
+            whileHover={{ scale: 1.03 }} // More subtle hover
           >
-            <Icon size={24} color="white" />
+            <Icon size={18} color="white" strokeWidth={1.5} />{" "}
+            {/* Smaller, thinner icon */}
           </motion.div>
         </motion.div>
 
-        {/* Label with background for better readability */}
+        {/* Label with glass effect for better readability */}
         <motion.div
-          className="mt-2 px-2 py-1 rounded-lg bg-gray-800/80 backdrop-blur-sm"
+          className="mt-2 px-2 py-0.5 rounded-md bg-slate-900/60 backdrop-blur-sm" // Smaller, more subtle background
           animate={{
-            scale: isSelected || hovered ? 1.05 : 1,
+            scale: isSelected || hovered ? 1.03 : 1, // More subtle scale
             backgroundColor: isSelected
-              ? `${node.color}30`
-              : "rgba(30, 30, 30, 0.8)",
+              ? `${node.color}20` // More transparent highlight
+              : "rgba(15, 23, 42, 0.6)", // Slate-900 with 60% opacity
           }}
         >
-          <span className="text-sm font-medium text-white text-center whitespace-nowrap">
+          <span className="text-xs font-light text-slate-200 text-center whitespace-nowrap">
+            {" "}
+            {/* Smaller, lighter text */}
             {node.label}
           </span>
         </motion.div>
@@ -594,51 +600,46 @@ const ArchitectureNode: React.FC<ArchitectureNodeProps> = ({
   );
 };
 
-// Animation for data flowing through connections
+// Refined animation for data flowing through connections
 const DataFlow: React.FC<{
   connection: Connection;
   fromPos: NodePosition;
   toPos: NodePosition;
   isHighlighted: boolean | null;
 }> = ({ connection, fromPos, toPos, isHighlighted }) => {
-  const { speed = 5, color = "#ffffff" } = connection;
-
-  const dx = toPos.x - fromPos.x;
-  const dy = toPos.y - fromPos.y;
-  // Calculate direction between points (not using angle directly, but needed for animation path)
-  Math.atan2(dy, dx);
-  Math.sqrt(dx * dx + dy * dy); // Calculate distance for reference (used indirectly in animation timing)
+  const { speed = 5, color = "#e2e8f0" } = connection; // Default to slate-200
 
   // Animation duration based on speed (inverted, higher speed = faster animation)
-  const duration = 11 - speed; // 1-10 speed maps to 10-1 duration
+  const duration = 12 - speed; // 1-10 speed maps to 11-2 duration (slower overall)
 
   // Only show animation if connection is highlighted or all are shown
   if (isHighlighted === false) return null;
 
   return (
     <motion.div
-      className="absolute h-2 w-2 rounded-full"
+      className="absolute h-1.5 w-1.5 rounded-full" // Smaller particle
       style={{
         backgroundColor: color,
-        boxShadow: `0 0 5px ${color}, 0 0 10px ${color}`,
+        boxShadow: `0 0 3px ${color}80`, // More subtle glow
+        opacity: 0.5, // Base opacity reduced
       }}
       animate={{
         x: [fromPos.x, toPos.x],
         y: [fromPos.y, toPos.y],
-        opacity: [0.8, 0],
-        scale: [1, 0.5],
+        opacity: [0.5, 0], // More subtle fade
+        scale: [0.8, 0.4], // Smaller scale change
       }}
       transition={{
         duration: duration,
         repeat: Number.POSITIVE_INFINITY,
-        ease: "linear",
+        ease: "easeInOut", // More elegant easing
         delay: Math.random() * duration, // Random delay for varied animation
       }}
     />
   );
 };
 
-// Individual connection component
+// Refined connection component
 const Connection: React.FC<ConnectionProps> = ({
   from,
   to,
@@ -647,7 +648,7 @@ const Connection: React.FC<ConnectionProps> = ({
   isAnimated,
   speed = 5,
   thickness = 2,
-  color = "#ffffff",
+  color = "#e2e8f0", // Default to slate-200
   nodePositions,
 }) => {
   if (!nodePositions[from] || !nodePositions[to]) return null;
@@ -664,7 +665,7 @@ const Connection: React.FC<ConnectionProps> = ({
   const midY = (fromPos.y + toPos.y) / 2;
 
   // Add some curvature based on distance
-  const curveFactor = Math.min(distance * 0.2, 50);
+  const curveFactor = Math.min(distance * 0.15, 40); // Less curvature
   const perpX = (-dy / distance) * curveFactor;
   const perpY = (dx / distance) * curveFactor;
 
@@ -677,8 +678,8 @@ const Connection: React.FC<ConnectionProps> = ({
   const path = `M ${fromPos.x} ${fromPos.y} Q ${controlPoint.x} ${controlPoint.y} ${toPos.x} ${toPos.y}`;
 
   // Adjusted opacity based on highlighting state
-  const opacityValue = isHighlighted === false ? 0.15 : 0.7;
-  const actualThickness = isHighlighted === true ? thickness + 1 : thickness;
+  const opacityValue = isHighlighted === false ? 0.1 : 0.4; // More subtle overall
+  const actualThickness = isHighlighted === true ? thickness + 0.5 : thickness; // Less dramatic thickness change
 
   return (
     <>
@@ -688,7 +689,7 @@ const Connection: React.FC<ConnectionProps> = ({
         fill="none"
         stroke={color}
         strokeWidth={actualThickness}
-        strokeDasharray={isHighlighted === true ? "0" : "5 5"}
+        strokeDasharray={isHighlighted === true ? "0" : "4 4"} // Smaller dash pattern
         initial={{ pathLength: 0, opacity: 0 }}
         animate={{
           pathLength: 1,
@@ -709,13 +710,13 @@ const Connection: React.FC<ConnectionProps> = ({
         />
       )}
 
-      {/* Connection label */}
+      {/* Connection label - refined with glass effect */}
       {label && (
         <motion.div
-          className={`absolute px-2 py-0.5 text-xs rounded-full backdrop-blur-sm ${
+          className={`absolute px-1.5 py-0.5 text-xs rounded-md backdrop-blur-sm ${
             isHighlighted === false
-              ? "bg-gray-800/40 text-gray-400"
-              : "bg-gray-800/80 text-white border border-gray-700"
+              ? "bg-slate-900/30 text-slate-400" // More transparent when not highlighted
+              : "bg-slate-900/50 text-slate-200 border border-slate-700/30" // Glass effect
           }`}
           style={{
             left: controlPoint.x,
@@ -724,10 +725,10 @@ const Connection: React.FC<ConnectionProps> = ({
           }}
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{
-            opacity: isHighlighted === false ? 0.5 : 1,
-            scale: isHighlighted === true ? 1.1 : 1,
+            opacity: isHighlighted === false ? 0.4 : 0.8, // More subtle opacity
+            scale: isHighlighted === true ? 1.05 : 1, // More subtle scale
             backgroundColor:
-              isHighlighted === true ? `${color}20` : "rgba(30, 30, 30, 0.4)",
+              isHighlighted === true ? `${color}10` : "rgba(15, 23, 42, 0.3)", // Very subtle color highlight
           }}
           transition={{ duration: 0.3 }}
         >
@@ -738,99 +739,122 @@ const Connection: React.FC<ConnectionProps> = ({
   );
 };
 
-// Animated details panel
+// Refined animated details panel using EliteGlassPanel
 const AnimatedDetailsPanel: React.FC<AnimatedDetailsPanelProps> = ({
   selectedNode,
 }) => {
   return (
-    <div className="max-w-3xl mx-auto mb-12 h-40">
+    <div className="max-w-3xl mx-auto mb-10 h-40">
       {selectedNode ? (
         <motion.div
-          className="bg-gray-800/90 backdrop-blur-md p-6 rounded-xl shadow-xl border border-gray-700"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, type: "spring", damping: 20 }}
           key={selectedNode.id}
           layoutId="detailsPanel"
+          initial={{ opacity: 0, y: -15 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, type: "spring", damping: 25 }}
         >
-          <div className="flex items-start gap-4">
-            <motion.div
-              className="flex items-center justify-center w-16 h-16 rounded-xl flex-shrink-0"
-              style={{ backgroundColor: selectedNode.color }}
-              animate={{
-                rotate: [0, 5, 0, -5, 0],
-                scale: [1, 1.05, 1, 1.05, 1],
-              }}
-              transition={{
-                duration: 10,
-                repeat: Number.POSITIVE_INFINITY,
-                repeatType: "loop",
-              }}
-            >
-              <selectedNode.Icon size={32} color="white" />
-            </motion.div>
-            <div>
-              <motion.h3
-                className="text-2xl font-bold mb-2"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                {selectedNode.label}
-              </motion.h3>
-              <motion.p
-                className="text-gray-300"
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.3, delay: 0.2 }}
-              >
-                {selectedNode.description}
-              </motion.p>
-
-              {/* Category tag */}
+          <EliteGlassPanel
+            variant={selectedNode.category === "security" ? "purple" : "blue"}
+            borderGradient={true}
+            hoverEffect="none"
+            className="p-5 rounded-lg"
+          >
+            <div className="flex items-start gap-4">
               <motion.div
-                className="mt-3 inline-block px-3 py-1 rounded-full text-xs font-medium"
-                style={{
-                  backgroundColor: `${selectedNode.color}20`,
-                  color: selectedNode.color,
+                className="flex items-center justify-center w-12 h-12 rounded-lg flex-shrink-0"
+                style={{ backgroundColor: `${selectedNode.color}80` }} // More transparent
+                animate={{
+                  rotate: [0, 3, 0, -3, 0], // More subtle rotation
+                  scale: [1, 1.03, 1, 1.03, 1], // More subtle scale
                 }}
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.3 }}
+                transition={{
+                  duration: 12, // Slower for elegance
+                  repeat: Number.POSITIVE_INFINITY,
+                  repeatType: "loop",
+                }}
               >
-                {selectedNode.category}
+                <selectedNode.Icon
+                  size={24}
+                  className="text-white"
+                  strokeWidth={1.5}
+                />{" "}
+                {/* Thinner icon */}
               </motion.div>
+              <div>
+                <motion.h3
+                  className="text-xl font-light tracking-wide mb-2 text-white" // Lighter font
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                >
+                  {selectedNode.label}
+                </motion.h3>
+                <motion.p
+                  className="text-slate-300 text-sm font-light leading-relaxed" // Lighter, smaller text
+                  initial={{ opacity: 0, x: -10 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: 0.2 }}
+                >
+                  {selectedNode.description}
+                </motion.p>
+
+                {/* Category tag using Badge component */}
+                <motion.div
+                  className="mt-3"
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.3, delay: 0.3 }}
+                >
+                  <Badge
+                    variant="outline"
+                    className="px-2.5 py-0.5 text-xs rounded-full font-light"
+                    style={{
+                      backgroundColor: `${selectedNode.color}10`,
+                      color: selectedNode.color,
+                      borderColor: `${selectedNode.color}30`,
+                    }}
+                  >
+                    {selectedNode.category}
+                  </Badge>
+                </motion.div>
+              </div>
             </div>
-          </div>
+          </EliteGlassPanel>
         </motion.div>
       ) : (
         <motion.div
-          className="bg-gray-800/40 backdrop-blur-md p-6 rounded-xl text-center border border-gray-800"
+          layoutId="detailsPanel"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          layoutId="detailsPanel"
         >
-          <p className="text-gray-400">
-            Wybierz węzeł, aby zobaczyć szczegóły komponentu infrastruktury
-          </p>
+          <GlassCard
+            blur="md"
+            opacity={10}
+            highlight={true}
+            className="p-5 rounded-lg text-center"
+          >
+            <p className="text-slate-400 text-sm font-light">
+              Wybierz węzeł, aby zobaczyć szczegóły komponentu infrastruktury
+            </p>
+          </GlassCard>
         </motion.div>
       )}
     </div>
   );
 };
 
-// Category filter component
+// Refined category filter using shadcn Button component
 const CategoryFilter: React.FC<CategoryFilterProps> = ({
   categories,
   selectedCategories,
   onToggleCategory,
 }) => {
   const categoryColors = {
-    frontend: "#3B82F6",
-    backend: "#EC4899",
-    infrastructure: "#10B981",
-    security: "#EF4444",
-    monitoring: "#14B8A6",
+    frontend: "#818cf8", // indigo-400
+    backend: "#c084fc", // violet-400
+    infrastructure: "#4ade80", // green-400
+    security: "#f87171", // red-400
+    monitoring: "#2dd4bf", // teal-400
   };
 
   const categoryLabels = {
@@ -856,29 +880,27 @@ const CategoryFilter: React.FC<CategoryFilterProps> = ({
         const Icon = categoryIcons[category];
 
         return (
-          <motion.button
+          <Button
             key={category}
-            className={`flex items-center gap-2 px-3 py-2 rounded-full text-sm font-medium transition-colors ${
-              isSelected
-                ? "bg-gray-700 border border-gray-600"
-                : "bg-gray-800/50 border border-gray-700"
-            }`}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() => onToggleCategory(category)}
-            animate={{
+            variant={isSelected ? "outline" : "ghost"}
+            size="sm"
+            className={
+              "flex items-center gap-1.5 px-2.5 py-1.5 text-xs rounded-full font-light transition-all h-auto"
+            }
+            style={{
               backgroundColor: isSelected
-                ? `${categoryColors[category]}20`
-                : "rgba(30, 30, 30, 0.5)",
-              color: isSelected ? categoryColors[category] : "#a3a3a3",
+                ? `${categoryColors[category]}10`
+                : "transparent",
+              color: isSelected ? categoryColors[category] : "#a1a1aa", // Slate-400
               borderColor: isSelected
-                ? categoryColors[category]
-                : "rgba(75, 75, 75, 0.5)",
+                ? `${categoryColors[category]}30`
+                : "transparent",
             }}
+            onClick={() => onToggleCategory(category)}
           >
-            <Icon size={16} />
+            <Icon size={14} strokeWidth={1.5} /> {/* Smaller, thinner icon */}
             <span>{categoryLabels[category]}</span>
-          </motion.button>
+          </Button>
         );
       })}
     </div>
@@ -993,10 +1015,10 @@ const ArchitectureDiagram: React.FC = () => {
   ) as Array<ArchitectureNode["category"]>;
 
   return (
-    <div className="py-12 bg-gray-900/70 backdrop-blur-sm rounded-xl border border-gray-800 shadow-xl text-white">
+    <div className="py-8 bg-slate-950/30 backdrop-blur-sm rounded-lg border border-slate-800/50 shadow-lg text-white">
       <motion.h2
-        className="text-3xl font-bold text-center mb-6"
-        initial={{ opacity: 0, y: -20 }}
+        className="text-2xl font-light text-center mb-6 tracking-wide"
+        initial={{ opacity: 0, y: -15 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
@@ -1066,20 +1088,17 @@ const ArchitectureDiagram: React.FC = () => {
         </div>
       </div>
 
-      {/* Reset button */}
+      {/* Reset button with shadcn Button */}
       {selectedNode && (
-        <div className="text-center mt-8">
-          <motion.button
-            className="px-4 py-2 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors border border-gray-700"
+        <div className="text-center mt-6">
+          <Button
+            variant="outline"
+            size="sm"
+            className="rounded-full text-xs font-light border-slate-700/30 hover:bg-slate-800/50"
             onClick={() => setSelectedNode(null)}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
           >
             Pokaż pełną architekturę
-          </motion.button>
+          </Button>
         </div>
       )}
     </div>
