@@ -1,80 +1,109 @@
 "use client";
 
-import type React from "react";
-import { useRef, useState } from "react";
-import { motion, useSpring, useMotionValue, useTransform } from "framer-motion";
+import React from "react";
+import type { ReactNode } from "react";
+import { motion, useTransform, type MotionProps } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { useInView } from "react-intersection-observer";
+import { useTilt, useIsMobile } from "@/components/EnhancedUI";
 
-// Elegancki komponent karty ze szklanym efektem
-export const GlassCard: React.FC<{
-  id?: string;
-  children: React.ReactNode;
-  className?: string;
-  blur?: "none" | "sm" | "md" | "lg"; // Poziom rozmycia
-  opacity?: number; // Nieprzezroczystość od 0 do 100
-  border?: boolean; // Czy ma obramowanie
-  highlight?: boolean; // Czy dodać subtelny efekt połysku na górze
-  shadow?: "none" | "sm" | "md" | "lg"; // Poziom cienia
-}> = ({
+type BlurStrength = "none" | "sm" | "md" | "lg" | "xl";
+type ShadowSize = "none" | "sm" | "md" | "lg" | "xl";
+type GlassVariant = "light" | "dark" | "frosted" | "blue" | "purple";
+type HoverEffect = "none" | "float" | "glow" | "scale";
+
+/**
+ * Maps blur strength to Tailwind class
+ */
+const getBlurClass = (blur: BlurStrength): string => {
+  if (blur === "none") return "";
+  return `backdrop-blur-${blur}`;
+};
+
+/**
+ * Maps shadow size to Tailwind class
+ */
+const getShadowClass = (shadow: ShadowSize): string => {
+  if (shadow === "none") return "";
+  return `shadow-${shadow}`;
+};
+
+/**
+ * Extended props for glass components
+ */
+type ExtendedProps = React.HTMLAttributes<HTMLDivElement> & MotionProps;
+
+/**
+ * Basic glass card component with customizable appearance
+ */
+export const GlassCard: React.FC<
+  {
+    id?: string;
+    children: ReactNode;
+    className?: string;
+    blur?: BlurStrength;
+    opacity?: number;
+    border?: boolean;
+    highlight?: boolean;
+    shadow?: ShadowSize;
+  } & ExtendedProps
+> = ({
   id,
   children,
   className = "",
   blur = "md",
-  opacity = 20, // Domyślnie 20% nieprzezroczystości
+  opacity = 20,
   border = true,
   highlight = true,
   shadow = "sm",
+  ...props
 }) => {
-  // Walidacja parametrów
-  const validOpacity = Math.max(0, Math.min(opacity, 100));
-  const bgOpacity = validOpacity / 100;
+  // Validate opacity (0-100)
+  const validOpacity = Math.max(0, Math.min(opacity, 100)) / 100;
 
-  // Mapowanie parametrów do klas Tailwind
-  const blurClass = blur !== "none" ? `backdrop-blur-${blur}` : "";
+  // Get appropriate classes
+  const blurClass = getBlurClass(blur);
   const borderClass = border ? "border border-white/10" : "";
-  const shadowClass =
-    shadow === "none"
-      ? ""
-      : shadow === "sm"
-      ? "shadow-sm"
-      : shadow === "md"
-      ? "shadow-md"
-      : "shadow-lg";
+  const shadowClass = getShadowClass(shadow);
 
   return (
     <div
       id={id}
       className={twMerge(
-        "rounded-lg overflow-hidden",
-        `bg-white/[${bgOpacity}] dark:bg-slate-900/[${bgOpacity}]`,
+        "rounded-lg overflow-hidden relative",
+        `bg-white/[${validOpacity}] dark:bg-slate-900/[${validOpacity}]`,
         blurClass,
         borderClass,
         shadowClass,
         className
       )}
+      {...props}
     >
-      {/* Subtelny efekt podświetlenia na górze */}
+      {/* Subtle highlight effect on top */}
       {highlight && (
         <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
       )}
 
-      {/* Zawartość */}
+      {/* Content */}
       <div className="relative z-10">{children}</div>
     </div>
   );
 };
 
-// Zaawansowany komponent karty 3D z efektem szkła
-export const Glass3DCard: React.FC<{
-  id?: string;
-  children: React.ReactNode;
-  className?: string;
-  depth?: number; // Głębokość efektu 3D (1-10)
-  blurStrength?: number; // Siła rozmycia (1-10)
-  hoverEffect?: boolean; // Czy reagować na hover
-  lightReflection?: boolean; // Czy dodać efekt odbicia światła
-}> = ({
+/**
+ * Advanced 3D glass card with tilt effect
+ */
+export const Glass3DCard: React.FC<
+  {
+    id?: string;
+    children: ReactNode;
+    className?: string;
+    depth?: number;
+    blurStrength?: number;
+    hoverEffect?: boolean;
+    lightReflection?: boolean;
+  } & ExtendedProps
+> = ({
   id,
   children,
   className = "",
@@ -82,118 +111,97 @@ export const Glass3DCard: React.FC<{
   blurStrength = 4,
   hoverEffect = true,
   lightReflection = true,
+  ...props
 }) => {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
-
-  // Normalizacja parametrów
+  // Normalize parameters
   const normalizedDepth = Math.max(1, Math.min(depth, 10)) / 10;
-  const normalizedBlur = Math.max(1, Math.min(blurStrength, 10)) / 10;
-
-  // Obliczanie efektu 3D w zależności od głębokości
+  const normalizedBlur = Math.max(1, Math.min(blurStrength, 10));
   const tiltAmount = 5 * normalizedDepth;
-  const blurAmount = normalizedBlur * 10;
 
-  // Transformacja ruchu myszy na obrót
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || !hoverEffect) return;
+  // Check if mobile
+  const isMobile = useIsMobile();
+  const disabled = isMobile || !hoverEffect;
 
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const mouseX = e.clientX - centerX;
-    const mouseY = e.clientY - centerY;
-
-    // Obrót zależny od pozycji myszy i głębokości
-    rotateX.set(-(mouseY / (rect.height / 2)) * tiltAmount);
-    rotateY.set((mouseX / (rect.width / 2)) * tiltAmount);
-  };
-
-  // Reset obrotu po opuszczeniu
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    rotateX.set(0);
-    rotateY.set(0);
-  };
-
-  // Spring dla płynnych przejść
-  const springConfig = { stiffness: 150, damping: 15 };
-  const springRotateX = useSpring(rotateX, springConfig);
-  const springRotateY = useSpring(rotateY, springConfig);
-
-  // Efekt cienia zależny od pozycji - use individual transforms to avoid type issues
-  const shadowX = useTransform(
-    springRotateY,
-    [-tiltAmount, tiltAmount],
-    [-8, 8]
-  );
-  const shadowY = useTransform(
-    springRotateX,
-    [-tiltAmount, tiltAmount],
-    [-8, 8]
-  );
-
-  // Create a derived MotionValue for shadow blur
-  const shadowBlur = useTransform(springRotateX, (x) => {
-    // We'll calculate the combined effect here
-    const xVal = x;
-    const yVal = springRotateY.get();
-    return Math.sqrt(xVal * xVal + yVal * yVal) * 2 + 10;
+  // Use tilt hook
+  const { rotateX, rotateY, isHovered, handlers } = useTilt({
+    amount: tiltAmount,
+    disabled,
   });
 
-  // Create a derived MotionValue for the complete box shadow string
-  const boxShadowTransform = useTransform(shadowX, (x) => {
-    const y = shadowY.get();
-    const blur = shadowBlur.get();
-    return `${x}px ${y}px ${blur}px rgba(0, 0, 0, 0.1)`;
+  // Shadow effect based on tilt
+  const shadowX = useTransform(rotateY, [-tiltAmount, tiltAmount], [-8, 8]);
+  const shadowY = useTransform(rotateX, [-tiltAmount, tiltAmount], [-8, 8]);
+
+  // Calculate shadow blur based on movement
+  const shadowBlur = useTransform([rotateX, rotateY], (latest: number[]) => {
+    const [x, y] = latest;
+    return Math.sqrt(x * x + y * y) * 2 + 10;
   });
 
-  // Light reflection transforms - we need to move these from conditional execution
-  const lightReflectionRotateX = useTransform(
-    springRotateX,
-    [-tiltAmount, tiltAmount],
-    [15, -15]
+  // Combine shadow values into box-shadow string
+  const boxShadow = useTransform(
+    [shadowX, shadowY, shadowBlur],
+    (latest: number[]) => {
+      const [x, y, blur] = latest;
+      return `${x}px ${y}px ${blur}px rgba(0, 0, 0, 0.1)`;
+    }
   );
 
-  const lightReflectionRotateY = useTransform(
-    springRotateY,
-    [-tiltAmount, tiltAmount],
-    [-15, 15]
-  );
+  // Light reflection transforms
+  const lightRefX = useTransform(rotateX, [-tiltAmount, tiltAmount], [15, -15]);
+  const lightRefY = useTransform(rotateY, [-tiltAmount, tiltAmount], [-15, 15]);
+
+  // Extract motion props
+  const {
+    initial,
+    animate,
+    exit,
+    transition,
+    variants,
+    whileHover,
+    whileTap,
+    ...restProps
+  } = props;
 
   return (
     <motion.div
       id={id}
-      ref={cardRef}
       className={twMerge("relative perspective-1200 rounded-lg", className)}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
+      initial={initial}
+      animate={animate}
+      exit={exit}
+      transition={transition}
+      variants={variants}
+      {...handlers}
+      {...restProps}
     >
       <motion.div
         className="w-full h-full rounded-lg overflow-hidden"
         style={{
-          rotateX: springRotateX,
-          rotateY: springRotateY,
+          rotateX,
+          rotateY,
           transformStyle: "preserve-3d",
-          boxShadow: boxShadowTransform,
+          boxShadow,
         }}
-        whileHover={hoverEffect ? { scale: 1.02 } : {}}
-        transition={{ type: "spring", damping: 15, stiffness: 200 }}
+        whileHover={!disabled ? whileHover || { scale: 1.02 } : undefined}
+        whileTap={whileTap}
+        transition={{
+          type: "spring",
+          damping: 15,
+          stiffness: 200,
+          ...(transition ? transition : {}),
+        }}
       >
-        {/* Tło ze szklanym efektem */}
+        {/* Glass background effect */}
         <div
           className={twMerge(
             "absolute inset-0 rounded-lg border border-white/10",
-            `backdrop-blur-[${blurAmount}px]`,
+            `backdrop-blur-[${normalizedBlur}px]`,
             "bg-gradient-to-b from-white/10 to-white/5 dark:from-slate-800/20 dark:to-slate-900/30"
           )}
         />
 
-        {/* Subtelny efekt odbicia światła */}
+        {/* Light reflection effect */}
         {lightReflection && (
           <motion.div
             className="absolute inset-0 rounded-lg overflow-hidden"
@@ -202,30 +210,35 @@ export const Glass3DCard: React.FC<{
             <motion.div
               className="absolute inset-0 bg-gradient-to-br from-white via-transparent to-transparent"
               style={{
-                rotateX: lightReflectionRotateX,
-                rotateY: lightReflectionRotateY,
+                rotateX: lightRefX,
+                rotateY: lightRefY,
               }}
             />
           </motion.div>
         )}
 
-        {/* Zawartość */}
+        {/* Content */}
         <div className="relative z-10 h-full">{children}</div>
       </motion.div>
     </motion.div>
   );
 };
 
-// Elegancki panel z efektem szkła i 3D
-export const EliteGlassPanel: React.FC<{
-  id?: string;
-  children: React.ReactNode;
-  className?: string;
-  hoverEffect?: "none" | "float" | "glow" | "scale"; // Typ efektu po najechaniu
-  variant?: "light" | "dark" | "frosted" | "blue" | "purple"; // Wariant kolorystyczny
-  borderGradient?: boolean; // Czy dodać gradient na obramowaniu
-  layered?: boolean; // Czy dodać efekt warstw
-}> = ({
+/**
+ * Premium glass panel with various effects
+ */
+export const EliteGlassPanel: React.FC<
+  {
+    id?: string;
+    children: ReactNode;
+    className?: string;
+    hoverEffect?: HoverEffect;
+    variant?: GlassVariant;
+    borderGradient?: boolean;
+    layered?: boolean;
+    ref?: React.Ref<HTMLDivElement>;
+  } & ExtendedProps
+> = ({
   id,
   children,
   className = "",
@@ -233,14 +246,16 @@ export const EliteGlassPanel: React.FC<{
   variant = "frosted",
   borderGradient = true,
   layered = false,
+  ref,
+  ...props
 }) => {
-  // Referencja w widoku do animacji wejścia
-  const [ref, inView] = useInView({
+  // Track when component enters viewport
+  const [inViewRef, inView] = useInView({
     triggerOnce: true,
     threshold: 0.1,
   });
 
-  // Określenie stylów dla różnych wariantów
+  // Get styles for different variants
   const getVariantStyles = () => {
     switch (variant) {
       case "light":
@@ -256,7 +271,7 @@ export const EliteGlassPanel: React.FC<{
     }
   };
 
-  // Określenie efektów hover
+  // Get hover effect styles
   const getHoverStyles = () => {
     switch (hoverEffect) {
       case "float":
@@ -270,7 +285,7 @@ export const EliteGlassPanel: React.FC<{
     }
   };
 
-  // Określenie stylu gradientu na obramowaniu
+  // Get border gradient style
   const getBorderGradient = () => {
     if (!borderGradient) return "";
 
@@ -285,10 +300,41 @@ export const EliteGlassPanel: React.FC<{
     return "before:absolute before:inset-0 before:p-[1px] before:rounded-lg before:content-[''] before:bg-gradient-to-b before:from-white/30 before:to-white/10 dark:before:from-slate-500/30 dark:before:to-slate-700/10 before:-z-10";
   };
 
+  // Extract motion props
+  const {
+    initial,
+    animate,
+    exit,
+    transition,
+    variants,
+    whileHover,
+    whileTap,
+    ...restProps
+  } = props;
+
+  // Merge refs if needed
+  const setRefs = React.useCallback(
+    (element: HTMLDivElement) => {
+      // Set the ref from useInView
+      inViewRef(element);
+
+      // Set the forwarded ref if it exists
+      if (ref) {
+        if (typeof ref === "function") {
+          ref(element);
+        } else {
+          (ref as React.MutableRefObject<HTMLDivElement | null>).current =
+            element;
+        }
+      }
+    },
+    [inViewRef, ref]
+  );
+
   return (
     <motion.div
       id={id}
-      ref={ref}
+      ref={setRefs}
       className={twMerge(
         "relative rounded-lg border overflow-hidden",
         getVariantStyles(),
@@ -296,14 +342,19 @@ export const EliteGlassPanel: React.FC<{
         getBorderGradient(),
         className
       )}
-      initial={{ opacity: 0, y: 20 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      initial={initial || { opacity: 0, y: 20 }}
+      animate={animate || (inView ? { opacity: 1, y: 0 } : {})}
+      exit={exit}
+      variants={variants}
+      whileHover={whileHover}
+      whileTap={whileTap}
+      transition={transition || { duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+      {...restProps}
     >
-      {/* Subtelny efekt połysku na górze */}
+      {/* Subtle highlight on top */}
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
 
-      {/* Efekt warstw */}
+      {/* Layered effect */}
       {layered && (
         <>
           <div className="absolute -bottom-1 -right-1 -left-1 h-full rounded-lg bg-slate-800/20 backdrop-blur-sm -z-10" />
@@ -311,110 +362,49 @@ export const EliteGlassPanel: React.FC<{
         </>
       )}
 
-      {/* Zawartość */}
+      {/* Content */}
       <div className="relative z-10">{children}</div>
     </motion.div>
   );
 };
 
-// Komponent z efektem pochylonej karty 3D
-export const Tilt3DCard: React.FC<{
-  id?: string;
-  children: React.ReactNode;
-  className?: string;
-  bgColor?: string;
-  perspective?: number; // 800-1500
-  angle?: number; // 0-10
-  depth?: number; // 0-50
-  shadow?: boolean;
-}> = ({
-  id,
-  children,
-  className = "",
-  bgColor = "bg-slate-900/90",
-  perspective = 1000,
-  angle = 5,
-  depth = 15,
-  shadow = true,
-}) => {
-  const wrapperStyles = {
-    transform: `perspective(${perspective}px) rotateY(${angle}deg)`,
-    transformStyle: "preserve-3d" as const,
-  };
-
-  // Obliczanie pozycji elementów na podstawie głębokości
-  const depthValue = `${depth}px`;
-
-  return (
-    <div
-      id={id}
-      className={twMerge(
-        "relative my-4",
-        shadow ? "drop-shadow-xl" : "",
-        className
-      )}
-      style={wrapperStyles}
-    >
-      {/* Główna karta */}
-      <div
-        className={twMerge(
-          "rounded-lg overflow-hidden backdrop-blur-md border border-white/10",
-          bgColor
-        )}
-      >
-        {children}
-      </div>
-
-      {/* Warstwa głębi (w tyle) */}
-      <div
-        className="absolute top-0 left-0 w-full h-full rounded-lg bg-black/30"
-        style={{
-          transform: `translateZ(-${depthValue})`,
-          transformStyle: "preserve-3d",
-        }}
-      />
-
-      {/* Krawędzie łączące przód i tył */}
-      <div
-        className="absolute top-0 bottom-0 left-0 w-[1px] bg-gradient-to-b from-white/0 via-white/10 to-white/0"
-        style={{
-          transform: `translateZ(-${
-            Number.parseInt(depthValue) / 2
-          }px) rotateY(90deg)`,
-          transformStyle: "preserve-3d",
-        }}
-      />
-
-      <div
-        className="absolute top-0 bottom-0 right-0 w-[1px] bg-gradient-to-b from-white/0 via-white/10 to-white/0"
-        style={{
-          transform: `translateZ(-${
-            Number.parseInt(depthValue) / 2
-          }px) rotateY(-90deg)`,
-          transformStyle: "preserve-3d",
-        }}
-      />
-    </div>
-  );
-};
-
-// Komponent tworzący sekcję z neomorficznym efektem
-export const NeoGlassSection: React.FC<{
-  id?: string;
-  children: React.ReactNode;
-  className?: string;
-  glow?: "none" | "subtle" | "medium" | "strong";
-  variant?: "blue" | "purple" | "neutral";
-  pattern?: boolean; // Dodaje subtelny wzór w tle
-}> = ({
+/**
+ * Section with glass neomorphic effect
+ */
+export const NeoGlassSection: React.FC<
+  {
+    id?: string;
+    children: ReactNode;
+    className?: string;
+    glow?: "none" | "subtle" | "medium" | "strong";
+    variant?: "blue" | "purple" | "neutral";
+    pattern?: boolean;
+    onIntersect?: () => void;
+  } & ExtendedProps
+> = ({
   id,
   children,
   className = "",
   glow = "subtle",
   variant = "blue",
   pattern = false,
+  onIntersect,
+  ...props
 }) => {
-  // Określenie stylu poświaty
+  // Track when component enters viewport
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  // Call onIntersect when component is in view
+  React.useEffect(() => {
+    if (inView && onIntersect) {
+      onIntersect();
+    }
+  }, [inView, onIntersect]);
+
+  // Get glow style
   const getGlowStyle = () => {
     switch (glow) {
       case "strong":
@@ -428,7 +418,7 @@ export const NeoGlassSection: React.FC<{
     }
   };
 
-  // Określenie kolorów dla wariantów
+  // Get colors for variant
   const getVariantColor = () => {
     switch (variant) {
       case "blue":
@@ -460,6 +450,7 @@ export const NeoGlassSection: React.FC<{
   return (
     <div
       id={id}
+      ref={ref}
       className={twMerge(
         "relative rounded-xl overflow-hidden backdrop-blur-md",
         "border",
@@ -473,11 +464,12 @@ export const NeoGlassSection: React.FC<{
         boxShadow:
           glow !== "none" ? `${getGlowStyle()} ${glowColor}` : undefined,
       }}
+      {...props}
     >
-      {/* Subtelny blask na górze */}
+      {/* Subtle highlight on top */}
       <div className="absolute inset-x-0 top-0 h-[1px] bg-gradient-to-r from-transparent via-white/10 to-transparent" />
 
-      {/* Wzór w tle jeśli włączony */}
+      {/* Pattern background */}
       {pattern && (
         <div
           className="absolute inset-0 opacity-[0.03] pointer-events-none mix-blend-overlay"
@@ -487,7 +479,7 @@ export const NeoGlassSection: React.FC<{
         />
       )}
 
-      {/* Główna zawartość */}
+      {/* Content */}
       <div className="relative z-10">{children}</div>
     </div>
   );

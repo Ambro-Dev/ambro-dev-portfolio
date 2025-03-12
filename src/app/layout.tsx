@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { cx } from "class-variance-authority";
 import { baseURL, home, style } from "./resources";
 
+// Primary fonts
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -15,6 +16,28 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const primary = Inter({
+  variable: "--font-primary",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const code = Source_Code_Pro({
+  variable: "--font-code",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+// Optional fonts
+// Replace with code for secondary and tertiary fonts from https://once-ui.com/customize
+type FontConfig = {
+  variable: string;
+};
+
+const secondary: FontConfig | undefined = undefined;
+const tertiary: FontConfig | undefined = undefined;
+
+// Metadata configuration
 export const metadata: Metadata = {
   metadataBase: new URL(`https://${baseURL}`),
   title: home.title,
@@ -22,7 +45,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Ambro-Dev | ${home.title}`,
     description:
-      "Automatyzacja procesów, chmurowe rowziązania, administracja serwerami, tworzenie stron internetowych i aplikacji webowych",
+      "Automatyzacja procesów, chmurowe rozwiązania, administracja serwerami, tworzenie stron internetowych i aplikacji webowych",
     url: baseURL,
     siteName: "Ambro-Dev",
     locale: "pl_PL",
@@ -41,36 +64,22 @@ export const metadata: Metadata = {
   },
 };
 
-const primary = Inter({
-  variable: "--font-primary",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-type FontConfig = {
-  variable: string;
-};
-
-/*
-	Replace with code for secondary and tertiary fonts
-	from https://once-ui.com/customize
-*/
-const secondary: FontConfig | undefined = undefined;
-const tertiary: FontConfig | undefined = undefined;
-/*
- */
-
-const code = Source_Code_Pro({
-  variable: "--font-code",
-  subsets: ["latin"],
-  display: "swap",
-});
-
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Combine all font variables
+  const fontClasses = cx(
+    primary.variable,
+    secondary?.variable,
+    tertiary?.variable,
+    code.variable,
+    geistSans.variable,
+    geistMono.variable,
+    "dark antialiased"
+  );
+
   return (
     <html
       lang="pl"
@@ -83,24 +92,14 @@ export default function RootLayout({
       data-border={style.border}
       data-surface={style.surface}
       data-transition={style.transition}
-      className={cx(
-        primary.variable,
-        secondary ? secondary.variable : "",
-        tertiary ? tertiary.variable : "",
-        code.variable,
-        "dark"
-      )}
+      className={fontClasses}
       suppressHydrationWarning
     >
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body>
         <ThemeProvider
           attribute="class"
-          defaultTheme="dark"
-          enableSystem={false}
-          disableTransitionOnChange
           forcedTheme="dark"
+          disableTransitionOnChange
         >
           {children}
         </ThemeProvider>

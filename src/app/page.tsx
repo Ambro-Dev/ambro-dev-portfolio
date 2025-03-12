@@ -1,12 +1,18 @@
 import Script from "next/script";
-import { Server, Shield, Cloud, Code, BarChart, User } from "lucide-react";
+import {
+  Server,
+  Shield,
+  Cloud,
+  Code,
+  BarChart,
+  User,
+  FormInput,
+} from "lucide-react";
 
 // Import custom UI components
 import {
-  EnhancedCursor,
   SmoothScroll,
   ScrollProgress,
-  FloatingNav,
   SectionDivider,
 } from "@/components/EnhancedUI";
 
@@ -23,6 +29,8 @@ import ProjectsSection from "@/components/layout/projects-section";
 import TimelineSection from "@/components/layout/timeline-section";
 import ContactSection from "@/components/layout/contact-section";
 import Footer from "@/components/layout/footer";
+import { FloatingNav } from "@/components/FloatingNav";
+import StatisticsSection from "@/components/skills/StatisticsSection";
 
 // Navigation items for the floating nav
 const navItems = [
@@ -36,6 +44,7 @@ const navItems = [
   { label: "Architektura", href: "#architecture", icon: <Shield size={16} /> },
   { label: "Umiejętności", href: "#skills", icon: <Code size={16} /> },
   { label: "Projekty", href: "#projects", icon: <BarChart size={16} /> },
+  { label: "Kontakt", href: "#contact", icon: <FormInput size={16} /> },
 ];
 
 // Metadata generation function
@@ -67,9 +76,6 @@ export async function generateMetadata() {
 export default function EnhancedPortfolioPage() {
   return (
     <SmoothScroll>
-      {/* Custom cursor for desktop */}
-      <EnhancedCursor />
-
       {/* Scroll progress indicator */}
       <ScrollProgress />
 
@@ -127,6 +133,10 @@ export default function EnhancedPortfolioPage() {
 
         {/* Projects section */}
         <ProjectsSection />
+
+        <SectionDivider />
+
+        <StatisticsSection />
 
         <SectionDivider />
 

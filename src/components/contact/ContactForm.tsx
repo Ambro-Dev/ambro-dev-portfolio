@@ -17,7 +17,27 @@ import {
   Shield,
   Server,
   Activity,
+  ArrowRight,
+  CheckCircle2,
 } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
 
 // Form fields interface
 interface FormData {
@@ -45,18 +65,21 @@ interface ServiceOption {
   id: string;
   label: string;
   icon: React.ReactNode;
+  description: string;
 }
 
 // Budget option definition
 interface BudgetOption {
   id: string;
   label: string;
+  value: string;
 }
 
 // Timeline option definition
 interface TimelineOption {
   id: string;
   label: string;
+  value: string;
 }
 
 // Form step interface
@@ -67,33 +90,37 @@ interface FormStep {
   fields: string[];
 }
 
-// Floating particle effect
-const FloatingParticles: React.FC = () => {
+// Particle effect component
+const ParticleEffect: React.FC = () => {
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {Array.from({ length: 30 }).map((_, i) => (
+      {Array.from({ length: 20 }).map((_, i) => (
         <motion.div
-          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-          key={i}
-          className="absolute rounded-full bg-blue-500/20 blur-sm"
+          key={`particle-${
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            i
+          }`}
+          className="absolute rounded-full bg-blue-500/10 blur-xl"
           initial={{
             x: `${Math.random() * 100}%`,
             y: `${Math.random() * 100}%`,
-            opacity: Math.random() * 0.5 + 0.1,
+            opacity: Math.random() * 0.3 + 0.1,
+            scale: Math.random() * 0.5 + 0.5,
           }}
           animate={{
-            x: `${Math.random() * 100}%`,
-            y: `${Math.random() * 100}%`,
+            x: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
+            y: [`${Math.random() * 100}%`, `${Math.random() * 100}%`],
             opacity: [0.1, 0.3, 0.1],
           }}
           transition={{
             duration: Math.random() * 20 + 20,
             repeat: Number.POSITIVE_INFINITY,
             repeatType: "reverse",
+            ease: "easeInOut",
           }}
           style={{
-            width: `${Math.random() * 6 + 2}px`,
-            height: `${Math.random() * 6 + 2}px`,
+            width: `${Math.random() * 300 + 50}px`,
+            height: `${Math.random() * 300 + 50}px`,
           }}
         />
       ))}
@@ -101,9 +128,9 @@ const FloatingParticles: React.FC = () => {
   );
 };
 
-// Input field component
-const InputField: React.FC<{
-  name: string;
+// Form field component with improved shadcn/ui components
+const FormField: React.FC<{
+  id: string;
   label: string;
   type?: string;
   placeholder?: string;
@@ -115,7 +142,7 @@ const InputField: React.FC<{
   icon?: React.ReactNode;
   required?: boolean;
 }> = ({
-  name,
+  id,
   label,
   type = "text",
   placeholder,
@@ -126,42 +153,37 @@ const InputField: React.FC<{
   required = false,
 }) => {
   return (
-    <div className="mb-4">
-      <label
-        htmlFor={name}
-        className="block text-sm font-medium text-gray-300 mb-1"
-      >
-        {label} {required && <span className="text-red-400">*</span>}
-      </label>
-      <div className="relative">
-        {icon && (
-          <div className="absolute left-3 top-3 text-gray-400">{icon}</div>
-        )}
+    <div className="mb-5">
+      <div className="flex justify-between items-baseline mb-1.5">
+        <Label
+          htmlFor={id}
+          className="text-sm font-medium text-gray-200 flex items-center gap-1.5"
+        >
+          {icon && <span className="text-blue-400">{icon}</span>}
+          {label} {required && <span className="text-red-400">*</span>}
+        </Label>
+      </div>
 
+      <div className="relative">
         {type !== "textarea" ? (
-          <input
+          <Input
             type={type}
-            id={name}
-            name={name}
-            className={`w-full px-4 py-3 ${
-              icon ? "pl-10" : "pl-4"
-            } bg-gray-800/50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white ${
+            id={id}
+            name={id}
+            className={`bg-gray-800/50 border ${
               error ? "border-red-500" : "border-gray-700"
-            }`}
+            } text-white transition-all focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
             placeholder={placeholder}
             value={value}
             onChange={onChange}
           />
         ) : (
-          <textarea
-            id={name}
-            name={name}
-            rows={5}
-            className={`w-full px-4 py-3 ${
-              icon ? "pl-10" : "pl-4"
-            } bg-gray-800/50 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white ${
+          <Textarea
+            id={id}
+            name={id}
+            className={`bg-gray-800/50 border ${
               error ? "border-red-500" : "border-gray-700"
-            }`}
+            } text-white min-h-[120px] transition-all focus:ring-2 focus:ring-blue-500 focus:border-blue-500`}
             placeholder={placeholder}
             value={value}
             onChange={onChange}
@@ -171,9 +193,10 @@ const InputField: React.FC<{
         <AnimatePresence>
           {error && (
             <motion.div
-              initial={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0, y: -5 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              exit={{ opacity: 0, y: -5 }}
+              transition={{ duration: 0.2 }}
               className="text-red-500 text-xs mt-1 flex items-center gap-1"
             >
               <XCircle size={12} />
@@ -191,143 +214,181 @@ const ServiceSelection: React.FC<{
   value: string;
   onChange: (value: string) => void;
 }> = ({ value, onChange }) => {
-  // Define available services
+  // Define available services with descriptions
   const services: ServiceOption[] = [
-    { id: "devops", label: "DevOps / CI/CD", icon: <Code size={20} /> },
-    { id: "cloud", label: "Cloud Solutions", icon: <Cloud size={20} /> },
-    { id: "security", label: "Security Services", icon: <Shield size={20} /> },
+    {
+      id: "devops",
+      label: "DevOps / CI/CD",
+      icon: <Code size={20} />,
+      description:
+        "Automatyzacja procesów, zarządzanie infrastrukturą jako kod, ciągła integracja i wdrażanie.",
+    },
+    {
+      id: "cloud",
+      label: "Cloud Solutions",
+      icon: <Cloud size={20} />,
+      description:
+        "Migracja do chmury, architektura chmurowa, optymalizacja kosztów, multi-cloud i hybrydowa chmura.",
+    },
+    {
+      id: "security",
+      label: "Security Services",
+      icon: <Shield size={20} />,
+      description:
+        "Zabezpieczenia infrastruktury, audyty bezpieczeństwa, szyfrowanie, zarządzanie tożsamością i dostępem.",
+    },
     {
       id: "servers",
       label: "Server Administration",
       icon: <Server size={20} />,
+      description:
+        "Zarządzanie serwerami, wirtualizacja, konfiguracja, optymalizacja wydajności, monitoring.",
     },
     {
       id: "monitoring",
       label: "Monitoring Solutions",
       icon: <Activity size={20} />,
+      description:
+        "Kompleksowy monitoring infrastruktury i aplikacji, alerty, dashboardy, analiza wydajności.",
     },
-    { id: "consulting", label: "IT Consulting", icon: <Briefcase size={20} /> },
+    {
+      id: "consulting",
+      label: "IT Consulting",
+      icon: <Briefcase size={20} />,
+      description:
+        "Doradztwo w zakresie architektury IT, strategii technologicznych i transformacji cyfrowej.",
+    },
   ];
 
   return (
-    <div className="mb-6">
-      <span className="block text-sm font-medium text-gray-300 mb-3">
+    <div className="mb-8">
+      <Label className="block text-sm font-medium text-gray-200 mb-3">
         Jakiego rodzaju usługi potrzebujesz?
-      </span>
+      </Label>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {services.map((service) => (
-          <motion.div
-            key={service.id}
-            className={`p-4 rounded-lg cursor-pointer transition-colors ${
-              value === service.id
-                ? "bg-blue-500/20 border border-blue-500"
-                : "bg-gray-800/50 border border-gray-700 hover:bg-gray-800/80"
-            }`}
-            onClick={() => onChange(service.id)}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-          >
-            <div className="flex items-center gap-3">
-              <div
-                className={`p-2 rounded-full ${
-                  value === service.id
-                    ? "bg-blue-500 text-white"
-                    : "bg-gray-700 text-gray-300"
-                }`}
+          <TooltipProvider key={service.id}>
+            <Tooltip delayDuration={300}>
+              <TooltipTrigger asChild>
+                <motion.div
+                  className={`p-4 rounded-lg cursor-pointer transition-all backdrop-blur-sm ${
+                    value === service.id
+                      ? "bg-blue-500/20 border border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+                      : "bg-gray-800/50 border border-gray-700 hover:bg-gray-800/80 hover:border-gray-600"
+                  }`}
+                  onClick={() => onChange(service.id)}
+                  whileHover={{ scale: 1.02, y: -2 }}
+                  whileTap={{ scale: 0.98 }}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`p-2 rounded-lg ${
+                        value === service.id
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-700 text-gray-300"
+                      }`}
+                    >
+                      {service.icon}
+                    </div>
+                    <span
+                      className={
+                        value === service.id ? "text-blue-300" : "text-gray-300"
+                      }
+                    >
+                      {service.label}
+                    </span>
+                  </div>
+                </motion.div>
+              </TooltipTrigger>
+              <TooltipContent
+                side="bottom"
+                className="max-w-[200px] bg-gray-900 border-gray-700 text-white text-xs"
               >
-                {service.icon}
-              </div>
-              <span
-                className={
-                  value === service.id ? "text-blue-300" : "text-gray-300"
-                }
-              >
-                {service.label}
-              </span>
-            </div>
-          </motion.div>
+                {service.description}
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
         ))}
       </div>
     </div>
   );
 };
 
-// Budget selection component
+// Budget selection component using shadcn/ui Select
 const BudgetSelection: React.FC<{
   value: string;
   onChange: (value: string) => void;
 }> = ({ value, onChange }) => {
   // Define budget options
   const budgetOptions: BudgetOption[] = [
-    { id: "small", label: "Do 10 000 PLN" },
-    { id: "medium", label: "10 000 - 50 000 PLN" },
-    { id: "large", label: "50 000 - 100 000 PLN" },
-    { id: "enterprise", label: "Powyżej 100 000 PLN" },
-    { id: "undetermined", label: "Do ustalenia" },
+    { id: "small", label: "Do 10 000 PLN", value: "small" },
+    { id: "medium", label: "10 000 - 50 000 PLN", value: "medium" },
+    { id: "large", label: "50 000 - 100 000 PLN", value: "large" },
+    { id: "enterprise", label: "Powyżej 100 000 PLN", value: "enterprise" },
+    { id: "undetermined", label: "Do ustalenia", value: "undetermined" },
   ];
 
   return (
     <div className="mb-6">
-      <span className="block text-sm font-medium text-gray-300 mb-3">
+      <Label className="block text-sm font-medium text-gray-200 mb-3">
         Preferowany budżet projektu
-      </span>
+      </Label>
 
-      <div className="flex flex-wrap gap-3">
-        {budgetOptions.map((option) => (
-          <motion.div
-            key={option.id}
-            className={`px-4 py-2 rounded-full cursor-pointer text-sm ${
-              value === option.id
-                ? "bg-blue-500/20 border border-blue-500 text-blue-300"
-                : "bg-gray-800/50 border border-gray-700 text-gray-300 hover:bg-gray-800/80"
-            }`}
-            onClick={() => onChange(option.id)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            {option.label}
-          </motion.div>
-        ))}
-      </div>
+      <Select value={value} onValueChange={onChange}>
+        <SelectTrigger className="w-full bg-gray-800/50 border-gray-700 text-white">
+          <SelectValue placeholder="Wybierz preferowany budżet" />
+        </SelectTrigger>
+        <SelectContent className="bg-gray-800 border-gray-700 text-white">
+          {budgetOptions.map((option) => (
+            <SelectItem key={option.id} value={option.value}>
+              {option.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   );
 };
 
-// Timeline selection component
+// Timeline selection component with improved badges
 const TimelineSelection: React.FC<{
   value: string;
   onChange: (value: string) => void;
 }> = ({ value, onChange }) => {
   // Define timeline options
   const timelineOptions: TimelineOption[] = [
-    { id: "urgent", label: "Pilne (< 2 tygodnie)" },
-    { id: "month", label: "W ciągu miesiąca" },
-    { id: "quarter", label: "W tym kwartale" },
-    { id: "flexible", label: "Elastyczne" },
+    { id: "urgent", label: "Pilne (< 2 tygodnie)", value: "urgent" },
+    { id: "month", label: "W ciągu miesiąca", value: "month" },
+    { id: "quarter", label: "W tym kwartale", value: "quarter" },
+    { id: "flexible", label: "Elastyczne", value: "flexible" },
   ];
 
   return (
     <div className="mb-6">
-      <span className="block text-sm font-medium text-gray-300 mb-3">
+      <Label className="block text-sm font-medium text-gray-200 mb-3">
         Preferowane ramy czasowe
-      </span>
+      </Label>
 
       <div className="flex flex-wrap gap-3">
         {timelineOptions.map((option) => (
           <motion.div
             key={option.id}
-            className={`px-4 py-2 rounded-full cursor-pointer text-sm flex items-center gap-2 ${
-              value === option.id
-                ? "bg-blue-500/20 border border-blue-500 text-blue-300"
-                : "bg-gray-800/50 border border-gray-700 text-gray-300 hover:bg-gray-800/80"
-            }`}
-            onClick={() => onChange(option.id)}
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Calendar size={14} />
-            {option.label}
+            <Badge
+              variant={value === option.id ? "default" : "outline"}
+              className={`px-4 py-2 cursor-pointer text-sm ${
+                value === option.id
+                  ? "bg-blue-500/20 hover:bg-blue-500/30 border border-blue-500 text-blue-300"
+                  : "bg-gray-800/50 hover:bg-gray-800/80 border-gray-700 text-gray-300"
+              }`}
+              onClick={() => onChange(option.id)}
+            >
+              <Calendar size={14} className="mr-1.5" />
+              {option.label}
+            </Badge>
           </motion.div>
         ))}
       </div>
@@ -335,7 +396,7 @@ const TimelineSelection: React.FC<{
   );
 };
 
-// Progress bar component
+// Progress bar component with animated steps
 const ProgressBar: React.FC<{
   currentStep: number;
   totalSteps: number;
@@ -345,33 +406,61 @@ const ProgressBar: React.FC<{
       <div className="flex justify-between mb-2">
         {Array.from({ length: totalSteps }).map((_, index) => (
           <div
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            key={index}
-            className={`text-xs font-medium ${
-              index < currentStep
-                ? "text-blue-400"
-                : index === currentStep
-                ? "text-white"
-                : "text-gray-500"
+            key={`step-${
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+              index
             }`}
+            className="flex flex-col items-center"
           >
-            Krok {index + 1}
+            <motion.div
+              className={`w-8 h-8 rounded-full flex items-center justify-center mb-1 ${
+                index < currentStep
+                  ? "bg-blue-500 text-white"
+                  : index === currentStep
+                  ? "bg-blue-500/20 border border-blue-500 text-white"
+                  : "bg-gray-700 text-gray-400"
+              }`}
+              initial={{ scale: 0.8, opacity: 0.5 }}
+              animate={{
+                scale: index <= currentStep ? 1 : 0.8,
+                opacity: index <= currentStep ? 1 : 0.5,
+              }}
+              transition={{ duration: 0.3 }}
+            >
+              {index < currentStep ? (
+                <CheckCircle2 size={16} />
+              ) : (
+                <span className="text-xs">{index + 1}</span>
+              )}
+            </motion.div>
+            <div
+              className={`text-xs font-medium ${
+                index < currentStep
+                  ? "text-blue-400"
+                  : index === currentStep
+                  ? "text-white"
+                  : "text-gray-500"
+              }`}
+            >
+              Krok {index + 1}
+            </div>
           </div>
         ))}
       </div>
 
-      <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+      <div className="w-full h-1 bg-gray-800 rounded-full overflow-hidden mt-2">
         <motion.div
           className="h-full bg-gradient-to-r from-blue-600 to-indigo-600"
+          initial={{ width: 0 }}
           animate={{ width: `${(currentStep / (totalSteps - 1)) * 100}%` }}
-          transition={{ duration: 0.3 }}
+          transition={{ duration: 0.5, ease: "easeInOut" }}
         />
       </div>
     </div>
   );
 };
 
-// Success animation component
+// Success animation component with confetti effect
 const SuccessAnimation: React.FC<{
   onReset: () => void;
 }> = ({ onReset }) => {
@@ -382,11 +471,12 @@ const SuccessAnimation: React.FC<{
       animate={{ opacity: 1 }}
       transition={{ duration: 0.5 }}
     >
+      {/* Success checkmark animation */}
       <motion.div
-        className="w-24 h-24 rounded-full bg-green-500 flex items-center justify-center mb-6"
+        className="w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-600 flex items-center justify-center mb-6 shadow-lg shadow-green-500/20"
         initial={{ scale: 0 }}
         animate={{ scale: [0, 1.2, 1] }}
-        transition={{ duration: 0.5, times: [0, 0.8, 1] }}
+        transition={{ duration: 0.6, times: [0, 0.8, 1], ease: "easeOut" }}
       >
         <motion.svg
           width="40"
@@ -397,51 +487,93 @@ const SuccessAnimation: React.FC<{
           strokeWidth="3"
           strokeLinecap="round"
           strokeLinejoin="round"
-          initial={{ pathLength: 0 }}
-          animate={{ pathLength: 1 }}
-          transition={{ duration: 0.5, delay: 0.3 }}
+          initial={{ pathLength: 0, opacity: 0 }}
+          animate={{ pathLength: 1, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
         >
           <title>Checkmark</title>
           <polyline points="20 6 9 17 4 12" />
         </motion.svg>
       </motion.div>
 
+      {/* Success message */}
       <motion.h3
-        className="text-2xl font-bold text-white mb-2"
+        className="text-2xl font-bold text-white mb-2 tracking-tight"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.4 }}
+        transition={{ duration: 0.5, delay: 0.5 }}
       >
         Wiadomość wysłana!
       </motion.h3>
 
       <motion.p
-        className="text-gray-300 mb-8 text-center max-w-md"
+        className="text-gray-300 mb-8 text-center max-w-md leading-relaxed"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.5 }}
+        transition={{ duration: 0.5, delay: 0.6 }}
       >
         Dziękuję za kontakt. Odpowiem na Twoją wiadomość najszybciej jak to
         możliwe, zwykle w ciągu 24 godzin.
       </motion.p>
 
-      <motion.button
-        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 rounded-lg text-white font-medium"
-        onClick={onReset}
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.6 }}
-        whileHover={{ scale: 1.05 }}
-        whileTap={{ scale: 0.95 }}
+        transition={{ duration: 0.5, delay: 0.7 }}
       >
-        Wyślij kolejną wiadomość
-      </motion.button>
+        <Button
+          className="px-6 py-6 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg text-white font-medium flex items-center gap-2"
+          onClick={onReset}
+        >
+          <span>Wyślij kolejną wiadomość</span>
+          <ArrowRight size={16} />
+        </Button>
+      </motion.div>
+
+      {/* Confetti animation */}
+      {Array.from({ length: 30 }).map((_, i) => (
+        <motion.div
+          key={`confetti-${
+            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+            i
+          }`}
+          className="fixed w-2 h-2 rounded-full pointer-events-none"
+          style={{
+            background: [
+              "#4361EE",
+              "#3A86FF",
+              "#FF006E",
+              "#FB5607",
+              "#FFBE0B",
+              "#06D6A0",
+            ][Math.floor(Math.random() * 6)],
+            top: "50%",
+            left: "50%",
+          }}
+          initial={{
+            x: 0,
+            y: 0,
+            scale: 0,
+          }}
+          animate={{
+            x: Math.random() * 500 - 250,
+            y: Math.random() * 500 - 150,
+            scale: Math.random() * 1.5 + 0.5,
+            opacity: [1, 0],
+          }}
+          transition={{
+            duration: 2.5,
+            delay: 0.3 + Math.random() * 0.5,
+            ease: [0.1, 0.25, 0.5, 1],
+          }}
+        />
+      ))}
     </motion.div>
   );
 };
 
 // Main contact form component
-const EnhancedContactForm: React.FC = () => {
+const ModernContactForm: React.FC = () => {
   // Form steps
   const formSteps: FormStep[] = [
     {
@@ -642,21 +774,39 @@ const EnhancedContactForm: React.FC = () => {
   }, [formControls]);
 
   return (
-    <div
-      className="py-16 px-4 bg-gray-900 rounded-xl border border-gray-800 shadow-xl relative overflow-hidden"
+    <motion.div
+      className="py-16 px-4 relative overflow-hidden isolate rounded-xl border border-gray-800 bg-gray-900/80 shadow-xl backdrop-blur-xl"
       id="contact"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-100px" }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
     >
       {/* Background particles */}
-      <FloatingParticles />
+      <ParticleEffect />
+
+      {/* Background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-blue-950/20 via-transparent to-indigo-950/20 pointer-events-none -z-10" />
 
       {/* Content overlay */}
       <div className="relative z-10">
-        <div className="text-center mb-8">
-          <motion.h2
-            className="text-3xl font-bold text-white mb-4"
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
+        <div className="text-center mb-10">
+          <motion.div
+            className="inline-block mb-3 px-4 py-1 rounded-full bg-blue-500/10 text-blue-400 text-sm font-medium"
+            initial={{ opacity: 0, y: -10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.5 }}
+          >
+            KONTAKT
+          </motion.div>
+
+          <motion.h2
+            className="text-3xl font-bold text-white mb-4 tracking-tight"
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
           >
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-500">
               Skontaktuj się ze mną
@@ -664,9 +814,10 @@ const EnhancedContactForm: React.FC = () => {
           </motion.h2>
 
           <motion.p
-            className="text-gray-300 max-w-2xl mx-auto"
+            className="text-gray-300 max-w-2xl mx-auto font-light leading-relaxed"
             initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.2 }}
           >
             Masz projekt do omówienia? Potrzebujesz wsparcia w zakresie DevOps
@@ -675,8 +826,12 @@ const EnhancedContactForm: React.FC = () => {
           </motion.p>
         </div>
 
-        <div className="max-w-2xl mx-auto">
-          <div className="bg-gray-800/40 backdrop-blur-sm p-8 rounded-2xl shadow-xl border border-gray-700">
+        <div className="max-w-2xl mx-auto relative">
+          <div className="bg-gray-800/40 backdrop-blur-md p-8 rounded-2xl shadow-xl border border-gray-700/50 relative overflow-hidden">
+            {/* Subtle light effect */}
+            <div className="absolute -top-40 -right-40 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
+
             {isSubmitted ? (
               <SuccessAnimation onReset={resetForm} />
             ) : (
@@ -702,37 +857,37 @@ const EnhancedContactForm: React.FC = () => {
                 >
                   {currentStep === 0 && (
                     <>
-                      <InputField
-                        name="name"
+                      <FormField
+                        id="name"
                         label="Imię i nazwisko"
                         placeholder="Jan Kowalski"
                         value={formData.name}
                         onChange={handleChange}
                         error={errors.name}
-                        icon={<User size={18} />}
+                        icon={<User size={16} />}
                         required
                       />
 
-                      <InputField
-                        name="email"
+                      <FormField
+                        id="email"
                         label="Email"
                         type="email"
                         placeholder="jan@example.com"
                         value={formData.email}
                         onChange={handleChange}
                         error={errors.email}
-                        icon={<Mail size={18} />}
+                        icon={<Mail size={16} />}
                         required
                       />
 
-                      <InputField
-                        name="phone"
+                      <FormField
+                        id="phone"
                         label="Telefon"
                         placeholder="+48 123 456 789"
                         value={formData.phone}
                         onChange={handleChange}
                         error={errors.phone}
-                        icon={<Phone size={18} />}
+                        icon={<Phone size={16} />}
                       />
                     </>
                   )}
@@ -758,8 +913,8 @@ const EnhancedContactForm: React.FC = () => {
 
                   {currentStep === 2 && (
                     <>
-                      <InputField
-                        name="subject"
+                      <FormField
+                        id="subject"
                         label="Temat"
                         placeholder="Temat wiadomości"
                         value={formData.subject}
@@ -768,15 +923,15 @@ const EnhancedContactForm: React.FC = () => {
                         required
                       />
 
-                      <InputField
-                        name="message"
+                      <FormField
+                        id="message"
                         label="Wiadomość"
                         type="textarea"
                         placeholder="Opisz swój projekt, cele i oczekiwania..."
                         value={formData.message}
                         onChange={handleChange}
                         error={errors.message}
-                        icon={<MessageSquare size={18} />}
+                        icon={<MessageSquare size={16} />}
                         required
                       />
                     </>
@@ -785,31 +940,36 @@ const EnhancedContactForm: React.FC = () => {
 
                 <div className="flex justify-between mt-8">
                   {currentStep > 0 ? (
-                    <motion.button
-                      type="button"
-                      className="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-white"
+                    <Button
+                      variant="outline"
+                      className="bg-gray-800/50 hover:bg-gray-700/70 text-white border-gray-700"
                       onClick={handlePrevStep}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
                       disabled={isSubmitting}
                     >
                       Wstecz
-                    </motion.button>
+                    </Button>
                   ) : (
                     <div /> // Empty div to maintain layout with justify-between
                   )}
 
-                  <motion.button
-                    type="button"
-                    className="px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg text-white flex items-center gap-2"
+                  <Button
+                    className={`px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 rounded-lg text-white flex items-center gap-2 shadow-lg shadow-blue-500/20 transition-all ${
+                      isSubmitting ? "opacity-80" : ""
+                    }`}
                     onClick={handleNextStep}
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
                     disabled={isSubmitting}
                   >
                     {isSubmitting ? (
                       <>
-                        <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                        <motion.div
+                          className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                          animate={{ rotate: 360 }}
+                          transition={{
+                            duration: 1,
+                            repeat: Number.POSITIVE_INFINITY,
+                            ease: "linear",
+                          }}
+                        />
                         <span>Wysyłanie...</span>
                       </>
                     ) : (
@@ -822,7 +982,7 @@ const EnhancedContactForm: React.FC = () => {
                         <Send size={16} />
                       </>
                     )}
-                  </motion.button>
+                  </Button>
                 </div>
               </>
             )}
@@ -830,24 +990,32 @@ const EnhancedContactForm: React.FC = () => {
 
           {/* Alternative contact methods */}
           <motion.div
-            className="mt-8 flex flex-wrap gap-4 justify-center text-sm text-gray-400"
+            className="mt-8 flex flex-wrap gap-6 justify-center text-sm text-gray-400"
             initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             transition={{ duration: 0.5, delay: 0.3 }}
           >
-            <div className="flex items-center gap-2">
+            <motion.div
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05, color: "#60a5fa" }}
+            >
               <Mail size={16} />
               <span>kontakt@example.com</span>
-            </div>
-            <div className="flex items-center gap-2">
+            </motion.div>
+
+            <motion.div
+              className="flex items-center gap-2"
+              whileHover={{ scale: 1.05, color: "#60a5fa" }}
+            >
               <Phone size={16} />
               <span>+48 123 456 789</span>
-            </div>
+            </motion.div>
           </motion.div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
-export default EnhancedContactForm;
+export default ModernContactForm;

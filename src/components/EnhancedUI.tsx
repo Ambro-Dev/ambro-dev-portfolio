@@ -1,184 +1,161 @@
 "use client";
-// This file contains enhanced UI components used across the portfolio
 
 import type React from "react";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { type ReactNode, useEffect, useRef, useState } from "react";
 import {
   motion,
   useScroll,
-  useTransform,
   useSpring,
+  useTransform,
   useMotionTemplate,
   useMotionValue,
-  animate as framerAnimate,
   AnimatePresence,
+  type HTMLMotionProps,
 } from "framer-motion";
-import { useInView } from "react-intersection-observer"; // Dodajemy dla lepszej detekcji widoczności
-import { twMerge } from "tailwind-merge"; // Lepsze zarządzanie klasami Tailwind
+import { useInView } from "react-intersection-observer";
+import { twMerge } from "tailwind-merge";
 
-// Custom cursor component that follows mouse position and changes scale based on interaction
-export const EnhancedCursor: React.FC = () => {
-  const cursorRef = useRef<HTMLDivElement>(null);
-  const cursorPosition = useMotionValue({ x: 0, y: 0 });
-  const [clicked, setClicked] = useState(false);
-  const [linkHovered, setLinkHovered] = useState(false);
-  const [hidden, setHidden] = useState(false);
-  const [isMobile, setIsMobile] = useState(true);
+// ===== Custom Hooks =====
 
-  const springConfig = { stiffness: 300, damping: 25 };
-  const cursorX = useSpring(useMotionValue(0), springConfig);
-  const cursorY = useSpring(useMotionValue(0), springConfig);
+/**
+ * Hook for creating tilt effect on elements
+ */
+export const useTilt = (options: {
+  amount?: number;
+  disabled?: boolean;
+  springConfig?: { stiffness: number; damping: number };
+}) => {
+  const {
+    amount = 20,
+    disabled = false,
+    springConfig = { stiffness: 300, damping: 30 },
+  } = options;
+
+  const rotateX = useMotionValue(0);
+  const rotateY = useMotionValue(0);
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Spring animations for smoother transitions
+  const springRotateX = useSpring(rotateX, springConfig);
+  const springRotateY = useSpring(rotateY, springConfig);
+
+  // Handle mouse movement
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (disabled) return;
+
+    const element = e.currentTarget;
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+
+    const mouseX = e.clientX - centerX;
+    const mouseY = e.clientY - centerY;
+
+    const newRotateY = (mouseX / (rect.width / 2)) * amount;
+    const newRotateX = -(mouseY / (rect.height / 2)) * amount;
+
+    rotateX.set(newRotateX);
+    rotateY.set(newRotateY);
+  };
+
+  // Reset on mouse leave
+  const handleMouseLeave = () => {
+    setIsHovered(false);
+    rotateX.set(0);
+    rotateY.set(0);
+  };
+
+  // Handle mobile detection
+  useEffect(() => {
+    if (
+      disabled ||
+      (typeof window !== "undefined" && window.innerWidth < 768)
+    ) {
+      rotateX.set(0);
+      rotateY.set(0);
+    }
+  }, [disabled, rotateX, rotateY]);
+
+  return {
+    rotateX: springRotateX,
+    rotateY: springRotateY,
+    isHovered,
+    handlers: {
+      onMouseMove: handleMouseMove,
+      onMouseEnter: () => !disabled && setIsHovered(true),
+      onMouseLeave: handleMouseLeave,
+    },
+  };
+};
+
+/**
+ * Hook for detecting mobile devices
+ */
+export const useIsMobile = (breakpoint = 768) => {
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    // Sprawdzamy czy urządzenie jest mobilne tylko raz przy inicjalizacji
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      setIsMobile(window.innerWidth < breakpoint);
     };
 
+    // Check on mount and add listener for resize
     checkIfMobile();
     window.addEventListener("resize", checkIfMobile);
 
-    // Jeśli mobilne, nie inicjalizujemy kursora w ogóle
-    if (window.innerWidth < 768) return;
-
-    const onMouseMove = (e: MouseEvent) => {
-      cursorPosition.set({ x: e.clientX, y: e.clientY });
-      cursorX.set(e.clientX - 16);
-      cursorY.set(e.clientY - 16);
-    };
-
-    const onMouseDown = () => setClicked(true);
-    const onMouseUp = () => setClicked(false);
-    const onMouseLeave = () => setHidden(true);
-    const onMouseEnter = () => setHidden(false);
-
-    const setupLinkHoverListeners = () => {
-      const interactiveElements = document.querySelectorAll(
-        'a, button, [role="button"], .interactive, input, select, textarea'
-      );
-
-      for (const el of interactiveElements) {
-        el.addEventListener("mouseenter", () => setLinkHovered(true));
-        el.addEventListener("mouseleave", () => setLinkHovered(false));
-      }
-    };
-
-    document.addEventListener("mousemove", onMouseMove);
-    document.addEventListener("mouseenter", onMouseEnter);
-    document.addEventListener("mouseleave", onMouseLeave);
-    document.addEventListener("mousedown", onMouseDown);
-    document.addEventListener("mouseup", onMouseUp);
-
-    // Obserwujemy elementy dopiero po pełnym załadowaniu strony
-    window.addEventListener("load", setupLinkHoverListeners);
-
     return () => {
-      document.removeEventListener("mousemove", onMouseMove);
-      document.removeEventListener("mouseenter", onMouseEnter);
-      document.removeEventListener("mouseleave", onMouseLeave);
-      document.removeEventListener("mousedown", onMouseDown);
-      document.removeEventListener("mouseup", onMouseUp);
       window.removeEventListener("resize", checkIfMobile);
-      window.removeEventListener("load", setupLinkHoverListeners);
     };
-  }, [cursorPosition, cursorX, cursorY]);
+  }, [breakpoint]);
 
-  // Nie renderujemy komponentu na urządzeniach mobilnych
-  if (isMobile) return null;
-
-  return (
-    <motion.div
-      ref={cursorRef}
-      className="fixed top-0 left-0 w-8 h-8 rounded-full pointer-events-none z-50 mix-blend-difference"
-      style={{
-        x: cursorX,
-        y: cursorY,
-      }}
-      animate={{
-        scale: clicked ? 0.8 : linkHovered ? 1.5 : 1,
-        opacity: hidden ? 0 : 1,
-        backgroundColor: "#ffffff",
-      }}
-      transition={{
-        type: "spring",
-        mass: 0.3,
-        stiffness: 200,
-        damping: 20,
-      }}
-    />
-  );
+  return isMobile;
 };
 
-// Smooth scroll manager
-export const SmoothScroll: React.FC<{
-  children: React.ReactNode;
-  offset?: number;
-}> = ({ children, offset = 80 }) => {
-  useEffect(() => {
-    // Skip on mobile devices
-    if (typeof window !== "undefined" && window.innerWidth < 768) return;
+// ===== UI Components =====
 
-    // Function to handle smooth scrolling when clicking anchor links
-    const handleAnchorClick = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      const anchor = target.closest('a[href^="#"]');
-
-      if (!anchor) return;
-
-      const href = anchor.getAttribute("href");
-      if (!href) return;
-
-      e.preventDefault();
-      const element = document.querySelector(href);
-      if (!element) return;
-
-      window.scrollTo({
-        top: element.getBoundingClientRect().top + window.pageYOffset - offset,
-        behavior: "smooth",
-      });
-    };
-
-    document.addEventListener("click", handleAnchorClick);
-    return () => {
-      document.removeEventListener("click", handleAnchorClick);
-    };
-  }, [offset]);
-
-  return <>{children}</>;
-};
-
-// Animated section with fade-in and slide-up effect
+/**
+ * Enhanced animated section with fade-in and slide-up effect
+ */
 export const AnimatedSection: React.FC<{
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   delay?: number;
   threshold?: number;
-}> = ({ children, className = "", delay = 0, threshold = 0.1 }) => {
+  as?: React.ComponentType<HTMLMotionProps<"div">>;
+}> = ({
+  children,
+  className = "",
+  delay = 0,
+  threshold = 0.1,
+  as: Component = motion.div,
+}) => {
   const [ref, inView] = useInView({
     triggerOnce: true,
     threshold,
   });
 
   return (
-    <motion.div
+    <Component
       ref={ref}
       initial={{ opacity: 0, y: 50 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 50 }}
       transition={{
         duration: 0.8,
         delay,
-        ease: [0.215, 0.61, 0.355, 1], // Cubic bezier dla płynniejszej animacji
+        ease: [0.215, 0.61, 0.355, 1],
       }}
       className={className}
     >
       {children}
-    </motion.div>
+    </Component>
   );
 };
 
-// Text gradient animation
+/**
+ * Text with gradient animation
+ */
 export const GradientText: React.FC<{
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   from?: string;
   via?: string;
@@ -190,15 +167,11 @@ export const GradientText: React.FC<{
   via = "purple-600",
   to = "pink-600",
 }) => {
-  const bgClasses = useMemo(
-    () =>
-      `bg-gradient-to-r from-${from} via-${via} to-${to} bg-clip-text text-transparent inline-block`,
-    [from, via, to]
-  );
+  const gradientClasses = `bg-gradient-to-r from-${from} via-${via} to-${to} bg-clip-text text-transparent inline-block`;
 
   return (
-    <motion.div
-      className={twMerge(bgClasses, className)}
+    <motion.span
+      className={twMerge(gradientClasses, className)}
       animate={{
         backgroundPosition: ["0% 50%", "100% 50%", "0% 50%"],
       }}
@@ -209,13 +182,15 @@ export const GradientText: React.FC<{
       }}
     >
       {children}
-    </motion.div>
+    </motion.span>
   );
 };
 
-// Enhanced card component with 3D tilt effect
+/**
+ * Enhanced card component with 3D tilt effect
+ */
 export const TiltCard: React.FC<{
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   tiltAmount?: number;
   glareOpacity?: number;
@@ -228,11 +203,12 @@ export const TiltCard: React.FC<{
   disabled = false,
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
-  const [isHovered, setIsHovered] = useState(false);
-  const rotateX = useMotionValue(0);
-  const rotateY = useMotionValue(0);
+  const { rotateX, rotateY, isHovered, handlers } = useTilt({
+    amount: tiltAmount,
+    disabled,
+  });
 
-  // Tworzymy transformację zawsze, a nie tylko gdy hover
+  // Transform for the glare effect
   const rotateYDegrees = useTransform(
     rotateY,
     [-tiltAmount, tiltAmount],
@@ -245,40 +221,8 @@ export const TiltCard: React.FC<{
     rgba(255, 255, 255, 0) 80%
   )`;
 
-  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!cardRef.current || disabled) return;
-
-    const rect = cardRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const mouseX = e.clientX - centerX;
-    const mouseY = e.clientY - centerY;
-
-    const maxRotation = tiltAmount;
-    const newRotateY = (mouseX / (rect.width / 2)) * maxRotation;
-    const newRotateX = -(mouseY / (rect.height / 2)) * maxRotation;
-
-    rotateX.set(newRotateX);
-    rotateY.set(newRotateY);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    rotateX.set(0);
-    rotateY.set(0);
-  };
-
-  // Sprawdzamy czy efekt powinien być aktywny
-  useEffect(() => {
-    if (
-      disabled ||
-      (typeof window !== "undefined" && window.innerWidth < 768)
-    ) {
-      rotateX.set(0);
-      rotateY.set(0);
-    }
-  }, [disabled, rotateX, rotateY]);
+  const isMobile = useIsMobile();
+  if (isMobile) disabled = true;
 
   return (
     <motion.div
@@ -288,14 +232,12 @@ export const TiltCard: React.FC<{
         transformStyle: "preserve-3d",
       }}
       whileHover={!disabled ? { scale: 1.02 } : {}}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => !disabled && setIsHovered(true)}
-      onMouseLeave={handleMouseLeave}
+      {...handlers}
     >
       <motion.div
         style={{
-          rotateX: useSpring(rotateX, { stiffness: 300, damping: 30 }),
-          rotateY: useSpring(rotateY, { stiffness: 300, damping: 30 }),
+          rotateX,
+          rotateY,
           transformStyle: "preserve-3d",
         }}
       >
@@ -321,7 +263,9 @@ export const TiltCard: React.FC<{
   );
 };
 
-// Scroll progress indicator
+/**
+ * Scroll progress indicator
+ */
 export const ScrollProgress: React.FC<{
   color?: string;
   height?: number;
@@ -351,9 +295,11 @@ export const ScrollProgress: React.FC<{
   );
 };
 
-// Enhanced text reveal animation
+/**
+ * Enhanced text reveal animation
+ */
 export const RevealText: React.FC<{
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   delay?: number;
   direction?: "up" | "down" | "left" | "right";
@@ -370,7 +316,7 @@ export const RevealText: React.FC<{
     threshold,
   });
 
-  // Określamy wartości początkowe i końcowe w zależności od kierunku
+  // Define initial and target values based on direction
   const getInitialAndTargetValue = () => {
     switch (direction) {
       case "down":
@@ -413,51 +359,11 @@ export const RevealText: React.FC<{
   );
 };
 
-// Animated counter for statistics
-export const AnimatedCounter: React.FC<{
-  from: number;
-  to: number;
-  duration?: number;
-  formatter?: (value: number) => string;
-  className?: string;
-  threshold?: number;
-}> = ({
-  from,
-  to,
-  duration = 2,
-  formatter = (value) => Math.round(value).toString(),
-  className = "",
-  threshold = 0.5,
-}) => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold,
-  });
-
-  const count = useMotionValue(from);
-  const rounded = useTransform(count, (latest) => formatter(latest));
-
-  useEffect(() => {
-    if (inView) {
-      const controls = framerAnimate(count, to, {
-        duration,
-        ease: "easeOut",
-      });
-
-      return controls.stop;
-    }
-  }, [count, to, inView, duration]);
-
-  return (
-    <motion.span ref={ref} className={className}>
-      {rounded}
-    </motion.span>
-  );
-};
-
-// Enhanced button with hover and click effects
+/**
+ * Enhanced button with hover and click effects
+ */
 export const EnhancedButton: React.FC<{
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   onClick?: () => void;
   variant?: "primary" | "secondary" | "outline" | "ghost";
@@ -475,6 +381,7 @@ export const EnhancedButton: React.FC<{
   href,
   type = "button",
 }) => {
+  // Variant styling
   const getVariantClasses = () => {
     switch (variant) {
       case "primary":
@@ -497,11 +404,7 @@ export const EnhancedButton: React.FC<{
     className
   );
 
-  const buttonProps = {
-    className: baseClasses,
-    onClick: disabled ? undefined : onClick,
-    disabled,
-    "aria-label": ariaLabel,
+  const motionProps = {
     whileHover: disabled ? {} : { scale: 1.03 },
     whileTap: disabled ? {} : { scale: 0.97 },
     transition: {
@@ -511,100 +414,67 @@ export const EnhancedButton: React.FC<{
     },
   };
 
-  // Zwracamy link jeśli jest href, w przeciwnym razie button
+  // Render as link or button
   if (href) {
     return (
-      <motion.a href={href} {...buttonProps}>
+      <motion.a
+        href={href}
+        className={baseClasses}
+        aria-label={ariaLabel}
+        {...motionProps}
+      >
         {children}
       </motion.a>
     );
   }
 
   return (
-    <motion.button type={type} {...buttonProps}>
+    <motion.button
+      type={type}
+      className={baseClasses}
+      onClick={disabled ? undefined : onClick}
+      disabled={disabled}
+      aria-label={ariaLabel}
+      {...motionProps}
+    >
       {children}
     </motion.button>
   );
 };
 
-// Floating elements with parallax effect
-export const ParallaxFloat: React.FC<{
-  children: React.ReactNode;
+/**
+ * Text with highlight effect
+ */
+export const HighlightText: React.FC<{
+  children: ReactNode;
+  color?: string;
+  delay?: number;
   className?: string;
-  offset?: number;
-  speed?: number;
-  disabled?: boolean;
-}> = ({
-  children,
-  className = "",
-  offset = 20,
-  speed = 1,
-  disabled = false,
-}) => {
-  const ref = useRef<HTMLDivElement>(null);
-  const mouseX = useMotionValue(0);
-  const mouseY = useMotionValue(0);
-  // Create a constant zero motion value for when disabled
-  const zeroMotionValue = useMotionValue(0);
-
-  // Calculate the movement with the speed factor
-  const moveX = useTransform(
-    mouseX,
-    [-1, 1],
-    [-offset * speed, offset * speed]
-  );
-  const moveY = useTransform(
-    mouseY,
-    [-1, 1],
-    [-offset * speed, offset * speed]
-  );
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
-  useEffect(() => {
-    if (
-      disabled ||
-      (typeof window !== "undefined" && window.innerWidth < 768)
-    ) {
-      return;
-    }
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!ref.current) return;
-
-      const { clientX, clientY } = e;
-      const { width, height, left, top } = ref.current.getBoundingClientRect();
-
-      const x = (clientX - left - width / 2) / (width / 2);
-      const y = (clientY - top - height / 2) / (height / 2);
-
-      mouseX.set(x);
-      mouseY.set(y);
-    };
-
-    window.addEventListener("mousemove", handleMouseMove);
-
-    return () => {
-      window.removeEventListener("mousemove", handleMouseMove);
-    };
-  }, [mouseX, mouseY, disabled, speed]);
-
-  const springConfig = { stiffness: 100, damping: 30 };
+}> = ({ children, color = "bg-blue-500/10", delay = 0, className = "" }) => {
+  const [ref, inView] = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
 
   return (
-    <motion.div
+    <motion.span
       ref={ref}
-      className={className}
-      style={{
-        x: useSpring(disabled ? zeroMotionValue : moveX, springConfig),
-        y: useSpring(disabled ? zeroMotionValue : moveY, springConfig),
-      }}
+      className={twMerge("relative inline-block", className)}
     >
-      {children}
-    </motion.div>
+      <span className="relative z-10">{children}</span>
+      <motion.span
+        className={`absolute bottom-0 left-0 right-0 h-[30%] ${color} rounded-sm -z-0`}
+        initial={{ width: 0 }}
+        animate={inView ? { width: "100%" } : {}}
+        transition={{ duration: 0.6, delay, ease: "easeOut" }}
+      />
+    </motion.span>
   );
 };
 
-// Enhanced section divider with modern design
+/**
+ * Enhanced section divider with modern design
+ */
 export const SectionDivider: React.FC<{
   className?: string;
   dotColor?: string;
@@ -641,140 +511,50 @@ export const SectionDivider: React.FC<{
   );
 };
 
-// Floating navigation with accessibility improvements
-export const FloatingNav: React.FC<{
-  items: { label: string; href: string; icon?: React.ReactNode }[];
-  className?: string;
-  showAfter?: number;
-  position?: "bottom" | "top";
-}> = ({ items, className = "", showAfter = 500, position = "bottom" }) => {
-  const [activeSection, setActiveSection] = useState("");
-  const [visible, setVisible] = useState(false);
-
-  // Użycie useMemo zapobiega zbędnym re-renderom
-  const positionClasses = useMemo(() => {
-    return position === "top"
-      ? "top-8 left-1/2 transform -translate-x-1/2"
-      : "bottom-8 left-1/2 transform -translate-x-1/2";
-  }, [position]);
-
+/**
+ * Smooth scroll component
+ */
+export const SmoothScroll: React.FC<{
+  children: ReactNode;
+  offset?: number;
+}> = ({ children, offset = 80 }) => {
   useEffect(() => {
-    const handleScroll = () => {
-      // Show the nav after scrolling down
-      if (window.scrollY > showAfter) {
-        setVisible(true);
-      } else {
-        setVisible(false);
-      }
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return;
 
-      // Determine active section
-      const sections = items.map((item) => item.href.substring(1));
+    const handleAnchorClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const anchor = target.closest('a[href^="#"]');
 
-      // Odwracamy sekcje aby znaleźć najwyższą widoczną (najbliższą góry)
-      const visibleSections = sections.filter((section) => {
-        const element = document.getElementById(section);
-        if (!element) return false;
+      if (!anchor) return;
 
-        const rect = element.getBoundingClientRect();
-        return rect.top <= 100 && rect.bottom >= 0;
+      const href = anchor.getAttribute("href");
+      if (!href) return;
+
+      e.preventDefault();
+      const element = document.querySelector(href);
+      if (!element) return;
+
+      window.scrollTo({
+        top: element.getBoundingClientRect().top + window.pageYOffset - offset,
+        behavior: "smooth",
       });
-
-      if (visibleSections.length > 0) {
-        setActiveSection(visibleSections[0]);
-      }
     };
 
-    window.addEventListener("scroll", handleScroll);
-
-    // Wywołujemy raz na początku aby ustawić aktywną sekcję
-    handleScroll();
-
+    document.addEventListener("click", handleAnchorClick);
     return () => {
-      window.removeEventListener("scroll", handleScroll);
+      document.removeEventListener("click", handleAnchorClick);
     };
-  }, [items, showAfter]);
+  }, [offset]);
 
-  return (
-    <motion.nav
-      className={twMerge(`fixed z-40 ${positionClasses}`, className)}
-      initial={{ y: position === "top" ? -100 : 100, opacity: 0 }}
-      animate={{
-        y: visible ? 0 : position === "top" ? -100 : 100,
-        opacity: visible ? 1 : 0,
-      }}
-      transition={{ duration: 0.3 }}
-      aria-label="Nawigacja strony"
-    >
-      <motion.div
-        className="bg-gray-800/80 backdrop-blur-sm rounded-full p-2 border border-gray-700/50 shadow-lg"
-        layout
-      >
-        <div className="flex items-center space-x-1">
-          {items.map((item) => {
-            const isActive = activeSection === item.href.substring(1);
-            return (
-              <motion.a
-                key={item.href}
-                href={item.href}
-                className={twMerge(
-                  "relative px-4 py-2 rounded-full flex items-center justify-center text-sm transition-colors",
-                  isActive ? "text-white" : "text-gray-400 hover:text-white"
-                )}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                aria-current={isActive ? "page" : undefined}
-              >
-                {isActive && (
-                  <motion.div
-                    className="absolute inset-0 bg-blue-600/20 rounded-full"
-                    layoutId="navIndicator"
-                    transition={{ type: "spring", damping: 20, stiffness: 300 }}
-                  />
-                )}
-                <span className="relative z-10 flex items-center">
-                  {item.icon && <span className="mr-2">{item.icon}</span>}
-                  {item.label}
-                </span>
-              </motion.a>
-            );
-          })}
-        </div>
-      </motion.div>
-    </motion.nav>
-  );
+  return <>{children}</>;
 };
 
-// Nowy komponent - Podświetlanie tekstu
-export const HighlightText: React.FC<{
-  children: React.ReactNode;
-  color?: string;
-  delay?: number;
-  className?: string;
-}> = ({ children, color = "bg-blue-500/10", delay = 0, className = "" }) => {
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.1,
-  });
-
-  return (
-    <motion.span
-      ref={ref}
-      className={twMerge("relative inline-block", className)}
-    >
-      <motion.span className="relative z-10">{children}</motion.span>
-      <motion.span
-        className={`absolute bottom-0 left-0 right-0 h-[30%] ${color} rounded-sm -z-0`}
-        initial={{ width: 0 }}
-        animate={inView ? { width: "100%" } : {}}
-        transition={{ duration: 0.6, delay, ease: "easeOut" }}
-      />
-    </motion.span>
-  );
-};
-
-// Nowy komponent - AnimatedGradientBorder
+/**
+ * Animated gradient border component
+ */
 export const AnimatedGradientBorder: React.FC<{
-  children: React.ReactNode;
+  children: ReactNode;
   className?: string;
   borderColor?: string;
   borderWidth?: number;
@@ -807,7 +587,7 @@ export const AnimatedGradientBorder: React.FC<{
         {children}
       </div>
 
-      {/* Styl dla animacji gradientu */}
+      {/* Style for gradient animation */}
       <style jsx global>{`
         @keyframes gradientSlow {
           0% {

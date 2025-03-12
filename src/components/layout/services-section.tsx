@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import type React from "react";
 import {
   AnimatedSection,
   GradientText,
@@ -7,7 +9,10 @@ import {
 import EnhancedServiceCards from "@/components/services/ServiceCards";
 import { NeoGlassSection } from "@/components/glass-components";
 
-const ServicesSection = () => {
+/**
+ * Services section with enhanced UI components
+ */
+const ServicesSection: React.FC = () => {
   return (
     <NeoGlassSection
       id="services"
@@ -23,7 +28,7 @@ const ServicesSection = () => {
               from="blue-400"
               via="indigo-400"
               to="violet-400"
-              className="p-4"
+              className="font-light"
             >
               Moje Usługi
             </GradientText>
@@ -35,9 +40,10 @@ const ServicesSection = () => {
           </p>
         </RevealText>
 
-        {/* Subtelny separator */}
+        {/* Subtle separator */}
         <div className="w-16 h-px mx-auto mb-16 bg-gradient-to-r from-transparent via-indigo-500/20 to-transparent opacity-50" />
 
+        {/* Service cards component */}
         <EnhancedServiceCards />
       </AnimatedSection>
     </NeoGlassSection>
