@@ -1,331 +1,571 @@
 "use client";
 
-import type React from "react";
-import { useRef, useEffect } from "react";
-import { motion } from "framer-motion";
-import { ChevronRight, X } from "lucide-react";
-import { Glass3DCard, EliteGlassPanel } from "@/components/glass-components";
-import { Button } from "@/components/ui/button";
-import type { ServiceCategory } from "./service-data";
+import { type FC, useRef, useEffect, useState } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useMotionValue,
+  useTransform,
+  useSpring,
+} from "framer-motion";
+import { Search, X, ChevronRight, Layers, Sparkles } from "lucide-react";
+import { Neo3DCard, HolographicPanel } from "@/components/3d-elements";
+import {
+  GlassBadge,
+  GlowButton,
+  InteractiveLine,
+} from "@/components/enhanced-ui";
+import type { ServiceCategory } from "./types";
+import { filterGroupsByColor } from "./utils";
+import { useKeyPress } from "./hooks/useKeyPress";
 
 interface TagProps {
   label: string;
   color: string;
+  size?: "sm" | "md" | "lg";
+  onClick?: () => void;
+  interactive?: boolean;
 }
 
 interface ServiceCardProps {
   service: ServiceCategory;
   index: number;
-  onClick: (id: string) => void;
+  onClick: () => void;
 }
 
-interface ServiceDetailProps {
+interface ServiceDetailModalProps {
   service: ServiceCategory;
   onClose: () => void;
 }
 
+interface AdvancedSearchBarProps {
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+}
+
+interface FilterTabsProps {
+  tags: string[];
+  activeFilter: string;
+  onFilterChange: (filter: string) => void;
+}
+
 /**
- * Tag component for service categories
+ * Komponent etykiety technologicznej z efektem szkła
  */
-export const Tag: React.FC<TagProps> = ({ label, color }) => {
+export const TechTag: FC<TagProps> = ({
+  label,
+  color,
+  size = "sm",
+  onClick,
+  interactive = false,
+}) => {
+  // Dynamiczne klasy w zależności od rozmiaru
+  const sizeClasses = {
+    sm: "px-2.5 py-0.5 text-xs",
+    md: "px-3 py-1 text-sm",
+    lg: "px-4 py-1.5 text-base",
+  };
+
+  // Animacje dla interaktywnych tagów
+  const interactiveStyles = interactive
+    ? "cursor-pointer hover:scale-105 active:scale-95 transition-transform"
+    : "";
+
   return (
-    <span
-      className="px-2.5 py-0.5 text-xs rounded-full backdrop-blur-sm font-light transition-colors"
+    <motion.span
+      className={`rounded-full backdrop-blur-md font-light inline-flex items-center ${sizeClasses[size]} ${interactiveStyles}`}
       style={{
-        backgroundColor: `${color}10`,
-        color: color,
+        backgroundColor: `${color}15`,
+        color,
         borderWidth: "1px",
-        borderColor: `${color}20`,
+        borderColor: `${color}30`,
       }}
+      whileHover={interactive ? { y: -2 } : {}}
+      onClick={onClick}
+      initial={{ opacity: 0, scale: 0.9 }}
+      animate={{ opacity: 1, scale: 1 }}
+      transition={{ type: "spring", stiffness: 300, damping: 20 }}
     >
+      {interactive && <Sparkles size={12} className="mr-1.5 opacity-80" />}
       {label}
-    </span>
+    </motion.span>
   );
 };
 
 /**
- * Service card component with glass effect
+ * Zaawansowana karta usługi z efektami 3D i interaktywnymi animacjami
  */
-export const ServiceCard: React.FC<ServiceCardProps> = ({
+export const TechServiceCard: FC<ServiceCardProps> = ({
   service,
   index,
   onClick,
 }) => {
+  // Animacja przy najechaniu
+  const [isHovered, setIsHovered] = useState(false);
+
+  // Dynamiczne kolory na podstawie schematu usługi
+  const colorGroup = filterGroupsByColor(service.color);
+
+  // Animacja gradientu w tle
+  const gradientAngle = useMotionValue(135);
+  const springGradient = useSpring(gradientAngle, {
+    stiffness: 100,
+    damping: 30,
+  });
+
+  useEffect(() => {
+    if (isHovered) {
+      gradientAngle.set(165);
+    } else {
+      gradientAngle.set(135);
+    }
+  }, [isHovered, gradientAngle]);
+
+  // Dynamiczny styl gradientu
+  const gradientStyle = useTransform(
+    springGradient,
+    (angle) =>
+      `linear-gradient(${angle}deg, ${colorGroup.from} 0%, ${colorGroup.to} 100%)`
+  );
+
+  // Animacje dla karty
+  const cardVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        type: "spring",
+        delay: index * 0.1,
+        duration: 0.6,
+        stiffness: 100,
+        damping: 20,
+      },
+    },
+  };
+
   return (
-    <Glass3DCard
-      depth={3}
-      blurStrength={3}
-      lightReflection={true}
-      className="h-72"
-      hoverEffect={true}
+    <motion.div
+      variants={cardVariants}
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
     >
-      <motion.div
-        className="h-full cursor-pointer"
-        initial={{ opacity: 0, y: 15 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{
-          duration: 0.5,
-          delay: index * 0.08,
-          ease: [0.22, 1, 0.36, 1],
-        }}
-        onClick={() => onClick(service.id)}
+      <Neo3DCard
+        depth={isHovered ? 15 : 8}
+        onClick={onClick}
+        className="h-80 cursor-pointer"
+        hoverEffect="levitate"
+        shadowColor={colorGroup.shadow}
+        lightReflection={true}
       >
-        {/* Background gradient */}
-        <div
-          className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-20 mix-blend-multiply rounded-lg`}
+        {/* Background gradient with dynamic animation */}
+        <motion.div
+          className="absolute inset-0 rounded-xl opacity-20 mix-blend-multiply"
+          style={{ background: gradientStyle }}
         />
+
+        {/* Glowing border on hover */}
+        <AnimatePresence>
+          {isHovered && (
+            <motion.div
+              className="absolute inset-0 rounded-xl"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3 }}
+              style={{
+                boxShadow: `0 0 15px ${colorGroup.glow}`,
+                zIndex: -1,
+              }}
+            />
+          )}
+        </AnimatePresence>
 
         {/* Card content */}
         <div className="relative z-10 h-full flex flex-col justify-between p-6 text-white">
           <div>
-            {/* Icon with subtle effects */}
-            <div className="bg-white/10 backdrop-blur-sm p-2.5 rounded-full inline-block mb-4">
+            {/* Icon with enhanced effects */}
+            <motion.div
+              className="bg-white/10 backdrop-blur-md p-3 rounded-full inline-block mb-5"
+              initial={{ rotate: 0 }}
+              animate={{ rotate: isHovered ? 5 : 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            >
               <service.icon
                 size={22}
-                className="text-white/80"
+                className="text-white"
                 strokeWidth={1.5}
               />
-            </div>
+            </motion.div>
 
-            {/* Title with elegant typography */}
-            <h3 className="text-lg font-light mb-2.5 tracking-tight">
+            {/* Title with eleganter typography */}
+            <motion.h3
+              className="text-xl font-light mb-3 tracking-tight"
+              animate={{ x: isHovered ? 3 : 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            >
               {service.title}
-            </h3>
+            </motion.h3>
 
             {/* Description with improved readability */}
-            <p className="text-slate-200/80 leading-relaxed text-sm font-light">
+            <p className="text-slate-200/90 leading-relaxed text-sm font-light">
               {service.description}
             </p>
           </div>
 
-          {/* Tags with subtle effects */}
-          <div className="flex flex-wrap gap-1.5 mt-4">
-            {service.tags.slice(0, 3).map((tag) => (
-              <span
+          {/* Tags with hover animation */}
+          <div className="flex flex-wrap gap-2 mt-4">
+            {service.tags.slice(0, 3).map((tag, i) => (
+              <motion.div
                 key={tag}
-                className="px-2 py-0.5 text-xs rounded-full bg-white/10 backdrop-blur-sm font-light"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { delay: i * 0.1 + 0.2 },
+                }}
               >
-                {tag}
-              </span>
+                <TechTag label={tag} color={colorGroup.from} />
+              </motion.div>
             ))}
             {service.tags.length > 3 && (
-              <span className="px-2 py-0.5 text-xs rounded-full bg-white/10 backdrop-blur-sm font-light">
-                +{service.tags.length - 3}
-              </span>
+              <motion.div
+                initial={{ opacity: 0, y: 10 }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                  transition: { delay: 0.5 },
+                }}
+              >
+                <TechTag
+                  label={`+${service.tags.length - 3}`}
+                  color={colorGroup.to}
+                />
+              </motion.div>
             )}
           </div>
 
-          {/* Details button */}
+          {/* Enhanced details button */}
           <motion.div
-            className="flex items-center space-x-1.5 text-xs mt-4 text-white/70 hover:text-white transition-colors group"
-            whileHover={{ x: 3 }}
+            className="flex items-center space-x-1.5 text-sm mt-5 text-white/80 group"
+            initial={{ x: 0 }}
+            animate={{ x: isHovered ? 3 : 0 }}
+            transition={{ type: "spring", stiffness: 300, damping: 15 }}
           >
             <span className="font-light">Poznaj szczegóły</span>
-            <ChevronRight
-              size={14}
-              className="group-hover:translate-x-0.5 transition-transform"
-            />
+            <motion.div
+              animate={{ x: isHovered ? 5 : 0 }}
+              transition={{ type: "spring", stiffness: 300, damping: 15 }}
+            >
+              <ChevronRight size={16} className="text-white/70" />
+            </motion.div>
           </motion.div>
         </div>
-      </motion.div>
-    </Glass3DCard>
+      </Neo3DCard>
+    </motion.div>
   );
 };
 
 /**
- * Service detail modal component
+ * Zaawansowany modal ze szczegółami usługi
  */
-export const ServiceDetail: React.FC<ServiceDetailProps> = ({
+export const ServiceDetailModal: FC<ServiceDetailModalProps> = ({
   service,
   onClose,
 }) => {
-  // Extract color without gradient
-  const mainColor = service.color.split(" ")[1].replace(/\/.*$/, "");
+  // Wydzielamy kolor bez gradientu
+  const colorGroup = filterGroupsByColor(service.color);
 
-  // Refs for accessibility
+  // Obsługa zamykania przez ESC
+  useKeyPress("Escape", onClose);
+
+  // Refs dla dostępności
   const modalRef = useRef<HTMLDivElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Handle ESC key and focus management
+  // Efekty dla zarządzania focusem
   useEffect(() => {
-    // Focus on close button
+    // Focus na przycisku zamykania
     closeButtonRef.current?.focus();
 
-    // Handle ESC key press
-    const handleEscKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
-    };
-    window.addEventListener("keydown", handleEscKey);
+    // Blokada scrollowania
+    document.body.style.overflow = "hidden";
 
     return () => {
-      window.removeEventListener("keydown", handleEscKey);
+      document.body.style.overflow = "auto";
     };
-  }, [onClose]);
+  }, []);
+
+  // Animacje modalu
+  const overlayVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.3 },
+    },
+    exit: {
+      opacity: 0,
+      transition: { delay: 0.2, duration: 0.3 },
+    },
+  };
+
+  const modalVariants = {
+    hidden: { opacity: 0, y: 50, scale: 0.95 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      scale: 1,
+      transition: {
+        type: "spring",
+        damping: 25,
+        stiffness: 300,
+      },
+    },
+    exit: {
+      opacity: 0,
+      y: -50,
+      scale: 0.95,
+      transition: { duration: 0.3 },
+    },
+  };
 
   return (
-    <motion.dialog
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-      onKeyDown={(e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          onClose();
-        }
-      }}
-      aria-modal="true"
-      aria-labelledby={`service-detail-${service.id}`}
-    >
-      <div
-        ref={modalRef}
-        onClick={(e) => e.stopPropagation()}
-        onKeyDown={(e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.stopPropagation();
-          }
-        }}
-        className="w-full max-w-3xl"
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-md"
+        variants={overlayVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        onClick={onClose}
+        aria-modal="true"
+        aria-labelledby={`service-detail-${service.id}`}
       >
-        <EliteGlassPanel
-          variant={service.id === "security" ? "purple" : "blue"}
-          borderGradient={true}
-          layered={true}
-          className="relative w-full max-h-[90vh] overflow-hidden"
+        <motion.div
+          ref={modalRef}
+          className="w-full max-w-4xl max-h-[90vh]"
+          variants={modalVariants}
+          onClick={(e) => e.stopPropagation()}
         >
-          {/* Header */}
-          <div className="p-6 border-b border-slate-700/30">
-            <div className="flex items-center space-x-4">
-              <div className="p-2.5 bg-white/10 backdrop-blur-sm rounded-full">
-                <service.icon
-                  size={24}
-                  className="text-white/90"
-                  strokeWidth={1.5}
-                />
-              </div>
-              <h2
-                id={`service-detail-${service.id}`}
-                className="text-xl font-light text-white tracking-tight"
-              >
-                {service.title}
-              </h2>
-            </div>
-          </div>
-
-          {/* Content area with scrolling */}
-          <div className="p-6 overflow-y-auto max-h-[calc(90vh-180px)]">
-            <p className="text-slate-300 mb-6 text-base leading-relaxed font-light">
-              {service.longDescription}
-            </p>
-
-            {/* Tags */}
-            <div className="flex flex-wrap gap-2 mb-8">
-              {service.tags.map((tag) => (
-                <Tag key={tag} label={tag} color={mainColor} />
-              ))}
-            </div>
-
-            {/* Bullet points */}
-            <h3 className="text-base font-normal text-white mb-4 tracking-tight">
-              Kluczowe cechy:
-            </h3>
-            <ul className="space-y-3">
-              {service.bulletPoints.map((point, index) => (
-                <motion.li
-                  key={`${service.id}-point-${index}`}
-                  className="flex items-start space-x-3 text-slate-300 text-sm"
-                  initial={{ opacity: 0, x: -10 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.08 }}
+          <HolographicPanel
+            variant="premium"
+            borderColor={colorGroup.from}
+            glowEffect={true}
+            layered={true}
+          >
+            {/* Header */}
+            <div className="p-7 border-b border-slate-700/30 backdrop-blur-md">
+              <div className="flex items-center space-x-5">
+                <motion.div
+                  className="p-3.5 bg-white/10 backdrop-blur-md rounded-full"
+                  initial={{ rotate: -5 }}
+                  animate={{ rotate: 0 }}
+                  transition={{ type: "spring", stiffness: 150, damping: 15 }}
                 >
-                  <div
-                    className="mt-1 flex-shrink-0 w-4 h-4 rounded-full flex items-center justify-center"
-                    style={{ backgroundColor: `${mainColor}80` }}
-                  >
-                    <motion.svg
-                      width="10"
-                      height="10"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      xmlns="http://www.w3.org/2000/svg"
-                      initial={{ pathLength: 0 }}
-                      animate={{ pathLength: 1 }}
-                      transition={{ delay: index * 0.08 + 0.2, duration: 0.4 }}
-                    >
-                      <title>Key point</title>
-                      <motion.path
-                        d="M20 6L9 17L4 12"
-                        stroke="white"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                      />
-                    </motion.svg>
-                  </div>
-                  <span className="leading-relaxed font-light">{point}</span>
-                </motion.li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Footer with close button */}
-          <div className="p-4 border-t border-slate-700/30 backdrop-blur-sm">
-            <div className="flex justify-end">
-              <Button
-                ref={closeButtonRef}
-                variant="outline"
-                size="sm"
-                className="px-4 border-slate-700/50 hover:bg-slate-800/50 text-slate-200"
-                onClick={onClose}
-              >
-                <X size={14} className="mr-2" />
-                <span>Zamknij</span>
-              </Button>
+                  <service.icon
+                    size={26}
+                    className="text-white"
+                    strokeWidth={1.5}
+                  />
+                </motion.div>
+                <h2
+                  id={`service-detail-${service.id}`}
+                  className="text-2xl font-light text-white tracking-tight"
+                >
+                  {service.title}
+                </h2>
+              </div>
             </div>
-          </div>
-        </EliteGlassPanel>
-      </div>
-    </motion.dialog>
+
+            {/* Scrollable content area */}
+            <div className="p-7 overflow-y-auto max-h-[calc(80vh-150px)]">
+              <p className="text-slate-300 mb-8 text-base leading-relaxed font-light">
+                {service.longDescription}
+              </p>
+
+              {/* Tags with enhanced visual */}
+              <div className="flex flex-wrap gap-2.5 mb-10">
+                {service.tags.map((tag, idx) => (
+                  <motion.div
+                    key={tag}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: idx * 0.05, duration: 0.3 }}
+                  >
+                    <TechTag label={tag} color={colorGroup.from} size="md" />
+                  </motion.div>
+                ))}
+              </div>
+
+              {/* Key features with interactive animations */}
+              <div className="mb-4">
+                <div className="flex items-center mb-6">
+                  <Layers size={18} className="text-indigo-400 mr-3" />
+                  <h3 className="text-lg font-normal text-white tracking-tight">
+                    Kluczowe cechy
+                  </h3>
+                </div>
+
+                <InteractiveLine color={colorGroup.from} className="mb-8" />
+
+                <ul className="space-y-4">
+                  {service.bulletPoints.map((point, index) => (
+                    <motion.li
+                      key={`${service.id}-point-${index}`}
+                      className="flex items-start space-x-3.5 text-slate-300"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                    >
+                      <div
+                        className="mt-1 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center"
+                        style={{ backgroundColor: `${colorGroup.from}90` }}
+                      >
+                        <motion.svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                          initial={{ pathLength: 0, opacity: 0 }}
+                          animate={{ pathLength: 1, opacity: 1 }}
+                          transition={{
+                            delay: index * 0.1 + 0.2,
+                            duration: 0.6,
+                          }}
+                        >
+                          <title>Checkmark</title>
+                          <motion.path
+                            d="M20 6L9 17L4 12"
+                            stroke="white"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                          />
+                        </motion.svg>
+                      </div>
+                      <span className="leading-relaxed text-sm">{point}</span>
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Footer with close button */}
+            <div className="p-5 border-t border-slate-700/30 backdrop-blur-md">
+              <div className="flex justify-end">
+                <GlowButton
+                  ref={closeButtonRef}
+                  variant="outline"
+                  size="md"
+                  glowColor={colorGroup.glow}
+                  onClick={onClose}
+                >
+                  <X size={14} className="mr-2" />
+                  <span>Zamknij</span>
+                </GlowButton>
+              </div>
+            </div>
+          </HolographicPanel>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
   );
 };
 
 /**
- * Search component for filtering services
+ * Zaawansowane pole wyszukiwania z animacjami
  */
-export const ServiceSearch: React.FC<{
-  value: string;
-  onChange: (value: string) => void;
-}> = ({ value, onChange }) => {
+export const AdvancedSearchBar: FC<AdvancedSearchBarProps> = ({
+  value,
+  onChange,
+  className = "",
+}) => {
+  const [isFocused, setIsFocused] = useState(false);
+
   return (
-    <div className="mb-10 max-w-md mx-auto">
-      <div className="relative">
-        <input
-          type="text"
-          placeholder="Szukaj usług, technologii..."
-          className="w-full px-5 py-2.5 bg-slate-900/30 rounded-full border border-slate-700/30 
-                     focus:border-indigo-500/30 focus:ring-1 focus:ring-indigo-500/20 
-                     outline-none transition-all text-slate-200 backdrop-blur-sm text-sm"
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          aria-label="Szukaj usług"
-        />
-        <div className="absolute right-4 top-2.5 text-slate-400">
-          <svg
-            width="16"
-            height="16"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <title>Search</title>
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-        </div>
+    <motion.div
+      className={`relative ${className}`}
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2 }}
+    >
+      <motion.div
+        className="absolute inset-0 rounded-full"
+        animate={{
+          boxShadow: isFocused
+            ? "0 0 0 2px rgba(99, 102, 241, 0.3), 0 4px 10px rgba(0, 0, 0, 0.1)"
+            : "0 0 0 1px rgba(99, 102, 241, 0.1), 0 2px 5px rgba(0, 0, 0, 0.05)",
+        }}
+        transition={{ duration: 0.2 }}
+      />
+
+      <input
+        type="text"
+        placeholder="Szukaj usług, technologii..."
+        className="w-full px-5 py-3 bg-slate-900/40 rounded-full border border-slate-700/50 
+                focus:border-indigo-500/50 focus:ring-1 focus:ring-indigo-500/30 
+                outline-none transition-all text-slate-200 backdrop-blur-md text-sm"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+        aria-label="Szukaj usług"
+      />
+
+      <div className="absolute right-4 top-3 text-slate-400">
+        <Search size={18} className={isFocused ? "text-indigo-400" : ""} />
       </div>
-    </div>
+
+      {/* Animacja podświetlenia podczas wpisywania */}
+      {value && (
+        <motion.div
+          className="absolute inset-0 rounded-full border border-indigo-500/30"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+        />
+      )}
+    </motion.div>
+  );
+};
+
+/**
+ * Zakładki filtrowania z efektem glassmorphism
+ */
+export const FilterTabs: FC<FilterTabsProps> = ({
+  tags,
+  activeFilter,
+  onFilterChange,
+}) => {
+  // Zwracamy wszystkie filtry łącznie z "Wszystkie"
+  const allFilters = ["Wszystkie", ...tags.slice(0, 5)];
+
+  return (
+    <motion.div
+      className="flex flex-wrap gap-2.5 justify-center"
+      initial={{ opacity: 0, y: -10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.3 }}
+    >
+      {allFilters.map((filter) => {
+        const isActive =
+          filter === activeFilter ||
+          (filter === "Wszystkie" && activeFilter === "");
+        const color = isActive ? "#6366f1" : "#94a3b8";
+
+        return (
+          <GlassBadge
+            key={filter}
+            label={filter}
+            isActive={isActive}
+            onClick={() => onFilterChange(filter === "Wszystkie" ? "" : filter)}
+            glowEffect={isActive}
+            glowColor="rgba(99, 102, 241, 0.3)"
+          />
+        );
+      })}
+    </motion.div>
   );
 };
