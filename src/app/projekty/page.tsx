@@ -2,7 +2,6 @@
 "use client";
 
 import { useState } from "react";
-import { motion } from "framer-motion";
 import Link from "next/link";
 import { FloatingBubbles } from "@/components/ambro-ui/floating-bubbles";
 import { ScrollProgress } from "@/components/ambro-ui/scroll-progress";
@@ -18,6 +17,7 @@ import { AnimatedGradientBorder } from "@/components/ambro-ui/animated-gradient-
 import { CodeBlock } from "@/components/ambro-ui/code-block";
 import { HoverCard } from "@/components/ambro-ui/hover-card";
 import { SectionDivider } from "@/components/ambro-ui/section-divider";
+import Image from "next/image";
 
 // Projekty - dane
 const projekty = [
@@ -483,6 +483,7 @@ export default function ProjektyPage() {
               {categories.map((category) => (
                 <button
                   key={category}
+                  type="button"
                   onClick={() => setActiveTab(category)}
                   className={`px-6 py-2 rounded-full transition-all ${
                     activeTab === category
@@ -531,10 +532,13 @@ export default function ProjektyPage() {
                           borderColor="white"
                           gradientColors={["#4f46e5", "#7c3aed", "#ec4899"]}
                         >
-                          <img
+                          <Image
                             src={project.image}
                             alt={project.title}
                             className="object-cover w-full h-full"
+                            layout="responsive"
+                            width={800}
+                            height={500}
                           />
                         </ClipMask>
 
@@ -568,6 +572,7 @@ export default function ProjektyPage() {
                                 .slice(0, 6)
                                 .map((tech, techIndex) => (
                                   <span
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                     key={techIndex}
                                     className="px-3 py-1 text-xs rounded-full bg-gray-800 text-gray-300 border border-gray-700"
                                   >
@@ -628,6 +633,7 @@ export default function ProjektyPage() {
                         <div className="grid md:grid-cols-3 gap-4">
                           {project.features.map((feature, featureIndex) => (
                             <div
+                              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                               key={featureIndex}
                               className="bg-gray-800/30 rounded-lg p-4 backdrop-blur-sm"
                             >

@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { FloatingBubbles } from "@/components/ambro-ui/floating-bubbles";
 import { ScrollProgress } from "@/components/ambro-ui/scroll-progress";
 import { SectionHeading } from "@/components/ambro-ui/section-heading";
@@ -57,7 +56,8 @@ const FormularzKontaktowy = () => {
         temat: "",
         wiadomosc: "",
       });
-    } catch (err) {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
       setError(
         "Wystąpił błąd podczas wysyłania wiadomości. Spróbuj ponownie później."
       );
@@ -88,6 +88,7 @@ const FormularzKontaktowy = () => {
               viewBox="0 0 24 24"
               stroke="currentColor"
             >
+              <title>Wiadomość wysłana</title>
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -189,7 +190,7 @@ const FormularzKontaktowy = () => {
                 className="w-full px-4 py-3 bg-gray-800/50 border border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-white"
                 placeholder="Opisz swój projekt lub zadaj pytanie..."
                 required
-              ></textarea>
+              />
             </div>
 
             {error && (
@@ -289,13 +290,13 @@ export default function ContactPage() {
                   animation="slide"
                 />
 
-                <p className="max-w-2xl mx-auto mt-6 text-gray-300">
+                <div className="max-w-2xl mx-auto mt-6 text-gray-300">
                   <RevealText>
                     Masz pomysł na projekt lub pytanie? Jestem tutaj, aby pomóc.
                     Wypełnij formularz poniżej lub skorzystaj z innych metod
                     kontaktu, a odezwę się najszybciej, jak to możliwe.
                   </RevealText>
-                </p>
+                </div>
               </div>
             </AnimatedSection>
 
@@ -326,6 +327,7 @@ export default function ContactPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>Email</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -352,6 +354,7 @@ export default function ContactPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>Telefon</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -378,6 +381,7 @@ export default function ContactPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>Lokalizacja</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -405,6 +409,7 @@ export default function ContactPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>Godziny pracy</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -433,7 +438,7 @@ export default function ContactPage() {
                               aria-label={social}
                             >
                               {/* Placeholder for social icons */}
-                              <div className="w-5 h-5 rounded-full bg-indigo-400/50"></div>
+                              <div className="w-5 h-5 rounded-full bg-indigo-400/50" />
                             </a>
                           )
                         )}
@@ -471,6 +476,7 @@ export default function ContactPage() {
             <div className="mt-16 max-w-3xl mx-auto space-y-6">
               {faqItems.map((item, index) => (
                 <AnimatedSection
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                   key={index}
                   animation="slideUp"
                   delay={0.1 * index}
@@ -574,6 +580,7 @@ export default function ContactPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>Map Pin</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"

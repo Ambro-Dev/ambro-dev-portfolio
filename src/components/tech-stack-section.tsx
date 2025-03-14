@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { AnimatedSection } from "@/components/ambro-ui/animated-section";
 import { SectionHeading } from "@/components/ambro-ui/section-heading";
@@ -197,7 +197,7 @@ export const TechStackSection = () => {
     <section className="py-20 px-4 bg-gray-900/40 relative overflow-hidden">
       {/* Subtle background pattern */}
       <div className="absolute inset-0 z-0 opacity-5">
-        <div className="h-full w-full bg-grid-pattern"></div>
+        <div className="h-full w-full bg-grid-pattern" />
       </div>
 
       <div className="max-w-5xl mx-auto relative z-10">
@@ -224,6 +224,7 @@ export const TechStackSection = () => {
                 {sortedTechnologies.map((category) => (
                   <button
                     key={category.category}
+                    type="button"
                     onClick={() => setActiveCategory(category.category)}
                     className={`w-full text-left px-4 py-3 rounded-lg transition-all flex items-center gap-3 text-sm font-medium ${
                       activeCategory === category.category
@@ -233,7 +234,7 @@ export const TechStackSection = () => {
                   >
                     <div
                       className={`w-2 h-2 rounded-full bg-gradient-to-r ${category.color}`}
-                    ></div>
+                    />
                     {category.category}
                   </button>
                 ))}
@@ -370,6 +371,7 @@ export const TechStackSection = () => {
                               <div className="flex">
                                 {[...Array(5)].map((_, i) => (
                                   <div
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                     key={i}
                                     className={`w-1.5 h-4 rounded-sm mx-0.5 ${
                                       i < Math.floor(tech.expertise / 20)
@@ -424,6 +426,7 @@ const TechIcon = ({ name }: { name: string }) => {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
+      <title>{name}</title>
       <path
         d="M12 2L2 7L12 12L22 7L12 2Z"
         stroke="currentColor"

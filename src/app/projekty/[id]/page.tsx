@@ -1,23 +1,21 @@
 // src/app/projekty/[id]/page.tsx
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, notFound } from "next/navigation";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { FloatingBubbles } from "@/components/ambro-ui/floating-bubbles";
 import { ScrollProgress } from "@/components/ambro-ui/scroll-progress";
 import { SectionHeading } from "@/components/ambro-ui/section-heading";
 import { SmoothScroll } from "@/components/ambro-ui/smooth-scroll";
 import { Card3D } from "@/components/ambro-ui/card-3d";
-import { ClipMask } from "@/components/ambro-ui/clip-mask";
 import { GradientText } from "@/components/ambro-ui/gradient-text";
-import { RevealText } from "@/components/ambro-ui/reveal-text";
 import { AnimatedSection } from "@/components/ambro-ui/animated-section";
 import { EnhancedButton } from "@/components/ambro-ui/enhanced-button";
 import { CodeBlock } from "@/components/ambro-ui/code-block";
 import { SectionDivider } from "@/components/ambro-ui/section-divider";
 import { TiltCard } from "@/components/ambro-ui/tilt-card";
+import Image from "next/image";
 
 // Importujemy dane z poprzedniego pliku
 // Uwaga: W rzeczywistej aplikacji prawdopodobnie te dane powinny być przechowywane w bazie danych
@@ -519,10 +517,13 @@ export default function ProjectDetailsPage() {
                       borderColor="border-indigo-500/20"
                       height="100%"
                     >
-                      <img
+                      <Image
                         src={project.images[activeImage]}
                         alt={`${project.title} - widok ${activeImage + 1}`}
                         className="w-full h-full object-cover rounded-xl"
+                        layout="responsive"
+                        width={800}
+                        height={500}
                       />
                     </Card3D>
                   </div>
@@ -530,18 +531,27 @@ export default function ProjectDetailsPage() {
                   <div className="grid grid-cols-2 md:grid-cols-1 gap-4">
                     {project.images.map((img, index) => (
                       <div
-                        key={index}
+                        key={img}
                         className={`cursor-pointer transition-all ${
                           activeImage === index
                             ? "ring-2 ring-indigo-500"
                             : "opacity-70 hover:opacity-100"
                         }`}
                         onClick={() => setActiveImage(index)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setActiveImage(index);
+                          }
+                        }}
                       >
-                        <img
+                        <Image
                           src={img}
                           alt={`${project.title} - miniatua ${index + 1}`}
                           className="w-full h-32 object-cover rounded-lg"
+                          layout="responsive"
+                          width={800}
+                          height={500}
                         />
                       </div>
                     ))}
@@ -586,6 +596,7 @@ export default function ProjectDetailsPage() {
                     <h4 className="text-xl font-bold mb-4">Wyniki</h4>
                     <ul className="list-disc pl-5 text-gray-300 space-y-2">
                       {project.outcomes.map((outcome, index) => (
+                        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                         <li key={index}>{outcome}</li>
                       ))}
                     </ul>
@@ -636,6 +647,7 @@ export default function ProjectDetailsPage() {
                         <div className="flex flex-wrap gap-2">
                           {project.technologies.map((tech, techIndex) => (
                             <span
+                              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                               key={techIndex}
                               className="px-3 py-1 text-xs rounded-full bg-gray-800 text-gray-300 border border-gray-700"
                             >
@@ -651,6 +663,7 @@ export default function ProjectDetailsPage() {
                         </h4>
                         <ul className="list-disc pl-5 text-gray-300 space-y-1 text-sm">
                           {project.features.map((feature, featureIndex) => (
+                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                             <li key={featureIndex}>{feature}</li>
                           ))}
                         </ul>
@@ -715,10 +728,13 @@ export default function ProjectDetailsPage() {
                           >
                             <div className="h-full flex flex-col">
                               <div className="w-full h-48 overflow-hidden rounded-t-xl">
-                                <img
+                                <Image
                                   src={relatedProject.image}
                                   alt={relatedProject.title}
                                   className="w-full h-full object-cover"
+                                  layout="responsive"
+                                  width={800}
+                                  height={500}
                                 />
                               </div>
 

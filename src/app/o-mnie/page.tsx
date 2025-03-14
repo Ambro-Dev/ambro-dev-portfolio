@@ -17,9 +17,8 @@ import { EnhancedButton } from "@/components/ambro-ui/enhanced-button";
 import { SectionDivider } from "@/components/ambro-ui/section-divider";
 import { TiltCard } from "@/components/ambro-ui/tilt-card";
 import { AnimatedGradientBorder } from "@/components/ambro-ui/animated-gradient-border";
-import { CodeBlock } from "@/components/ambro-ui/code-block";
-import { HoverCard } from "@/components/ambro-ui/hover-card";
 import { TypewriterText } from "@/components/ambro-ui/typewriter-text";
+import Image from "next/image";
 
 // Dane doświadczenia zawodowego
 const doswiadczenie = [
@@ -259,10 +258,12 @@ export default function AboutPage() {
                       gradientColors={["#4f46e5", "#7c3aed", "#ec4899"]}
                       className="mb-6"
                     >
-                      <img
+                      <Image
                         src="/api/placeholder/240/240"
                         alt="Moje zdjęcie"
                         className="w-full h-full object-cover"
+                        width={240}
+                        height={240}
                       />
                     </ClipMask>
 
@@ -278,6 +279,7 @@ export default function AboutPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>8+ lat doświadczenia</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -296,6 +298,7 @@ export default function AboutPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>Warszawa, Polska</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -320,6 +323,7 @@ export default function AboutPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>Email</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -338,6 +342,7 @@ export default function AboutPage() {
                           viewBox="0 0 24 24"
                           stroke="currentColor"
                         >
+                          <title>Telefon</title>
                           <path
                             strokeLinecap="round"
                             strokeLinejoin="round"
@@ -358,7 +363,7 @@ export default function AboutPage() {
                           aria-label={social}
                         >
                           {/* Placeholder for social icons */}
-                          <div className="w-5 h-5 rounded-full bg-indigo-400/50"></div>
+                          <div className="w-5 h-5 rounded-full bg-indigo-400/50" />
                         </a>
                       ))}
                     </div>
@@ -454,6 +459,7 @@ export default function AboutPage() {
                           },
                         ].map((item, index) => (
                           <div
+                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                             key={index}
                             className="bg-gray-800/30 rounded-lg p-4 backdrop-blur-sm"
                           >
@@ -504,6 +510,7 @@ export default function AboutPage() {
               ].map((tab) => (
                 <button
                   key={tab.id}
+                  type="button"
                   onClick={() => setActiveTab(tab.id)}
                   className={`px-6 py-2 rounded-full transition-all ${
                     activeTab === tab.id
@@ -557,6 +564,7 @@ export default function AboutPage() {
                                 <div className="flex flex-wrap gap-2">
                                   {praca.technologie.map((tech, techIndex) => (
                                     <span
+                                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                       key={techIndex}
                                       className="px-3 py-1 text-xs rounded-full bg-gray-800 text-gray-300 border border-gray-700"
                                     >
@@ -581,6 +589,7 @@ export default function AboutPage() {
                                 </h4>
                                 <ul className="list-disc pl-5 text-gray-300 space-y-2">
                                   {praca.osiagniecia.map((osiagniecie, i) => (
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                     <li key={i}>{osiagniecie}</li>
                                   ))}
                                 </ul>
@@ -613,6 +622,7 @@ export default function AboutPage() {
 
                         <div className="space-y-6">
                           {umiejetnosci.technologie.map((tech, index) => (
+                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                             <div key={index}>
                               <div className="flex justify-between mb-2">
                                 <span>{tech.nazwa}</span>
@@ -656,6 +666,7 @@ export default function AboutPage() {
                           <div className="space-y-6">
                             {umiejetnosci.jezykiProgramowania.map(
                               (jezyk, index) => (
+                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                 <div key={index}>
                                   <div className="flex justify-between mb-2">
                                     <span>{jezyk.nazwa}</span>
@@ -699,6 +710,7 @@ export default function AboutPage() {
                           <div className="grid grid-cols-2 gap-4">
                             {umiejetnosci.miękkie.map((umiejetnosc, index) => (
                               <div
+                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                 key={index}
                                 className="flex items-center space-x-2"
                               >
@@ -709,6 +721,7 @@ export default function AboutPage() {
                                   viewBox="0 0 24 24"
                                   stroke="currentColor"
                                 >
+                                  <title>Umiejętność miękka</title>
                                   <path
                                     strokeLinecap="round"
                                     strokeLinejoin="round"
@@ -851,10 +864,12 @@ export default function AboutPage() {
                   >
                     <div className="h-full flex flex-col">
                       <div className="w-full h-48 overflow-hidden">
-                        <img
+                        <Image
                           src={projekt.image}
                           alt={projekt.nazwa}
                           className="w-full h-full object-cover"
+                          width={400}
+                          height={300}
                         />
                       </div>
 
@@ -881,6 +896,7 @@ export default function AboutPage() {
                           <div className="flex flex-wrap gap-2">
                             {projekt.technologie.map((tech, techIndex) => (
                               <span
+                                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                 key={techIndex}
                                 className="px-3 py-1 text-xs rounded-full bg-gray-800 text-gray-300 border border-gray-700"
                               >

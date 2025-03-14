@@ -1,240 +1,172 @@
 "use client";
 
-import {
-  type ElementType,
-  type FC,
-  useEffect,
-  useRef,
-  useState,
-  createElement,
-} from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 
 export interface ShuffleTextProps {
   words: string[];
   className?: string;
   shuffleSpeed?: number;
   changeInterval?: number;
-  separator?: string;
   highlightActive?: boolean;
   highlightClass?: string;
   fixedWidth?: boolean;
   loop?: boolean;
-  onWordChange?: (word: string, index: number) => void;
   prefix?: string;
   suffix?: string;
-  typingEffect?: boolean;
-  typingSpeed?: number;
-  delayAfterWord?: number;
-  tag?: ElementType;
 }
 
-export const ShuffleText: FC<ShuffleTextProps> = ({
-  words,
+export const ShuffleText: React.FC<ShuffleTextProps> = ({
+  words = [],
   className = "",
   shuffleSpeed = 50,
   changeInterval = 3000,
-  separator = "",
   highlightActive = false,
   highlightClass = "text-indigo-500",
   fixedWidth = true,
   loop = true,
-  onWordChange,
   prefix = "",
   suffix = "",
-  typingEffect = false,
-  typingSpeed = 30,
-  delayAfterWord = 1000,
-  tag = "span",
 }) => {
-  const [currentWordIndex, setCurrentWordIndex] = useState(0);
-  const [displayedWord, setDisplayedWord] = useState(words[0] || "");
-  const [isShuffling, setIsShuffling] = useState(false);
-  const [isTyping, setIsTyping] = useState(false);
-  const [charIndex, setCharIndex] = useState(0);
-  const [maxWidth, setMaxWidth] = useState<number | null>(null);
+  // Ensure we have words to display
+  const safeWords = useMemo(() => (words.length > 0 ? words : [""]), [words]);
 
-  // Use a more generic ref type that works with any HTML element
-  const containerRef = useRef<HTMLElement>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const [wordIndex, setWordIndex] = useState(0);
+  const [displayText, setDisplayText] = useState(safeWords[0]);
+  const [maxWidth, setMaxWidth] = useState<number>(0);
+  const containerRef = React.useRef<HTMLSpanElement>(null);
 
-  // Calculate max width if fixedWidth is enabled
+  // Calculate max width for fixed width display
   useEffect(() => {
     if (fixedWidth && containerRef.current) {
-      const currentEl = containerRef.current;
-      const computedStyle = window.getComputedStyle(currentEl);
+      const tempDiv = document.createElement("div");
+      tempDiv.style.position = "absolute";
+      tempDiv.style.visibility = "hidden";
+      tempDiv.style.whiteSpace = "nowrap";
+      document.body.appendChild(tempDiv);
 
-      const widths = words.map((word) => {
-        const tempSpan = document.createElement("span");
-        tempSpan.innerHTML = word;
-        tempSpan.style.visibility = "hidden";
-        tempSpan.style.position = "absolute";
-        tempSpan.style.fontSize = computedStyle.fontSize;
-        tempSpan.style.fontFamily = computedStyle.fontFamily;
-        tempSpan.style.fontWeight = computedStyle.fontWeight;
-        document.body.appendChild(tempSpan);
-        const width = tempSpan.getBoundingClientRect().width;
-        document.body.removeChild(tempSpan);
-        return width;
-      });
+      // Get the styles of the current element
+      const styles = window.getComputedStyle(containerRef.current);
+      tempDiv.style.fontFamily = styles.fontFamily;
+      tempDiv.style.fontSize = styles.fontSize;
+      tempDiv.style.fontWeight = styles.fontWeight;
 
-      setMaxWidth(Math.max(...widths));
+      // Find the longest word
+      let maxWordWidth = 0;
+      for (const word of safeWords) {
+        tempDiv.innerText = word;
+        const width = tempDiv.getBoundingClientRect().width;
+        maxWordWidth = Math.max(maxWordWidth, width);
+      }
+
+      setMaxWidth(maxWordWidth);
+      document.body.removeChild(tempDiv);
     }
-  }, [words, fixedWidth]);
+  }, [safeWords, fixedWidth]);
 
-  // Change word at interval
+  // Enhanced function to randomly shuffle characters with more glitchy effect
+  const shuffleChars = useCallback((text: string, intensity = 1): string => {
+    const regularChars =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    const glitchChars = "!@#$%^&*()_-+=<>{}[]|\\/:;\"',.?~`";
+
+    let result = "";
+    for (let i = 0; i < text.length; i++) {
+      // Higher chance of glitch chars as intensity increases
+      const useGlitchChar = Math.random() < 0.3 * intensity;
+      const charSet = useGlitchChar ? glitchChars : regularChars;
+
+      // Randomly decide to use original char (more likely with lower intensity)
+      const useOriginalChar = Math.random() > 0.7 * intensity;
+
+      if (useOriginalChar && text[i] !== " ") {
+        result += text[i];
+      } else {
+        result += charSet.charAt(Math.floor(Math.random() * charSet.length));
+      }
+    }
+
+    // Randomly add extra characters for more glitchy effect at higher intensities
+    if (intensity > 0.5 && Math.random() < 0.3) {
+      const extraChar = glitchChars.charAt(
+        Math.floor(Math.random() * glitchChars.length)
+      );
+      const pos = Math.floor(Math.random() * result.length);
+      result = result.slice(0, pos) + extraChar + result.slice(pos);
+    }
+
+    return result;
+  }, []);
+
+  // Effect to change words with an interval
   useEffect(() => {
-    if (words.length <= 1) return;
+    if (safeWords.length <= 1) return;
 
     const changeWord = () => {
-      if (typingEffect) {
-        // Use typing effect
-        setIsTyping(true);
-        setCharIndex(0);
-      } else {
-        // Use shuffle effect
-        setIsShuffling(true);
+      // Determine next word index
+      const nextIndex = (wordIndex + 1) % safeWords.length;
 
-        // Start with random chars
-        const randomChars =
-          "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        let shuffleCount = 0;
-        const maxShuffles = 10;
-        const word = words[currentWordIndex];
+      // If not looping and reached the end, stop
+      if (!loop && nextIndex === 0) return;
 
-        const shuffle = () => {
+      const nextWord = safeWords[nextIndex];
+
+      // Enhanced glitch effect with more shuffles and variable timing
+      let shuffleCount = 0;
+      const maxShuffles = 15; // Increased from 3 to 15 for longer glitch effect
+      const startTime = Date.now();
+      const glitchDuration = 500; // Total duration of the glitch effect in ms
+
+      const doShuffle = () => {
+        const elapsedTime = Date.now() - startTime;
+        const progress = Math.min(elapsedTime / glitchDuration, 1);
+
+        if (shuffleCount < maxShuffles && progress < 1) {
+          // Calculate intensity based on time progress (peak in the middle)
+          const intensity =
+            progress < 0.5
+              ? progress * 2 // Ramp up from 0 to 1
+              : (1 - progress) * 2; // Ramp down from 1 to 0
+
+          setDisplayText(shuffleChars(nextWord, intensity));
           shuffleCount++;
 
-          // Generate shuffled text
-          let result = "";
-          for (let i = 0; i < word.length; i++) {
-            if (shuffleCount > (maxShuffles * (i + 1)) / word.length) {
-              result += word[i];
-            } else {
-              result += randomChars.charAt(
-                Math.floor(Math.random() * randomChars.length)
-              );
-            }
-          }
+          // Variable speed - faster at the beginning and end, slower in the middle
+          const nextShuffleSpeed =
+            shuffleSpeed * (0.5 + Math.random() + intensity * 0.5);
+          setTimeout(doShuffle, nextShuffleSpeed);
+        } else {
+          setDisplayText(nextWord);
+          setWordIndex(nextIndex);
+        }
+      };
 
-          setDisplayedWord(result);
-
-          if (shuffleCount < maxShuffles) {
-            timeoutRef.current = setTimeout(shuffle, shuffleSpeed);
-          } else {
-            // Finish shuffling
-            setDisplayedWord(word);
-            setIsShuffling(false);
-
-            // Move to next word after a delay
-            timeoutRef.current = setTimeout(() => {
-              setCurrentWordIndex((prevIndex) =>
-                loop || prevIndex < words.length - 1
-                  ? (prevIndex + 1) % words.length
-                  : prevIndex
-              );
-            }, delayAfterWord);
-          }
-        };
-
-        shuffle();
-      }
+      // Start shuffling
+      doShuffle();
     };
 
-    // Set up interval for changing words
-    intervalRef.current = setInterval(() => {
-      if (!isShuffling && !isTyping) {
-        changeWord();
-        onWordChange?.(words[currentWordIndex], currentWordIndex);
-      }
-    }, changeInterval);
+    // Set up the interval
+    const intervalId = setInterval(changeWord, changeInterval);
 
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [
-    words,
-    currentWordIndex,
-    isShuffling,
-    isTyping,
-    shuffleSpeed,
-    changeInterval,
-    loop,
-    delayAfterWord,
-    onWordChange,
-    typingEffect,
-  ]);
+    // Clean up
+    return () => clearInterval(intervalId);
+  }, [safeWords, wordIndex, loop, shuffleSpeed, changeInterval, shuffleChars]);
 
-  // Handle typing effect
-  useEffect(() => {
-    if (!typingEffect || !isTyping) return;
-
-    const currentWord = words[currentWordIndex];
-
-    if (charIndex === 0) {
-      // Start with empty string
-      setDisplayedWord("");
-    }
-
-    timeoutRef.current = setTimeout(() => {
-      if (charIndex < currentWord.length) {
-        // Add next character
-        setDisplayedWord((prev) => prev + currentWord[charIndex]);
-        setCharIndex(charIndex + 1);
-      } else {
-        // Finished typing
-        setIsTyping(false);
-
-        // Move to next word after delay
-        timeoutRef.current = setTimeout(() => {
-          setCurrentWordIndex((prevIndex) =>
-            loop || prevIndex < words.length - 1
-              ? (prevIndex + 1) % words.length
-              : prevIndex
-          );
-        }, delayAfterWord);
-      }
-    }, typingSpeed);
-
-    return () => {
-      if (timeoutRef.current) clearTimeout(timeoutRef.current);
-    };
-  }, [
-    typingEffect,
-    isTyping,
-    charIndex,
-    words,
-    currentWordIndex,
-    typingSpeed,
-    delayAfterWord,
-    loop,
-  ]);
-
-  const content = (
-    <>
-      {prefix}
-      <span className={highlightActive ? highlightClass : ""}>
-        {displayedWord}
-      </span>
-      {suffix}
-      {separator && " "}
-    </>
-  );
-
-  // Używamy createElement zamiast bezpośredniego renderowania JSX z dynamicznym tagiem
-  // Rozwiązuje to problem typowania propsów
-  return createElement(
-    tag,
-    {
-      ref: containerRef,
-      className: className,
-      style:
+  return (
+    <span
+      ref={containerRef}
+      className={className}
+      style={
         fixedWidth && maxWidth
           ? { display: "inline-block", minWidth: `${maxWidth}px` }
-          : undefined,
-    },
-    content
+          : undefined
+      }
+    >
+      {prefix}
+      <span className={highlightActive ? highlightClass : ""}>
+        {displayText}
+      </span>
+      {suffix}
+    </span>
   );
 };
 

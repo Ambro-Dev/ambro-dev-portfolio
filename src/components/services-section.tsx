@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { serviceCategories } from "@/data/services";
 import { Card3D } from "@/components/ambro-ui/card-3d";
 import { GradientText } from "@/components/ambro-ui/gradient-text";
@@ -11,7 +10,6 @@ import { RevealText } from "@/components/ambro-ui/reveal-text";
 import { AnimatedSection } from "@/components/ambro-ui/animated-section";
 import { SectionHeading } from "@/components/ambro-ui/section-heading";
 import { EnhancedButton } from "@/components/ambro-ui/enhanced-button";
-import { HoverCard } from "@/components/ambro-ui/hover-card";
 import { TiltCard } from "@/components/ambro-ui/tilt-card";
 import { TypewriterText } from "@/components/ambro-ui/typewriter-text";
 
@@ -61,6 +59,7 @@ export const ServicesSection = () => {
           ].map((tab) => (
             <button
               key={tab.id || "all"}
+              type="button"
               onClick={() => setActiveCategory(tab.id)}
               className={`px-6 py-2 rounded-full transition-all ${
                 activeCategory === tab.id
@@ -121,6 +120,7 @@ export const ServicesSection = () => {
                         <div className="flex flex-wrap gap-2">
                           {category.tags.map((tag, tagIndex) => (
                             <span
+                              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                               key={tagIndex}
                               className="px-3 py-1 text-xs rounded-full bg-gray-800 text-gray-300 border border-gray-700"
                             >
@@ -215,6 +215,7 @@ export const ServicesSection = () => {
                             <div className="flex flex-wrap gap-2">
                               {category.tags.map((tag, tagIndex) => (
                                 <span
+                                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                   key={tagIndex}
                                   className={`px-3 py-1 text-sm rounded-full bg-${
                                     category.color.split("-")[1]
@@ -235,6 +236,7 @@ export const ServicesSection = () => {
                           <h3 className="text-xl font-bold mb-4">Co oferuję</h3>
                           <ul className="space-y-3">
                             {category.bulletPoints.map((point, pointIndex) => (
+                              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                               <li key={pointIndex} className="flex items-start">
                                 <span
                                   className={`w-6 h-6 rounded-full bg-${
@@ -250,6 +252,7 @@ export const ServicesSection = () => {
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
                                   >
+                                    <title>Checkmark</title>
                                     <path
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
@@ -307,7 +310,7 @@ export const ServicesSection = () => {
                   cursor={false}
                 />
               </h3>
-              <p className="text-gray-300">
+              <div className="text-gray-300">
                 <RevealText>
                   Moje usługi obejmują zarówno obszar DevOps, jak i rozwój
                   aplikacji Fullstack, co pozwala mi dostarczać kompleksowe
@@ -316,7 +319,7 @@ export const ServicesSection = () => {
                   ale również tworzenie nowoczesnych aplikacji dostosowanych do
                   potrzeb Twojego biznesu.
                 </RevealText>
-              </p>
+              </div>
             </div>
           </AnimatedSection>
         </div>

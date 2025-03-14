@@ -19,13 +19,11 @@ import {
   Database,
   Server,
   Shield,
-  Cpu,
   Layers,
   Monitor,
   GitBranch,
   Terminal,
   Box,
-  Network,
   Globe,
   ArrowRight,
   Zap,
@@ -493,6 +491,7 @@ const InfrastructureConcept: React.FC = () => {
             </h4>
             <ul className="space-y-2">
               {layer.features.map((feature, index) => (
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 <li key={index} className="flex items-start">
                   <span
                     className={`inline-block w-1.5 h-1.5 rounded-full bg-${layer.color}-400 mt-1.5 mr-2`}
@@ -510,6 +509,7 @@ const InfrastructureConcept: React.FC = () => {
             <div className="flex flex-wrap gap-2">
               {layer.tools.map((tool, index) => (
                 <span
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                   key={index}
                   className={`px-3 py-1 text-sm rounded-full bg-${layer.color}-900/30 text-${layer.color}-300 border border-${layer.color}-700/30`}
                 >
@@ -613,6 +613,7 @@ const InfrastructureConcept: React.FC = () => {
           viewBox="0 0 300 700"
           className="absolute left-0 top-0"
         >
+          <title>Interactive Infrastructure</title>
           {connections.map((connection, index) => (
             <motion.path
               key={`${connection.from}-${connection.to}`}
@@ -655,6 +656,7 @@ const InfrastructureConcept: React.FC = () => {
                     <div className="flex flex-wrap gap-2">
                       {layer.tools.slice(0, 3).map((tool, i) => (
                         <span
+                          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                           key={i}
                           className={`text-xs px-2 py-1 rounded-full bg-${layer.color}-900/30 text-${layer.color}-300`}
                         >
@@ -705,6 +707,7 @@ const InfrastructureConcept: React.FC = () => {
 
                 return (
                   <motion.div
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                     key={i}
                     className="p-3 bg-gray-800/80 rounded-lg"
                     initial={{ opacity: 0, y: 20 }}
@@ -787,6 +790,7 @@ const InfrastructureConcept: React.FC = () => {
 
             return (
               <Card3D
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                 key={index}
                 className="h-full"
                 glowEffect={isActive}
@@ -938,6 +942,7 @@ const InfrastructureConcept: React.FC = () => {
               "Zabezpieczenia przed atakami DDoS i OWASP Top 10",
               "Regularne audyty bezpieczeństwa i testy penetracyjne",
             ].map((item, i) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
               <div key={i} className="flex items-start gap-2">
                 <span className="inline-block w-2 h-2 rounded-full bg-indigo-500 mt-1.5" />
                 <span className="text-gray-300">{item}</span>
@@ -976,6 +981,7 @@ const InfrastructureConcept: React.FC = () => {
                   changeInterval={3000}
                   highlightActive
                   highlightClass="text-indigo-400"
+                  shuffleSpeed={20}
                 />
               </span>
             }
@@ -1005,6 +1011,7 @@ const InfrastructureConcept: React.FC = () => {
                     ? "bg-indigo-600 text-white"
                     : "text-gray-300 hover:bg-gray-700/50"
                 }`}
+                type="button"
                 onClick={() => handleViewChange(tab.id as ViewMode)}
               >
                 {tab.label}

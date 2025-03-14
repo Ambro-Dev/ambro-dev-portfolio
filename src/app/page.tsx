@@ -2,10 +2,8 @@
 "use client";
 
 import { useRef } from "react";
-import { motion } from "framer-motion";
 import { SmoothScroll } from "@/components/ambro-ui/smooth-scroll";
 import { FloatingBubbles } from "@/components/ambro-ui/floating-bubbles";
-import { ShuffleText } from "@/components/ambro-ui/shuffle-text";
 import { ScrollProgress } from "@/components/ambro-ui/scroll-progress";
 import { SectionHeading } from "@/components/ambro-ui/section-heading";
 import { RevealText } from "@/components/ambro-ui/reveal-text";
@@ -13,12 +11,13 @@ import { Card3D } from "@/components/ambro-ui/card-3d";
 import { EnhancedButton } from "@/components/ambro-ui/enhanced-button";
 import { GradientText } from "@/components/ambro-ui/gradient-text";
 import { AnimatedSection } from "@/components/ambro-ui/animated-section";
-import { TypewriterText } from "@/components/ambro-ui/typewriter-text";
 import { AnimatedGradientBorder } from "@/components/ambro-ui/animated-gradient-border";
 import { ClipMask } from "@/components/ambro-ui/clip-mask";
 import ServicesSection from "@/components/services-section";
 import InfrastructureConcept from "@/components/interactive-infrastructure";
 import TechStackSection from "@/components/tech-stack-section";
+import Image from "next/image";
+import HeroSection from "@/components/hero-section";
 
 export default function Home() {
   const projectsRef = useRef<HTMLDivElement>(null);
@@ -53,72 +52,10 @@ export default function Home() {
       {/* Smooth Scroll */}
       <SmoothScroll>
         {/* Hero Section */}
-        <section className="relative h-screen flex flex-col items-center justify-center px-6">
-          <AnimatedSection animation="fadeIn" delay={0.2}>
-            <div className="text-center max-w-4xl mx-auto relative z-10">
-              <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
-                <GradientText
-                  from="indigo-500"
-                  via="purple-500"
-                  to="pink-500"
-                  glowEffect
-                  glowIntensity={10}
-                >
-                  Ambro-Dev
-                </GradientText>
-              </h1>
-
-              <div className="flex items-center justify-center mb-6 text-xl md:text-3xl">
-                <span className="mr-2">Tworzę</span>
-                <ShuffleText
-                  words={[
-                    "nowoczesne",
-                    "wydajne",
-                    "skalowalne",
-                    "bezpieczne",
-                    "kompleksowe",
-                  ]}
-                  changeInterval={2000}
-                  shuffleSpeed={40}
-                  highlightActive
-                  highlightClass="text-indigo-400"
-                />
-                <span className="ml-2">rozwiązania DevOps i Fullstack</span>
-              </div>
-
-              <p className="text-lg md:text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
-                <TypewriterText
-                  text="Specjalizuję się w administracji serwerami, automatyzacji procesów IT, bezpieczeństwie systemów oraz tworzeniu nowoczesnych aplikacji webowych."
-                  speed={30}
-                  showWhenDone
-                  cursor={false}
-                />
-              </p>
-
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <EnhancedButton
-                  variant="tech"
-                  size="lg"
-                  onClick={scrollToProjects}
-                  magneticEffect
-                  glowOnHover
-                  rippleEffect
-                >
-                  Zobacz moje projekty
-                </EnhancedButton>
-
-                <EnhancedButton
-                  variant="outline"
-                  size="lg"
-                  onClick={scrollToInfra}
-                  borderGradient
-                >
-                  Infrastruktura
-                </EnhancedButton>
-              </div>
-            </div>
-          </AnimatedSection>
-        </section>
+        <HeroSection
+          scrollToProjects={scrollToProjects}
+          scrollToInfra={scrollToInfra}
+        />
         {/* About Section */}
         <section className="py-24 px-6 relative">
           <div className="max-w-6xl mx-auto">
@@ -129,7 +66,7 @@ export default function Home() {
                 alignment="center"
                 size="xl"
                 gradient
-                highlightWords={[1]}
+                highlightWords={[2]}
                 animation="fade"
                 delay={0.2}
               />
@@ -149,7 +86,7 @@ export default function Home() {
                 >
                   <div className="p-8">
                     <h3 className="text-2xl font-bold mb-4">Moja wizja</h3>
-                    <p className="text-gray-300 mb-4">
+                    <div className="text-gray-300 mb-4">
                       <RevealText staggerLines>
                         <span>
                           Tworzenie rozwiązań technologicznych, które łączą
@@ -161,7 +98,7 @@ export default function Home() {
                           umożliwiając firmom szybszy rozwój i innowacje.
                         </span>
                       </RevealText>
-                    </p>
+                    </div>
                     <p className="text-gray-400">
                       Posiadam wieloletnie doświadczenie zarówno w obszarze
                       DevOps, jak i tworzenia aplikacji webowych, co pozwala mi
@@ -198,6 +135,7 @@ export default function Home() {
                       },
                     ].map((item, index) => (
                       <AnimatedGradientBorder
+                        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                         key={index}
                         borderWidth={2}
                         borderColor="from-indigo-500 via-purple-500 to-pink-500"
@@ -282,6 +220,7 @@ export default function Home() {
                 },
               ].map((project, index) => (
                 <AnimatedSection
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                   key={index}
                   animation={index % 2 === 0 ? "slideLeft" : "slideRight"}
                   delay={0.3}
@@ -304,10 +243,12 @@ export default function Home() {
                       borderColor="white"
                       gradientColors={["#4f46e5", "#7c3aed", "#ec4899"]}
                     >
-                      <img
+                      <Image
                         src={project.image}
                         alt={project.title}
                         className="object-cover w-full h-full"
+                        width={800}
+                        height={500}
                       />
                     </ClipMask>
 
@@ -337,6 +278,7 @@ export default function Home() {
                         <div className="flex flex-wrap gap-2">
                           {project.technologies.map((tech, techIndex) => (
                             <span
+                              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                               key={techIndex}
                               className="px-3 py-1 text-xs rounded-full bg-gray-800 text-gray-300 border border-gray-700"
                             >
@@ -425,6 +367,7 @@ export default function Home() {
                 },
               ].map((testimonial, index) => (
                 <AnimatedSection
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                   key={index}
                   animation="fadeIn"
                   delay={0.1 * index}
@@ -446,6 +389,7 @@ export default function Home() {
                           fill="currentColor"
                           viewBox="0 0 24 24"
                         >
+                          <title>Quote</title>
                           <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432.917-3.995 3.638-3.995 5.849h4v10h-9.983zm-14.017 0v-7.391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433.917-3.996 3.638-3.996 5.849h3.983v10h-9.983z" />
                         </svg>
                       </div>
@@ -456,10 +400,16 @@ export default function Home() {
 
                       <div className="flex items-center">
                         <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
-                          <img
+                          <Image
                             src={testimonial.image}
                             alt={testimonial.author}
                             className="w-full h-full object-cover"
+                            width={
+                              typeof testimonial.image === "string" ? 100 : 100
+                            }
+                            height={
+                              typeof testimonial.image === "string" ? 100 : 100
+                            }
                           />
                         </div>
                         <div>
@@ -502,13 +452,13 @@ export default function Home() {
                   </GradientText>
                 </h2>
 
-                <p className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
+                <div className="text-xl text-gray-300 mb-10 max-w-2xl mx-auto">
                   <RevealText>
                     Skontaktuj się ze mną, aby omówić, jak mogę pomóc w rozwoju
                     Twojego biznesu poprzez nowoczesne rozwiązania DevOps i
                     aplikacje webowe.
                   </RevealText>
-                </p>
+                </div>
 
                 <EnhancedButton
                   variant="tech"

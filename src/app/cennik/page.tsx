@@ -3,7 +3,6 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { FloatingBubbles } from "@/components/ambro-ui/floating-bubbles";
 import { ScrollProgress } from "@/components/ambro-ui/scroll-progress";
 import { SectionHeading } from "@/components/ambro-ui/section-heading";
@@ -225,13 +224,13 @@ const PricingPage = () => {
               />
 
               <div className="mt-6 text-center max-w-3xl mx-auto">
-                <p className="text-gray-300">
+                <div className="text-gray-300">
                   <RevealText>
                     Oferuję różne modele cenowe dopasowane do indywidualnych
                     potrzeb klientów. Wybierz pakiet abonamentowy lub skorzystaj
                     z indywidualnej wyceny dla specjalistycznych projektów.
                   </RevealText>
-                </p>
+                </div>
               </div>
             </AnimatedSection>
 
@@ -239,6 +238,7 @@ const PricingPage = () => {
             <div className="mt-12 flex justify-center space-x-4">
               <button
                 onClick={() => setActiveTab("packages")}
+                type="button"
                 className={`px-6 py-3 rounded-full transition-all ${
                   activeTab === "packages"
                     ? "bg-indigo-600 text-white"
@@ -250,6 +250,7 @@ const PricingPage = () => {
 
               <button
                 onClick={() => setActiveTab("individual")}
+                type="button"
                 className={`px-6 py-3 rounded-full transition-all ${
                   activeTab === "individual"
                     ? "bg-indigo-600 text-white"
@@ -329,7 +330,13 @@ const PricingPage = () => {
                             </h4>
                             <ul className="space-y-3">
                               {plan.features.map((feature, i) => (
-                                <li key={i} className="flex items-start">
+                                <li
+                                  key={`${feature}-index-${
+                                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                    i
+                                  }`}
+                                  className="flex items-start"
+                                >
                                   <svg
                                     xmlns="http://www.w3.org/2000/svg"
                                     className="h-5 w-5 text-indigo-400 mr-2 flex-shrink-0 mt-0.5"
@@ -337,6 +344,7 @@ const PricingPage = () => {
                                     viewBox="0 0 24 24"
                                     stroke="currentColor"
                                   >
+                                    <title>{feature}</title>
                                     <path
                                       strokeLinecap="round"
                                       strokeLinejoin="round"
@@ -359,6 +367,7 @@ const PricingPage = () => {
                             <div className="flex flex-wrap gap-2">
                               {plan.bestFor.map((item, i) => (
                                 <span
+                                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                   key={i}
                                   className={`px-3 py-1 text-xs rounded-full bg-${
                                     plan.color.split("-")[1]
@@ -472,6 +481,7 @@ const PricingPage = () => {
                                   <ul className="space-y-2">
                                     {service.factors.map((factor, i) => (
                                       <li
+                                        // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                                         key={i}
                                         className="flex items-start text-sm"
                                       >
@@ -487,6 +497,7 @@ const PricingPage = () => {
                                           viewBox="0 0 24 24"
                                           stroke="currentColor"
                                         >
+                                          <title>{factor}</title>
                                           <path
                                             strokeLinecap="round"
                                             strokeLinejoin="round"
@@ -544,6 +555,7 @@ const PricingPage = () => {
             <div className="mt-16 max-w-3xl mx-auto space-y-6">
               {pricingFAQ.map((item, index) => (
                 <AnimatedSection
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
                   key={index}
                   animation="slideUp"
                   delay={0.1 * index}
@@ -589,13 +601,13 @@ const PricingPage = () => {
                     <h3 className="text-2xl font-bold mb-4">
                       Elastyczne rozwiązania
                     </h3>
-                    <p className="text-gray-300 mb-4">
+                    <div className="text-gray-300 mb-4">
                       <RevealText staggerLines>
                         <span>Każdy biznes ma unikalne potrzeby, dlatego</span>
                         <span>oferuję elastyczne rozwiązania cenowe</span>
                         <span>dostosowane do Twojej sytuacji i wymagań.</span>
                       </RevealText>
-                    </p>
+                    </div>
                     <p className="text-gray-400">
                       Niezależnie od tego, czy potrzebujesz jednorazowego
                       projektu, czy długoterminowej współpracy, znajdziemy

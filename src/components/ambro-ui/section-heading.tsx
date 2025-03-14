@@ -172,7 +172,12 @@ export const SectionHeading: FC<SectionHeadingProps> = ({
 
           if (highlightWords.includes(index)) {
             return (
-              <React.Fragment key={`word-${index}`}>
+              <React.Fragment
+                key={`word-${
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                  index
+                }`}
+              >
                 {spaceBefore}
                 <HighlightText color={highlightColor} className="font-medium">
                   {word}
@@ -182,7 +187,12 @@ export const SectionHeading: FC<SectionHeadingProps> = ({
           }
 
           return (
-            <React.Fragment key={`word-${index}`}>
+            <React.Fragment
+              key={`word-${
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                index
+              }`}
+            >
               {spaceBefore}
               {word}
             </React.Fragment>
