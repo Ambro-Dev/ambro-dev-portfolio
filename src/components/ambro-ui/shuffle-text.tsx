@@ -1,6 +1,15 @@
-import { type ElementType, type FC, useEffect, useRef, useState } from "react";
+"use client";
 
-export const ShuffleText: FC<{
+import {
+  type ElementType,
+  type FC,
+  useEffect,
+  useRef,
+  useState,
+  createElement,
+} from "react";
+
+export interface ShuffleTextProps {
   words: string[];
   className?: string;
   shuffleSpeed?: number;
@@ -17,8 +26,9 @@ export const ShuffleText: FC<{
   typingSpeed?: number;
   delayAfterWord?: number;
   tag?: ElementType;
-  children?: never; // Explicitly mark that this component doesn't accept children
-}> = ({
+}
+
+export const ShuffleText: FC<ShuffleTextProps> = ({
   words,
   className = "",
   shuffleSpeed = 50,
@@ -43,7 +53,8 @@ export const ShuffleText: FC<{
   const [charIndex, setCharIndex] = useState(0);
   const [maxWidth, setMaxWidth] = useState<number | null>(null);
 
-  const containerRef = useRef<HTMLElement | null>(null);
+  // Use a more generic ref type that works with any HTML element
+  const containerRef = useRef<HTMLElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -211,19 +222,20 @@ export const ShuffleText: FC<{
     </>
   );
 
-  const Component = tag;
-
-  return (
-    <Component
-      ref={containerRef as any}
-      className={className}
-      style={
+  // Używamy createElement zamiast bezpośredniego renderowania JSX z dynamicznym tagiem
+  // Rozwiązuje to problem typowania propsów
+  return createElement(
+    tag,
+    {
+      ref: containerRef,
+      className: className,
+      style:
         fixedWidth && maxWidth
           ? { display: "inline-block", minWidth: `${maxWidth}px` }
-          : {}
-      }
-    >
-      {content}
-    </Component>
+          : undefined,
+    },
+    content
   );
 };
+
+export default ShuffleText;

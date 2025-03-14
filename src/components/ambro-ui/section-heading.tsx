@@ -6,9 +6,9 @@ import { twMerge } from "tailwind-merge";
 import { HighlightText } from "@/components/ambro-ui/highlight-text";
 import React from "react";
 
-export const SectionHeading: FC<{
-  title: string;
-  subtitle?: string;
+export interface SectionHeadingProps {
+  title: ReactNode;
+  subtitle?: ReactNode;
   alignment?: "left" | "center" | "right";
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
@@ -32,7 +32,9 @@ export const SectionHeading: FC<{
   highlightColor?: string;
   icon?: ReactNode;
   iconPosition?: "left" | "right" | "top";
-}> = ({
+}
+
+export const SectionHeading: FC<SectionHeadingProps> = ({
   title,
   subtitle,
   alignment = "left",
@@ -153,9 +155,10 @@ export const SectionHeading: FC<{
   const alignClasses = getAlignmentClasses();
   const childVariants = getChildVariants();
 
-  // Highlight specific words in title
+  // Highlight specific words in title if title is a string and highlightWords are provided
   const renderHighlightedTitle = () => {
-    if (highlightWords.length === 0) {
+    // Jeśli title nie jest stringiem, zwracamy go bez zmian
+    if (typeof title !== "string" || highlightWords.length === 0) {
       return title;
     }
 
@@ -169,8 +172,7 @@ export const SectionHeading: FC<{
 
           if (highlightWords.includes(index)) {
             return (
-              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-              <React.Fragment key={index}>
+              <React.Fragment key={`word-${index}`}>
                 {spaceBefore}
                 <HighlightText color={highlightColor} className="font-medium">
                   {word}
@@ -180,8 +182,7 @@ export const SectionHeading: FC<{
           }
 
           return (
-            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-            <React.Fragment key={index}>
+            <React.Fragment key={`word-${index}`}>
               {spaceBefore}
               {word}
             </React.Fragment>
@@ -275,3 +276,5 @@ export const SectionHeading: FC<{
     </motion.div>
   );
 };
+
+export default SectionHeading;

@@ -1,3 +1,5 @@
+"use client";
+
 import type { FC, ReactNode } from "react";
 import { twMerge } from "tailwind-merge";
 import { motion } from "framer-motion";

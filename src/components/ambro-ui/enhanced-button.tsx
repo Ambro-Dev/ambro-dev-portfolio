@@ -1,3 +1,5 @@
+"use client";
+
 import { useMagneticEffect } from "@/hooks/use-magnetic-effect";
 import {
   type FC,

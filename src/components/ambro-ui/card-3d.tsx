@@ -1,3 +1,5 @@
+"use client";
+
 import { useTilt } from "@/hooks/use-tilt";
 import { useTransform } from "framer-motion";
 import { useRef, type FC, type ReactNode } from "react";

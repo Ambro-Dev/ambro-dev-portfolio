@@ -1,3 +1,5 @@
+"use client";
+
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useTilt } from "@/hooks/use-tilt";
 import { AnimatePresence, motion } from "framer-motion";

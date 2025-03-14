@@ -4,6 +4,8 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { cx } from "class-variance-authority";
 import { baseURL, home, style } from "./resources";
+import Navigation from "@/components/navigation";
+import Footer from "@/components/footer";
 
 // Primary fonts
 const geistSans = Geist({
@@ -101,7 +103,9 @@ export default function RootLayout({
           forcedTheme="dark"
           disableTransitionOnChange
         >
+          <Navigation />
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

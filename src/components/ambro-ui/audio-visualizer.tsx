@@ -1,3 +1,5 @@
+"use client";
+
 import { type FC, useCallback, useEffect, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 

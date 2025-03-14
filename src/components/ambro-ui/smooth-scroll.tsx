@@ -1,3 +1,5 @@
+"use client";
+
 import { animate, useMotionValue } from "framer-motion";
 import {
   type FC,

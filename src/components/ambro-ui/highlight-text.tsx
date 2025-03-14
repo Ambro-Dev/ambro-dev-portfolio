@@ -1,3 +1,5 @@
+"use client";
+
 import { useInView, motion } from "framer-motion";
 import { type FC, type ReactNode, useRef } from "react";
 import { twMerge } from "tailwind-merge";
