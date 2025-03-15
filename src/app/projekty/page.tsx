@@ -557,11 +557,11 @@ export default function ProjektyPage() {
                             </GradientText>
                           </h3>
 
-                          <p className="text-gray-300 mb-6">
+                          <div className="text-gray-300 mb-6">
                             <RevealText delay={0.4}>
                               {project.description.substring(0, 200)}...
                             </RevealText>
-                          </p>
+                          </div>
 
                           <div className="mb-6">
                             <h4 className="text-sm uppercase text-gray-500 mb-2">

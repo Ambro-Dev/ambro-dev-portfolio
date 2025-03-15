@@ -1,3 +1,5 @@
+"use client";
+
 import { AnimatedSection } from "@/components/ambro-ui/animated-section";
 import { GradientText } from "@/components/ambro-ui/gradient-text";
 import { ShuffleText } from "@/components/ambro-ui/shuffle-text";
@@ -7,12 +9,17 @@ import { motion } from "framer-motion";
 
 import React from "react";
 
-type HeroSectionProps = {
-  scrollToProjects: () => void;
-  scrollToInfra: () => void;
-};
+const HeroSection = () => {
+  const scrollToProjects = () => {
+    document.getElementById("projects")?.scrollIntoView({ behavior: "smooth" });
+  };
 
-const HeroSection = ({ scrollToProjects, scrollToInfra }: HeroSectionProps) => {
+  const scrollToInfra = () => {
+    document
+      .getElementById("infrastructure")
+      ?.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-6 overflow-hidden">
       {/* Background elements */}

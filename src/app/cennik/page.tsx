@@ -633,7 +633,7 @@ const PricingPage = () => {
                     <h3 className="text-2xl font-bold mb-4">
                       Przejrzyste rozliczenia
                     </h3>
-                    <p className="text-gray-300 mb-4">
+                    <div className="text-gray-300 mb-4">
                       <RevealText staggerLines>
                         <span>Cenię sobie transparentność, dlatego zawsze</span>
                         <span>
@@ -643,7 +643,7 @@ const PricingPage = () => {
                           współpracy i regularne raporty z postępów prac.
                         </span>
                       </RevealText>
-                    </p>
+                    </div>
                     <p className="text-gray-400">
                       Nie ma ukrytych kosztów ani niespodzianek. Otrzymujesz
                       regularny dostęp do raportów z wykonanych prac, co pozwala

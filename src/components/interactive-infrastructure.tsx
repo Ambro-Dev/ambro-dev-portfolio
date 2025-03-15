@@ -8,11 +8,11 @@ import { EnhancedButton } from "@/components/ambro-ui/enhanced-button";
 import { Card3D } from "@/components/ambro-ui/card-3d";
 import { GradientText } from "@/components/ambro-ui/gradient-text";
 import { RevealText } from "@/components/ambro-ui/reveal-text";
-import { HoverCard } from "@/components/ambro-ui/hover-card";
-import { ClipMask } from "@/components/ambro-ui/clip-mask";
 import { ShuffleText } from "@/components/ambro-ui/shuffle-text";
 import { TypewriterText } from "@/components/ambro-ui/typewriter-text";
 import { FloatingBubbles } from "@/components/ambro-ui/floating-bubbles";
+import { TiltCard } from "@/components/ambro-ui/tilt-card";
+import { AnimatedGradientBorder } from "@/components/ambro-ui/animated-gradient-border";
 
 import {
   Cloud,
@@ -20,17 +20,86 @@ import {
   Server,
   Shield,
   Layers,
-  Monitor,
   GitBranch,
-  Terminal,
-  Box,
   Globe,
-  ArrowRight,
   Zap,
-  Lock,
-  Users,
+  Check,
+  TrendingUp,
+  DollarSign,
+  BarChart,
+  Clock,
+  Tag,
+  ChevronRight,
   type LucideIcon,
 } from "lucide-react";
+
+// Business benefit definition
+interface BusinessBenefit {
+  id: string;
+  title: string;
+  description: string;
+  icon: LucideIcon;
+  value: number;
+  stats: string;
+  gradient: string;
+}
+
+const businessBenefits: BusinessBenefit[] = [
+  {
+    id: "cost",
+    title: "Redukcja kosztów",
+    description: "Obniżenie kosztów infrastruktury i utrzymania systemów",
+    icon: DollarSign,
+    value: 40,
+    stats: "Średnio 40% niższe koszty operacyjne w ciągu pierwszego roku",
+    gradient: "from-emerald-500 to-teal-500",
+  },
+  {
+    id: "agility",
+    title: "Zwiększona elastyczność",
+    description: "Szybsze reagowanie na zmieniające się potrzeby biznesowe",
+    icon: Zap,
+    value: 80,
+    stats: "Nawet 80% krótszy czas wprowadzania zmian",
+    gradient: "from-blue-500 to-indigo-600",
+  },
+  {
+    id: "scalability",
+    title: "Nieograniczona skalowalność",
+    description: "Łatwe skalowanie w górę lub w dół w zależności od obciążenia",
+    icon: TrendingUp,
+    value: 95,
+    stats: "95% usprawnienie procesów skalowania zasobów",
+    gradient: "from-purple-500 to-violet-500",
+  },
+  {
+    id: "security",
+    title: "Wzmocnione bezpieczeństwo",
+    description: "Kompleksowa ochrona danych i systemów",
+    icon: Shield,
+    value: 70,
+    stats: "Redukcja incydentów bezpieczeństwa o ponad 70%",
+    gradient: "from-amber-500 to-orange-500",
+  },
+  {
+    id: "insights",
+    title: "Pełna widoczność",
+    description: "Szczegółowy monitoring i analityka operacyjna",
+    icon: BarChart,
+    value: 85,
+    stats: "85% większa widoczność procesów i metryk operacyjnych",
+    gradient: "from-sky-500 to-blue-500",
+  },
+  {
+    id: "time",
+    title: "Oszczędność czasu",
+    description: "Automatyzacja rutynowych zadań administracyjnych",
+    icon: Clock,
+    value: 75,
+    stats: "Redukcja czasu administracji o 75% dzięki automatyzacji",
+    gradient: "from-pink-500 to-rose-500",
+  },
+];
 
 // Infrastructure layer definition
 interface InfraLayer {
@@ -42,6 +111,7 @@ interface InfraLayer {
   gradient: string;
   tools: string[];
   features: string[];
+  businessValue: string;
   position: number;
 }
 
@@ -49,7 +119,7 @@ interface InfraLayer {
 const infrastructureLayers: InfraLayer[] = [
   {
     id: "client",
-    name: "User Interface",
+    name: "Warstwa interfejsu użytkownika",
     description: "Nowoczesne interfejsy użytkownika",
     icon: Globe,
     color: "pink",
@@ -61,11 +131,13 @@ const infrastructureLayers: InfraLayer[] = [
       "Server-side rendering dla optymalnej wydajności",
       "Zaawansowane zarządzanie stanem aplikacji",
     ],
+    businessValue:
+      "Zwiększenie satysfakcji użytkowników i konwersji o 35% dzięki intuicyjnym i responsywnym interfejsom",
     position: 1,
   },
   {
     id: "api",
-    name: "API Gateway",
+    name: "Warstwa API Gateway",
     description: "Zarządzanie dostępem do serwisów",
     icon: Server,
     color: "sky",
@@ -77,11 +149,13 @@ const infrastructureLayers: InfraLayer[] = [
       "Walidacja zapytań i transformacja odpowiedzi",
       "Routing oparty o zawartość i nagłówki",
     ],
+    businessValue:
+      "Redukcja opóźnień API o 40% i zoptymalizowana komunikacja między systemami",
     position: 2,
   },
   {
     id: "auth",
-    name: "Security Layer",
+    name: "Warstwa bezpieczeństwa",
     description: "Bezpieczeństwo i kontrola dostępu",
     icon: Shield,
     color: "amber",
@@ -93,11 +167,13 @@ const infrastructureLayers: InfraLayer[] = [
       "Monitoring zagrożeń w czasie rzeczywistym",
       "Bezpieczne zarządzanie danymi wrażliwymi",
     ],
+    businessValue:
+      "Minimalizacja ryzyka naruszenia danych i przeciętnie 70% mniej incydentów bezpieczeństwa",
     position: 3,
   },
   {
     id: "services",
-    name: "Microservices",
+    name: "Warstwa mikroserwisów",
     description: "Niezależne serwisy biznesowe",
     icon: Layers,
     color: "purple",
@@ -109,11 +185,13 @@ const infrastructureLayers: InfraLayer[] = [
       "Skalowanie horyzontalne oparte o obciążenie",
       "Niezależność technologiczna między serwisami",
     ],
+    businessValue:
+      "Skrócenie czasu wprowadzania nowych funkcji o 60% i izolacja błędów zapobiegająca awariom",
     position: 4,
   },
   {
     id: "data",
-    name: "Data Layer",
+    name: "Warstwa danych",
     description: "Zarządzanie danymi i pamięcią podręczną",
     icon: Database,
     color: "emerald",
@@ -125,11 +203,13 @@ const infrastructureLayers: InfraLayer[] = [
       "Asynchroniczna komunikacja przez kolejki wiadomości",
       "Analityka strumieniowa i zarządzanie zdarzeniami",
     ],
+    businessValue:
+      "Zwiększenie wydajności systemów o 55% i wsparcie analityki biznesowej w czasie rzeczywistym",
     position: 5,
   },
   {
     id: "infra",
-    name: "Cloud Infrastructure",
+    name: "Warstwa infrastruktury chmurowej",
     description: "Elastyczna infrastruktura chmurowa",
     icon: Cloud,
     color: "indigo",
@@ -141,11 +221,13 @@ const infrastructureLayers: InfraLayer[] = [
       "Automatyczne skalowanie zasobów obliczeniowych",
       "Zaawansowana wirtualizacja i konteneryzacja",
     ],
+    businessValue:
+      "40% redukcja kosztów infrastruktury i przyspieszenie deploymentów z dni do minut",
     position: 6,
   },
   {
     id: "devops",
-    name: "DevOps & Automation",
+    name: "Warstwa DevOps & Automatyzacji",
     description: "Automatyzacja procesów IT",
     icon: GitBranch,
     color: "blue",
@@ -157,167 +239,143 @@ const infrastructureLayers: InfraLayer[] = [
       "Monitoring i alerting w czasie rzeczywistym",
       "GitOps i Infrastructure as Code",
     ],
+    businessValue:
+      "75% szybsze wprowadzanie zmian i redukcja błędów wdrożeniowych o 68%",
     position: 7,
   },
 ];
 
-// Define the different views of the infrastructure
-type ViewMode = "layers" | "connections" | "deployment" | "security";
-
-// Connection definition for the connections view
-interface Connection {
-  from: string;
-  to: string;
-  type: "sync" | "async" | "data" | "auth";
-  description: string;
-}
-
-// Define connections between layers
-const connections: Connection[] = [
-  {
-    from: "client",
-    to: "api",
-    type: "sync",
-    description: "Bezpieczna komunikacja HTTPS/REST",
-  },
-  {
-    from: "api",
-    to: "auth",
-    type: "auth",
-    description: "Weryfikacja tożsamości i uprawnień",
-  },
-  {
-    from: "api",
-    to: "services",
-    type: "sync",
-    description: "Routing zapytań do odpowiednich serwisów",
-  },
-  {
-    from: "services",
-    to: "data",
-    type: "data",
-    description: "Operacje na danych i stanie aplikacji",
-  },
-  {
-    from: "services",
-    to: "services",
-    type: "async",
-    description: "Asynchroniczna komunikacja między serwisami",
-  },
-  {
-    from: "data",
-    to: "infra",
-    type: "data",
-    description: "Zarządzanie przechowywaniem i skalowaniem danych",
-  },
-  {
-    from: "infra",
-    to: "devops",
-    type: "async",
-    description: "Monitoring i zarządzanie zasobami",
-  },
-];
-
-// Flow definition for the deployment view
-interface DeploymentFlow {
+// Case study definition
+interface CaseStudy {
   id: string;
-  name: string;
-  description: string;
-  steps: Array<{
-    name: string;
-    icon: LucideIcon;
-    description: string;
-  }>;
+  company: string;
+  industry: string;
+  logo?: string;
+  challenge: string;
+  solution: string;
+  results: string[];
+  testimonial: {
+    quote: string;
+    author: string;
+    position: string;
+  };
 }
 
-// Define deployment flows
-const deploymentFlows: DeploymentFlow[] = [
+// Define case studies
+const caseStudies: CaseStudy[] = [
   {
-    id: "cicd",
-    name: "CI/CD Pipeline",
-    description: "Automatyczny proces wdrażania aplikacji",
-    steps: [
-      {
-        name: "Commit Code",
-        icon: GitBranch,
-        description: "Deweloper pushuje zmiany do repozytorium Git",
-      },
-      {
-        name: "Automated Tests",
-        icon: Terminal,
-        description: "Uruchamiane są testy jednostkowe i integracyjne",
-      },
-      {
-        name: "Build Artifacts",
-        icon: Box,
-        description: "Budowanie i pakowanie aplikacji",
-      },
-      {
-        name: "Deploy to Staging",
-        icon: Cloud,
-        description: "Automatyczne wdrożenie do środowiska testowego",
-      },
-      {
-        name: "Integration Tests",
-        icon: Monitor,
-        description: "Testy end-to-end i weryfikacja działania",
-      },
-      {
-        name: "Deploy to Production",
-        icon: Zap,
-        description: "Wdrożenie bez przestojów (zero-downtime)",
-      },
+    id: "ecommerce",
+    company: "OnlineShop",
+    industry: "E-commerce",
+    challenge:
+      "Problemy z wydajnością i wysokie koszty w okresach szczytowego ruchu",
+    solution:
+      "Wdrożenie skalowalnej architektury chmurowej z auto-skalowaniem i mikroserwisami",
+    results: [
+      "Zwiększenie przepustowości o 500% w Black Friday",
+      "Redukcja kosztów infrastruktury o 42%",
+      "Skrócenie czasu ładowania strony o 65%",
+      "Zwiększenie konwersji o 28%",
     ],
+    testimonial: {
+      quote:
+        "Nowa architektura pozwoliła nam bez stresu obsłużyć ruch 5x większy niż poprzednio, przy niższych kosztach. To zmieniło nasze podejście do obsługi szczytów sprzedażowych.",
+      author: "Marek Nowak",
+      position: "CTO, OnlineShop",
+    },
+  },
+  {
+    id: "fintech",
+    company: "SecureFinance",
+    industry: "Fintech",
+    challenge:
+      "Potrzeba wysokiego bezpieczeństwa przy jednoczesnej elastyczności wprowadzania nowych funkcji",
+    solution:
+      "Zbudowanie architektury mikroserwisowej z zaawansowaną warstwą bezpieczeństwa i CI/CD",
+    results: [
+      "Brak incydentów bezpieczeństwa od 24 miesięcy",
+      "Skrócenie czasu wdrożenia nowych funkcji o 70%",
+      "Zwiększenie niezawodności systemu do 99.99%",
+      "Redukcja kosztów utrzymania o 35%",
+    ],
+    testimonial: {
+      quote:
+        "Dzięki nowej architekturze możemy szybko reagować na zmiany rynkowe, zachowując najwyższe standardy bezpieczeństwa wymagane w branży finansowej.",
+      author: "Anna Kowalska",
+      position: "Head of IT Security, SecureFinance",
+    },
+  },
+  {
+    id: "manufacturing",
+    company: "SmartFactory",
+    industry: "Produkcja",
+    challenge:
+      "Przestarzałe systemy IT ograniczające możliwości optymalizacji procesów produkcyjnych",
+    solution:
+      "Kompleksowa modernizacja infrastruktury z wykorzystaniem IoT i przetwarzania w czasie rzeczywistym",
+    results: [
+      "Zwiększenie efektywności produkcji o 23%",
+      "Redukcja przestojów o 47%",
+      "Optymalizacja zapasów obniżająca koszty o 18%",
+      "Pełna widoczność procesów w czasie rzeczywistym",
+    ],
+    testimonial: {
+      quote:
+        "Przejście na nowoczesną architekturę pozwoliło nam zautomatyzować decyzje operacyjne i znacząco zwiększyć efektywność. Wyniki przekroczyły nasze oczekiwania.",
+      author: "Jan Wiśniewski",
+      position: "COO, SmartFactory",
+    },
   },
 ];
 
-// Security aspect definition
-interface SecurityAspect {
-  id: string;
-  name: string;
-  description: string;
-  icon: LucideIcon;
-  color: string;
+// FAQ definition
+interface FAQItem {
+  question: string;
+  answer: string;
 }
 
-// Define security aspects
-const securityAspects: SecurityAspect[] = [
+// Define FAQs
+const faqs: FAQItem[] = [
   {
-    id: "auth",
-    name: "Authentication & Authorization",
-    description: "Wielopoziomowa weryfikacja tożsamości i kontrola dostępu",
-    icon: Users,
-    color: "amber",
+    question: "Ile czasu zajmuje wdrożenie takiej architektury?",
+    answer:
+      "Czas wdrożenia zależy od złożoności projektu, ale typowo trwa od 2 do 6 miesięcy. Stosujemy podejście iteracyjne, dostarczając wartość biznesową już po pierwszych tygodniach współpracy.",
   },
   {
-    id: "data",
-    name: "Data Protection",
-    description: "Szyfrowanie danych w spoczynku i podczas transferu",
-    icon: Lock,
-    color: "indigo",
+    question: "Czy muszę przebudować całą infrastrukturę naraz?",
+    answer:
+      "Nie, oferujemy podejście stopniowe, które umożliwia migrację w etapach. Możemy zacząć od najbardziej krytycznych elementów i stopniowo modernizować pozostałe części systemu.",
   },
   {
-    id: "network",
-    name: "Network Security",
-    description: "Segmentacja sieci, firewalle i kontrola ruchu",
-    icon: Shield,
-    color: "emerald",
+    question: "Jakie są koszty takiego rozwiązania?",
+    answer:
+      "Koszty zależą od skali projektu i wybranych technologii, jednak nasze rozwiązania są projektowane z myślą o optymalizacji kosztów. Typowo klienci widzą zwrot z inwestycji w ciągu 6-12 miesięcy dzięki redukcji kosztów operacyjnych.",
   },
   {
-    id: "monitoring",
-    name: "Security Monitoring",
-    description: "Wykrywanie zagrożeń i odpowiedź na incydenty",
-    icon: Monitor,
-    color: "sky",
+    question: "Czy mój zespół będzie w stanie zarządzać taką architekturą?",
+    answer:
+      "Tak, zapewniamy kompleksowe szkolenia i dokumentację dla Twojego zespołu. Oferujemy również usługi wsparcia i utrzymania, które możesz dostosować do swoich potrzeb.",
+  },
+  {
+    question:
+      "Czy to rozwiązanie jest bezpieczne dla krytycznych danych biznesowych?",
+    answer:
+      "Bezpieczeństwo jest priorytetem w naszych rozwiązaniach. Stosujemy najlepsze praktyki branżowe, szyfrowanie, wielopoziomowe zabezpieczenia i regularnie audytujemy bezpieczeństwo infrastruktury.",
   },
 ];
+
+// Define the different views of the infrastructure
+type ViewMode = "overview" | "layers" | "benefits" | "cases" | "faq";
 
 const InfrastructureConcept: React.FC = () => {
   const [activeLayer, setActiveLayer] = useState<string | null>(null);
-  const [viewMode, setViewMode] = useState<ViewMode>("layers");
-  const [isExploding, setIsExploding] = useState(false);
-  const [currentDeployment, setCurrentDeployment] = useState(0);
+  const [viewMode, setViewMode] = useState<ViewMode>("overview");
+  const [activeBenefit, setActiveBenefit] = useState<string | null>("cost");
+  const [activeCaseStudy, setActiveCaseStudy] = useState<string>("ecommerce");
+  const [activeQuestion, setActiveQuestion] = useState<string | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
+  const benefitsRef = useRef<HTMLDivElement>(null);
+  const faqRef = useRef<HTMLDivElement>(null);
 
   // Helper function to get layer by ID
   const getLayerById = (id: string): InfraLayer | undefined => {
@@ -333,19 +391,6 @@ const InfrastructureConcept: React.FC = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  // Auto-increment deployment flow steps
-  useEffect(() => {
-    if (viewMode === "deployment") {
-      const interval = setInterval(() => {
-        setCurrentDeployment((prev) =>
-          prev < deploymentFlows[0].steps.length - 1 ? prev + 1 : 0
-        );
-      }, 3000);
-
-      return () => clearInterval(interval);
-    }
-  }, [viewMode]);
 
   // Animation variants for layers
   const layerVariants = {
@@ -368,64 +413,39 @@ const InfrastructureConcept: React.FC = () => {
       boxShadow: "0 10px 30px rgba(0, 0, 0, 0.2)",
       y: -5,
     },
-    explode: (custom: number) => ({
-      x: (custom % 2 === 0 ? -1 : 1) * (Math.random() * 200 + 100),
-      opacity: 0,
-      transition: {
-        duration: 0.5,
-      },
-    }),
     expanded: {
-      scale: 1.1,
+      scale: 1.05,
       y: -10,
       zIndex: 10,
     },
   };
 
-  // Animation variants for connections
-  const connectionVariants = {
+  // Animation variants for benefits
+  const benefitVariants = {
     initial: {
       opacity: 0,
-      pathLength: 0,
+      y: 20,
     },
     animate: (custom: number) => ({
       opacity: 1,
-      pathLength: 1,
+      y: 0,
       transition: {
-        delay: custom * 0.15 + 0.3,
-        pathLength: {
-          duration: 1.2,
-          ease: "easeInOut",
-        },
-        opacity: {
-          duration: 0.6,
-        },
+        delay: custom * 0.1,
+        duration: 0.4,
+        ease: "easeOut",
       },
     }),
-  };
-
-  // Generate path for connection lines
-  const getConnectionPath = (from: string, to: string): string => {
-    const fromLayer = getLayerById(from);
-    const toLayer = getLayerById(to);
-    if (!fromLayer || !toLayer) return "";
-
-    // For same layer (self-connection)
-    if (from === to) {
-      const baseY = fromLayer.position * 100;
-      return `M150,${baseY} C0,${baseY - 50} 300,${baseY - 50} 150,${baseY}`;
-    }
-
-    const startY = fromLayer.position * 100;
-    const endY = toLayer.position * 100;
-
-    return `M150,${startY} C250,${startY} 250,${endY} 150,${endY}`;
+    hover: {
+      y: -7,
+      transition: {
+        duration: 0.3,
+        ease: "easeOut",
+      },
+    },
   };
 
   // Handle layer click
   const handleLayerClick = (layerId: string) => {
-    if (viewMode !== "layers") return;
-
     if (activeLayer === layerId) {
       setActiveLayer(null);
     } else {
@@ -433,25 +453,24 @@ const InfrastructureConcept: React.FC = () => {
     }
   };
 
-  // Switch to connection view with explosion animation
-  const handleExplodeView = () => {
-    setIsExploding(true);
-    setTimeout(() => {
-      setIsExploding(false);
-      setViewMode("connections");
-      setActiveLayer(null);
-    }, 600);
-  };
-
   // Handle view mode change
   const handleViewChange = (mode: ViewMode) => {
-    if (mode === viewMode) return;
+    setViewMode(mode);
+    setActiveLayer(null);
 
-    if (viewMode === "layers" && mode === "connections") {
-      handleExplodeView();
+    // Reset scroll position
+    window.scrollTo({
+      top: containerRef.current?.offsetTop || 0,
+      behavior: "smooth",
+    });
+  };
+
+  // Handle FAQ click
+  const handleFaqClick = (question: string) => {
+    if (activeQuestion === question) {
+      setActiveQuestion(null);
     } else {
-      setViewMode(mode);
-      setActiveLayer(null);
+      setActiveQuestion(question);
     }
   };
 
@@ -470,482 +489,599 @@ const InfrastructureConcept: React.FC = () => {
         transition={{ duration: 0.3 }}
         className="mt-8 bg-gray-800/50 p-6 rounded-xl border border-gray-700/50 backdrop-blur-sm"
       >
-        <div className="flex items-center gap-4 mb-6">
-          <div className={`p-3 rounded-lg bg-gradient-to-br ${layer.gradient}`}>
-            <layer.icon className="w-6 h-6 text-white" />
-          </div>
-          <div>
-            <h3 className="text-2xl font-bold">
-              <GradientText from={layer.color} to={layer.color}>
-                {layer.name}
-              </GradientText>
-            </h3>
-            <p className="text-gray-300">{layer.description}</p>
-          </div>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-6">
-          <div>
-            <h4 className="text-sm uppercase text-gray-500 mb-3 font-medium">
-              Kluczowe funkcje
-            </h4>
-            <ul className="space-y-2">
-              {layer.features.map((feature, index) => (
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                <li key={index} className="flex items-start">
-                  <span
-                    className={`inline-block w-1.5 h-1.5 rounded-full bg-${layer.color}-400 mt-1.5 mr-2`}
-                  />
-                  <span className="text-gray-300">{feature}</span>
-                </li>
-              ))}
-            </ul>
+        <div className="flex flex-col md:flex-row md:items-center gap-6">
+          <div className="md:w-1/3 flex justify-center">
+            <div
+              className={`p-6 rounded-xl bg-gradient-to-br ${layer.gradient} flex flex-col items-center gap-4`}
+            >
+              <layer.icon className="w-16 h-16 text-white" />
+              <div className="text-center">
+                <h3 className="text-xl font-bold text-white">{layer.name}</h3>
+                <p className="text-white/80">{layer.description}</p>
+              </div>
+            </div>
           </div>
 
-          <div>
-            <h4 className="text-sm uppercase text-gray-500 mb-3 font-medium">
-              Technologie i narzędzia
-            </h4>
-            <div className="flex flex-wrap gap-2">
-              {layer.tools.map((tool, index) => (
-                <span
-                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                  key={index}
-                  className={`px-3 py-1 text-sm rounded-full bg-${layer.color}-900/30 text-${layer.color}-300 border border-${layer.color}-700/30`}
-                >
-                  {tool}
-                </span>
-              ))}
+          <div className="md:w-2/3">
+            <div className="mb-6">
+              <h3 className="text-xl font-bold mb-2">Wartość biznesowa</h3>
+              <p className="text-lg text-gray-200">{layer.businessValue}</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="text-sm uppercase text-gray-500 mb-3 font-medium">
+                  Kluczowe funkcje
+                </h4>
+                <ul className="space-y-2">
+                  {layer.features.map((feature, index) => (
+                    <li
+                      key={`feature-${layer.id}-${index}`}
+                      className="flex items-start"
+                    >
+                      <span
+                        className={`inline-block w-5 h-5 rounded-full bg-${layer.color}-400/20 text-${layer.color}-400 flex items-center justify-center mr-3 mt-0.5`}
+                      >
+                        <Check className="w-3 h-3" />
+                      </span>
+                      <span className="text-gray-300">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h4 className="text-sm uppercase text-gray-500 mb-3 font-medium">
+                  Technologie i narzędzia
+                </h4>
+                <div className="flex flex-wrap gap-2">
+                  {layer.tools.map((tool, index) => (
+                    <span
+                      key={`tool-${layer.id}-${index}`}
+                      className={`px-3 py-1 text-sm rounded-full bg-${layer.color}-900/30 text-${layer.color}-300 border border-${layer.color}-700/30`}
+                    >
+                      {tool}
+                    </span>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         </div>
+
+        <div className="mt-6 pt-6 border-t border-gray-700/50">
+          <p className="text-gray-400 text-sm">
+            Każda warstwa naszej architektury została zaprojektowana z myślą o
+            konkretnych potrzebach biznesowych i technicznych, zapewniając
+            optymalną wydajność, bezpieczeństwo i skalowalność dla Twojego
+            projektu.
+          </p>
+        </div>
       </motion.div>
+    );
+  };
+
+  // Render the overview
+  const renderOverview = () => {
+    return (
+      <div className="space-y-12 py-6">
+        <AnimatedSection animation="fadeIn">
+          <div className="grid md:grid-cols-2 gap-8 items-center">
+            <div>
+              <h3 className="text-2xl md:text-3xl font-bold mb-4">
+                <GradientText from="indigo-500" to="purple-600">
+                  Nowoczesne podejście do infrastruktury IT
+                </GradientText>
+              </h3>
+
+              <RevealText delay={0.2} staggerLines>
+                <p className="text-gray-300 mb-3">
+                  Tradycyjne infrastruktury IT nie nadążają za dynamicznymi
+                  potrzebami współczesnego biznesu, generując niepotrzebne
+                  koszty i opóźniając innowacje.
+                </p>
+                <p className="text-gray-300 mb-3">
+                  Nasza nowoczesna, warstwowa architektura rozwiązuje te
+                  problemy, dostarczając elastyczne, skalowalne i bezpieczne
+                  rozwiązanie dopasowane do Twoich unikatowych potrzeb.
+                </p>
+                <p className="text-gray-300">
+                  Każdy element architektury przekłada się na konkretne korzyści
+                  biznesowe - od redukcji kosztów po zwiększenie szybkości
+                  wdrażania innowacji.
+                </p>
+              </RevealText>
+
+              <div className="mt-8 flex flex-wrap gap-4">
+                <EnhancedButton
+                  variant="tech"
+                  size="lg"
+                  onClick={() => handleViewChange("layers")}
+                  magneticEffect
+                  glowOnHover
+                >
+                  Zobacz architekturę
+                </EnhancedButton>
+
+                <EnhancedButton
+                  variant="outline"
+                  size="lg"
+                  onClick={() => handleViewChange("benefits")}
+                  borderGradient
+                >
+                  Korzyści biznesowe
+                </EnhancedButton>
+              </div>
+            </div>
+
+            <div>
+              <Card3D
+                interactive
+                interactiveStrength={10}
+                glowEffect
+                shadow
+                bgColor="bg-gray-900/30"
+                borderColor="border-indigo-500/30"
+              >
+                <div className="p-6 relative h-[350px] overflow-hidden">
+                  <div className="absolute top-0 left-0 w-full h-full">
+                    <FloatingBubbles
+                      count={20}
+                      color="rgba(99, 102, 241, 0.2)"
+                      minSize={5}
+                      maxSize={20}
+                    />
+                  </div>
+
+                  <div className="relative z-10 h-full flex flex-col justify-center items-center">
+                    <div className="flex flex-col items-center mb-8">
+                      <div className="w-20 h-20 rounded-full bg-indigo-600/20 border-2 border-indigo-600/50 flex items-center justify-center mb-4">
+                        <Cloud className="w-10 h-10 text-indigo-400" />
+                      </div>
+                      <h3 className="text-xl font-bold text-center">
+                        Elastyczna Infrastruktura Chmurowa
+                      </h3>
+                    </div>
+
+                    <div className="flex flex-col gap-3 w-full max-w-md">
+                      {[
+                        {
+                          text: "Redukcja kosztów do 40%",
+                          icon: DollarSign,
+                          color: "emerald",
+                        },
+                        {
+                          text: "Skalowanie w czasie rzeczywistym",
+                          icon: TrendingUp,
+                          color: "indigo",
+                        },
+                        {
+                          text: "Zwiększone bezpieczeństwo",
+                          icon: Shield,
+                          color: "amber",
+                        },
+                        {
+                          text: "Przyspieszone wdrażanie zmian",
+                          icon: Zap,
+                          color: "blue",
+                        },
+                      ].map((item, idx) => (
+                        <motion.div
+                          key={`advantage-${
+                            // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                            idx
+                          }`}
+                          className="flex items-center gap-3 bg-gray-800/40 rounded-lg p-3"
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.3 + idx * 0.1 }}
+                        >
+                          <div
+                            className={`w-8 h-8 rounded-full bg-${item.color}-900/30 text-${item.color}-400 flex items-center justify-center`}
+                          >
+                            <item.icon className="w-4 h-4" />
+                          </div>
+                          <span className="text-gray-200">{item.text}</span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </Card3D>
+            </div>
+          </div>
+
+          <div className="mt-16">
+            <h3 className="text-2xl font-bold mb-6 text-center">
+              <TypewriterText
+                text="Zaufali nam liderzy z różnych branż"
+                speed={50}
+                showWhenDone
+                cursor={false}
+              />
+            </h3>
+
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-8">
+              {["Fintech", "E-commerce", "Healthcare", "Manufacturing"].map(
+                (industry, idx) => (
+                  <motion.div
+                    key={`trust-${
+                      // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                      idx
+                    }`}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + idx * 0.1 }}
+                    className="flex flex-col items-center"
+                  >
+                    <div className="w-20 h-20 mb-4 bg-gray-800/70 rounded-lg flex items-center justify-center">
+                      <Tag className="w-10 h-10 text-gray-400" />
+                    </div>
+                    <p className="text-center text-gray-300">{industry}</p>
+                  </motion.div>
+                )
+              )}
+            </div>
+          </div>
+        </AnimatedSection>
+      </div>
     );
   };
 
   // Render the layers view
   const renderLayersView = () => {
     return (
-      <div className="relative py-20">
-        {infrastructureLayers.map((layer) => (
-          <motion.div
-            key={layer.id}
-            className={`mb-8 w-full ${
-              activeLayer && activeLayer !== layer.id ? "opacity-50" : ""
-            }`}
-            custom={layer.position}
-            initial="initial"
-            animate={isExploding ? "explode" : "animate"}
-            variants={layerVariants}
-            whileHover={activeLayer === null ? "hover" : undefined}
-            onClick={() => handleLayerClick(layer.id)}
-          >
-            <Card3D
-              className="w-full cursor-pointer overflow-hidden"
-              interactive={activeLayer === null}
-              rotateX={0}
-              rotateY={0}
-              glowEffect={activeLayer === layer.id}
-              glowColor={`rgba(${
-                layer.color === "indigo"
-                  ? "99, 102, 241"
-                  : layer.color === "emerald"
-                  ? "16, 185, 129"
-                  : layer.color === "sky"
-                  ? "14, 165, 233"
-                  : layer.color === "purple"
-                  ? "168, 85, 247"
-                  : layer.color === "amber"
-                  ? "245, 158, 11"
-                  : layer.color === "pink"
-                  ? "236, 72, 153"
-                  : layer.color === "blue"
-                  ? "59, 130, 246"
-                  : "99, 102, 241"
-              }, 0.6)`}
-              bgColor={
+      <div className="relative py-6">
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold mb-3">
+            <GradientText from="indigo-500" to="purple-600">
+              Warstwy nowoczesnej architektury
+            </GradientText>
+          </h3>
+          <p className="text-gray-300">
+            Nasza architektura składa się z modułowych, niezależnych warstw,
+            które współpracują ze sobą, tworząc elastyczny, skalowalny i
+            bezpieczny ekosystem dla Twoich aplikacji i usług. Każda warstwa
+            dostarcza konkretną wartość biznesową.
+          </p>
+        </div>
+
+        <div className="rounded-lg overflow-hidden border border-gray-800 bg-gray-900/30">
+          {infrastructureLayers.map((layer) => (
+            <motion.div
+              key={layer.id}
+              className={`border-b border-gray-800 last:border-b-0 transition-colors ${
                 activeLayer === layer.id
-                  ? `bg-${layer.color}-900/30`
-                  : "bg-gray-800/30"
-              }
-              borderColor={`border-${layer.color}-500/30`}
-              sharpEdges={false}
-              shadow={true}
-              shadowColor="rgba(0, 0, 0, 0.3)"
-              perspective={1000}
+                  ? `bg-${layer.color}-900/10`
+                  : "hover:bg-gray-800/30"
+              } ${activeLayer && activeLayer !== layer.id ? "opacity-60" : ""}`}
+              custom={layer.position}
+              initial="initial"
+              animate="animate"
+              variants={layerVariants}
+              whileHover={activeLayer === null ? "hover" : undefined}
+              onClick={() => handleLayerClick(layer.id)}
             >
               <div
-                className={`p-5 flex items-center gap-4 ${
-                  activeLayer === layer.id ? "border-l-4" : "border-l-2"
-                } border-${layer.color}-500`}
+                className={`p-5 flex items-center gap-4 cursor-pointer ${
+                  activeLayer === layer.id
+                    ? `border-l-4 border-${layer.color}-500`
+                    : ""
+                }`}
               >
                 <div
-                  className={`p-2 rounded-lg bg-gradient-to-br ${layer.gradient}`}
+                  className={`p-3 rounded-lg bg-gradient-to-br ${layer.gradient}`}
                 >
-                  <layer.icon className="w-5 h-5 text-white" />
+                  <layer.icon className="w-6 h-6 text-white" />
                 </div>
                 <div className="flex-1">
-                  <h3 className="text-lg font-semibold">{layer.name}</h3>
+                  <h3
+                    className={`text-lg font-semibold ${
+                      activeLayer === layer.id ? `text-${layer.color}-400` : ""
+                    }`}
+                  >
+                    {layer.name}
+                  </h3>
                   <p className="text-sm text-gray-400">{layer.description}</p>
                 </div>
-                <ArrowRight
-                  className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
-                    activeLayer === layer.id ? "rotate-90" : ""
-                  }`}
-                />
+                <div className="flex items-center gap-4">
+                  <div className="hidden md:block max-w-md">
+                    <span className="text-sm text-gray-400">
+                      <span className={`text-${layer.color}-400 font-medium`}>
+                        Korzyść biznesowa:
+                      </span>{" "}
+                      {layer.businessValue.split(" ").slice(0, 6).join(" ")}...
+                    </span>
+                  </div>
+                  <ChevronRight
+                    className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                      activeLayer === layer.id ? "rotate-90" : ""
+                    }`}
+                  />
+                </div>
               </div>
-            </Card3D>
-          </motion.div>
-        ))}
+            </motion.div>
+          ))}
+        </div>
 
         <AnimatePresence>{renderLayerDetails()}</AnimatePresence>
       </div>
     );
   };
 
-  // Render the connections view
-  const renderConnectionsView = () => {
+  // Render the benefits view
+  const renderBenefitsView = () => {
+    const activeBenefitObj = businessBenefits.find(
+      (b) => b.id === activeBenefit
+    );
+
     return (
-      <div className="relative my-10 h-[700px]">
-        <svg
-          width="300"
-          height="700"
-          viewBox="0 0 300 700"
-          className="absolute left-0 top-0"
-        >
-          <title>Interactive Infrastructure</title>
-          {connections.map((connection, index) => (
-            <motion.path
-              key={`${connection.from}-${connection.to}`}
-              d={getConnectionPath(connection.from, connection.to)}
-              stroke={
-                connection.type === "sync"
-                  ? "#60a5fa"
-                  : connection.type === "async"
-                  ? "#8b5cf6"
-                  : connection.type === "data"
-                  ? "#10b981"
-                  : "#f59e0b"
-              }
-              strokeWidth={2}
-              strokeDasharray={connection.type === "async" ? "8 4" : "0"}
-              fill="none"
+      <div ref={benefitsRef} className="relative py-6">
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold mb-3">
+            <GradientText from="indigo-500" to="purple-600">
+              Wymierne korzyści biznesowe
+            </GradientText>
+          </h3>
+          <p className="text-gray-300">
+            Nasza architektura to nie tylko innowacyjna technologia, ale przede
+            wszystkim konkretne, wymierne korzyści biznesowe, które przekładają
+            się na przewagę konkurencyjną.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-6 mb-10">
+          {businessBenefits.map((benefit, index) => (
+            <motion.div
+              key={benefit.id}
+              className="cursor-pointer"
+              variants={benefitVariants}
               initial="initial"
               animate="animate"
               custom={index}
-              variants={connectionVariants}
-            />
-          ))}
-        </svg>
-
-        <div className="relative z-10 pl-[150px]">
-          {infrastructureLayers.map((layer) => (
-            <motion.div
-              key={layer.id}
-              className="absolute w-[300px]"
-              style={{ top: `${layer.position * 100 - 40}px` }}
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: layer.position * 0.1, duration: 0.5 }}
+              whileHover="hover"
+              onClick={() => setActiveBenefit(benefit.id)}
             >
-              <HoverCard
-                hoverContent={
-                  <div className="w-72">
-                    <h4 className="text-lg font-semibold mb-2">{layer.name}</h4>
-                    <p className="text-gray-300 mb-3">{layer.description}</p>
-                    <div className="flex flex-wrap gap-2">
-                      {layer.tools.slice(0, 3).map((tool, i) => (
-                        <span
-                          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                          key={i}
-                          className={`text-xs px-2 py-1 rounded-full bg-${layer.color}-900/30 text-${layer.color}-300`}
-                        >
-                          {tool}
-                        </span>
-                      ))}
-                      {layer.tools.length > 3 && (
-                        <span className="text-xs px-2 py-1 rounded-full bg-gray-800">
-                          +{layer.tools.length - 3}
-                        </span>
-                      )}
+              <TiltCard
+                className="h-full"
+                tiltAmount={7}
+                glareOpacity={0.1}
+                borderGlow={activeBenefit === benefit.id}
+                borderColor={`rgba(${
+                  benefit.gradient.includes("emerald")
+                    ? "16, 185, 129"
+                    : benefit.gradient.includes("blue")
+                    ? "59, 130, 246"
+                    : benefit.gradient.includes("purple")
+                    ? "168, 85, 247"
+                    : benefit.gradient.includes("amber")
+                    ? "245, 158, 11"
+                    : benefit.gradient.includes("sky")
+                    ? "14, 165, 233"
+                    : benefit.gradient.includes("pink")
+                    ? "236, 72, 153"
+                    : "99, 102, 241"
+                }, 0.6)`}
+              >
+                <div className="p-5 h-full flex flex-col">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div
+                      className={`p-2 rounded-lg bg-gradient-to-br ${benefit.gradient}`}
+                    >
+                      <benefit.icon className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-lg font-bold">{benefit.title}</h3>
+                  </div>
+
+                  <p className="text-gray-400 text-sm mb-5">
+                    {benefit.description}
+                  </p>
+
+                  <div className="mt-auto">
+                    <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
+                      <motion.div
+                        className={`h-full bg-gradient-to-r ${benefit.gradient}`}
+                        initial={{ width: 0 }}
+                        animate={{ width: `${benefit.value}%` }}
+                        transition={{ duration: 1, delay: 0.5 + index * 0.1 }}
+                      />
+                    </div>
+                    <div className="flex justify-between mt-2">
+                      <span className="text-xs text-gray-500">0%</span>
+                      <span className="text-xs text-gray-500">100%</span>
                     </div>
                   </div>
-                }
-                position="right"
-                animation="scale"
-                backdropBlur
-                glassmorphism
-              >
-                <div
-                  className={`py-3 px-4 rounded-lg bg-${layer.color}-900/20 border border-${layer.color}-700/30`}
-                >
-                  <div className="flex items-center gap-2">
-                    <layer.icon className={`w-5 h-5 text-${layer.color}-400`} />
-                    <span className="font-medium">{layer.name}</span>
-                  </div>
                 </div>
-              </HoverCard>
+              </TiltCard>
             </motion.div>
           ))}
         </div>
 
-        <div className="absolute right-0 top-0 w-[300px] h-full p-4">
-          <div className="bg-gray-800/50 rounded-xl border border-gray-700/30 p-5 h-full overflow-auto">
-            <h3 className="text-xl font-bold mb-4">
-              Przepływ danych i komunikacja
-            </h3>
-            <p className="text-gray-400 mb-6">
-              Architektura zapewnia elastyczną komunikację między warstwami za
-              pomocą różnych protokołów i wzorców integracyjnych.
-            </p>
-
-            <div className="space-y-4">
-              {connections.map((connection, i) => {
-                const fromLayer = getLayerById(connection.from);
-                const toLayer = getLayerById(connection.to);
-                if (!fromLayer || !toLayer) return null;
-
-                return (
-                  <motion.div
-                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                    key={i}
-                    className="p-3 bg-gray-800/80 rounded-lg"
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.5 + i * 0.1 }}
-                  >
-                    <div className="flex items-center gap-2 mb-2">
-                      <fromLayer.icon
-                        className={`w-4 h-4 text-${fromLayer.color}-400`}
-                      />
-                      <ArrowRight className="w-4 h-4 text-gray-500" />
-                      <toLayer.icon
-                        className={`w-4 h-4 text-${toLayer.color}-400`}
-                      />
-
-                      <span
-                        className={`ml-2 text-xs px-2 py-0.5 rounded-full ${
-                          connection.type === "sync"
-                            ? "bg-blue-900/30 text-blue-300"
-                            : connection.type === "async"
-                            ? "bg-purple-900/30 text-purple-300"
-                            : connection.type === "data"
-                            ? "bg-emerald-900/30 text-emerald-300"
-                            : "bg-amber-900/30 text-amber-300"
-                        }`}
-                      >
-                        {connection.type}
-                      </span>
-                    </div>
-                    <p className="text-sm text-gray-300">
-                      {connection.description}
-                    </p>
-                  </motion.div>
-                );
-              })}
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  };
-
-  // Render the deployment view
-  const renderDeploymentView = () => {
-    const flow = deploymentFlows[0]; // Using first flow
-
-    return (
-      <div className="relative py-10">
-        <div className="flex items-center justify-center mb-10">
-          <ClipMask
-            mask="hexagon"
-            height={120}
-            width={120}
-            animate
-            borderWidth={2}
-            borderColor="#6366f1"
-            shadowColor="rgba(99, 102, 241, 0.3)"
-            shadowSize={20}
-            gradientColors={["#6366f1", "#8b5cf6", "#ec4899"]}
+        {/* Selected benefit details */}
+        {activeBenefitObj && (
+          <AnimatedGradientBorder
+            borderWidth={1}
+            borderColor={activeBenefitObj.gradient
+              .replace("from-", "")
+              .replace("to-", "")}
+            glowEffect
+            glowIntensity={5}
+            animated
+            backgroundColor="bg-gray-900/70"
+            direction="diagonal"
+            className="mb-8"
           >
-            <div className="w-full h-full flex items-center justify-center bg-gray-900">
-              <GitBranch className="w-8 h-8 text-white" />
-            </div>
-          </ClipMask>
-        </div>
-
-        <AnimatedSection animation="fadeIn" className="mb-8 text-center">
-          <h3 className="text-2xl font-bold">
-            <GradientText from="blue-500" to="indigo-500">
-              {flow.name}
-            </GradientText>
-          </h3>
-          <p className="text-gray-400">{flow.description}</p>
-        </AnimatedSection>
-
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-6 mt-8">
-          {flow.steps.map((step, index) => {
-            const StepIcon = step.icon;
-            const isActive = index === currentDeployment;
-
-            return (
-              <Card3D
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                key={index}
-                className="h-full"
-                glowEffect={isActive}
-                bgColor={isActive ? "bg-indigo-900/20" : "bg-gray-800/30"}
-                borderColor={
-                  isActive ? "border-indigo-500/40" : "border-gray-700/30"
-                }
-                rotateX={0}
-                rotateY={0}
-                interactive={false}
-              >
-                <div className="p-4 h-full flex flex-col">
-                  <div className="mb-3 flex justify-between items-center">
-                    <div
-                      className={`w-8 h-8 rounded-full ${
-                        isActive ? "bg-indigo-600" : "bg-gray-700"
-                      } flex items-center justify-center`}
-                    >
-                      <span className="text-white font-medium">
-                        {index + 1}
-                      </span>
-                    </div>
-                    <StepIcon
-                      className={`w-5 h-5 ${
-                        isActive ? "text-indigo-400" : "text-gray-500"
-                      }`}
-                    />
+            <div className="p-6">
+              <div className="flex flex-col md:flex-row md:items-center gap-6">
+                <div className="md:w-1/4 flex justify-center">
+                  <div
+                    className={`w-32 h-32 rounded-full bg-gradient-to-br ${activeBenefitObj.gradient} flex items-center justify-center`}
+                  >
+                    <activeBenefitObj.icon className="w-16 h-16 text-white" />
                   </div>
-
-                  <h4
-                    className={`font-medium ${
-                      isActive ? "text-white" : "text-gray-300"
-                    }`}
-                  >
-                    {step.name}
-                  </h4>
-
-                  <p
-                    className={`text-sm mt-1 flex-1 ${
-                      isActive ? "text-gray-300" : "text-gray-500"
-                    }`}
-                  >
-                    {step.description}
-                  </p>
-
-                  {index < flow.steps.length - 1 && (
-                    <div className="mt-3 flex justify-end">
-                      <ArrowRight
-                        className={`w-4 h-4 ${
-                          isActive ? "text-indigo-400" : "text-gray-600"
-                        }`}
-                      />
-                    </div>
-                  )}
                 </div>
-              </Card3D>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
 
-  // Render the security view
-  const renderSecurityView = () => {
-    return (
-      <div className="relative py-10">
-        <div className="text-center mb-12">
-          <TypewriterText
-            text="Security by Design"
-            className="text-2xl font-bold"
-            speed={80}
-            cursorChar="█"
-            cursorColor="text-indigo-500"
-          />
-          <p className="text-gray-400 mt-2">
-            Wielowarstwowe podejście do bezpieczeństwa w każdym elemencie
-            architektury
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-2 gap-8">
-          {securityAspects.map((aspect, idx) => (
-            <motion.div
-              key={aspect.id}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.2, duration: 0.5 }}
-            >
-              <Card3D
-                className="h-full"
-                interactive
-                glowEffect
-                glowColor={`rgba(${
-                  aspect.color === "amber"
-                    ? "245, 158, 11"
-                    : aspect.color === "indigo"
-                    ? "99, 102, 241"
-                    : aspect.color === "emerald"
-                    ? "16, 185, 129"
-                    : aspect.color === "sky"
-                    ? "14, 165, 233"
-                    : "99, 102, 241"
-                }, 0.4)`}
-                bgColor={`bg-${aspect.color}-900/20`}
-                borderColor={`border-${aspect.color}-700/30`}
-              >
-                <div className="p-6">
-                  <div className="mb-4 flex items-center justify-center">
-                    <div
-                      className={`p-3 rounded-full bg-${aspect.color}-500/20`}
+                <div className="md:w-3/4">
+                  <h3 className="text-2xl font-bold mb-2">
+                    <GradientText
+                      from={activeBenefitObj.gradient
+                        .split(" ")[0]
+                        .replace("from-", "")}
+                      to={activeBenefitObj.gradient
+                        .split(" ")[1]
+                        .replace("to-", "")}
                     >
-                      <aspect.icon
-                        className={`w-8 h-8 text-${aspect.color}-400`}
-                      />
-                    </div>
-                  </div>
-
-                  <h3 className="text-xl font-semibold text-center mb-2">
-                    {aspect.name}
+                      {activeBenefitObj.title}
+                    </GradientText>
                   </h3>
 
-                  <p className="text-gray-400 text-center">
-                    {aspect.description}
+                  <p className="text-xl text-gray-200 mb-4">
+                    {activeBenefitObj.stats}
                   </p>
-                </div>
-              </Card3D>
-            </motion.div>
-          ))}
-        </div>
 
-        <div className="mt-12 bg-gray-800/50 p-6 rounded-xl border border-gray-700/50">
+                  <p className="text-gray-400">
+                    {activeBenefitObj.description}
+                  </p>
+
+                  <div className="mt-6 grid md:grid-cols-2 gap-4">
+                    <div className="bg-gray-800/50 p-4 rounded-lg">
+                      <h4 className="text-sm uppercase text-gray-500 mb-2">
+                        Jak to osiągamy
+                      </h4>
+                      <ul className="space-y-2">
+                        {[
+                          "Zastosowanie najnowszych technologii i rozwiązań",
+                          "Optymalizacja pod kątem Twoich specyficznych potrzeb",
+                          "Wykorzystanie efektu skali i automatyzacji",
+                          "Ciągły monitoring i usprawnienia wydajności",
+                        ].map((item, idx) => (
+                          <li
+                            key={`how-${
+                              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                              idx
+                            }`}
+                            className="flex items-start gap-2"
+                          >
+                            <Check className="w-4 h-4 text-indigo-400 mt-0.5 flex-shrink-0" />
+                            <span className="text-sm text-gray-300">
+                              {item}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="bg-gray-800/50 p-4 rounded-lg">
+                      <h4 className="text-sm uppercase text-gray-500 mb-2">
+                        Co to oznacza dla Twojego biznesu
+                      </h4>
+                      <ul className="space-y-2">
+                        {activeBenefitObj.id === "cost"
+                          ? [
+                              "Niższe całkowite koszty posiadania (TCO)",
+                              "Lepsze wykorzystanie budżetu IT",
+                              "Oszczędności do reinwestycji w innowacje",
+                              "Przewidywalne koszty operacyjne",
+                            ]
+                          : activeBenefitObj.id === "agility"
+                          ? [
+                              "Szybsza reakcja na zmiany rynkowe",
+                              "Skrócony czas wprowadzania nowych funkcji",
+                              "Większa elastyczność w dostosowywaniu się do potrzeb",
+                              "Szybkie testowanie nowych pomysłów",
+                            ]
+                          : activeBenefitObj.id === "scalability"
+                          ? [
+                              "Płynna obsługa szczytów ruchu",
+                              "Eliminacja przepłacania za nieużywane zasoby",
+                              "Wsparcie szybkiego wzrostu biznesu",
+                              "Dostosowanie się do sezonowych zmian",
+                            ]
+                          : activeBenefitObj.id === "security"
+                          ? [
+                              "Zmniejszenie ryzyka naruszenia danych",
+                              "Ochrona reputacji marki",
+                              "Zgodność z regulacjami (RODO, ISO27001)",
+                              "Spokój umysłu dla kierownictwa",
+                            ]
+                          : activeBenefitObj.id === "insights"
+                          ? [
+                              "Lepsze decyzje oparte na danych",
+                              "Identyfikacja trendów i wzorców",
+                              "Proaktywne zarządzanie problemami",
+                              "Odkrywanie nowych możliwości biznesowych",
+                            ]
+                          : [
+                              "Uwolnienie zasobów dla strategicznych inicjatyw",
+                              "Redukcja błędów wynikających z pracy manualnej",
+                              "Zwiększona produktywność zespołu IT",
+                              "Szybsze iteracje i usprawnienia",
+                            ].map((item, idx) => (
+                              <li
+                                key={`business-${
+                                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                                  idx
+                                }`}
+                                className="flex items-start gap-2"
+                              >
+                                <span className="text-indigo-400">→</span>
+                                <span className="text-sm text-gray-300">
+                                  {item}
+                                </span>
+                              </li>
+                            ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </AnimatedGradientBorder>
+        )}
+
+        <div className="bg-gray-900/30 border border-gray-800 rounded-xl p-6">
           <h3 className="text-xl font-bold mb-4">
-            Zintegrowany system bezpieczeństwa
+            Metodologia pomiaru korzyści
           </h3>
-          <p className="text-gray-300 mb-6">
-            Wszystkie warstwy architektury są projektowane z myślą o
-            bezpieczeństwie, wykorzystując:
+          <p className="text-gray-300 mb-4">
+            Wszystkie przedstawione korzyści opierają się na rzeczywistych
+            wynikach osiągniętych przez naszych klientów. Do oceny efektywności
+            wdrożeń stosujemy rygorystyczne metodologie i narzędzia analityczne:
           </p>
 
-          <div className="grid md:grid-cols-2 gap-4">
+          <div className="grid md:grid-cols-3 gap-6">
             {[
-              "Zero-trust architecture dla wszystkich zasobów",
-              "Szyfrowanie end-to-end dla danych wrażliwych",
-              "Continuous security monitoring i alerting",
-              "Automatyczne skanowanie podatności w kodzie",
-              "Microsegmentation w sieciach overlay",
-              "Identity and Access Management (IAM)",
-              "Zabezpieczenia przed atakami DDoS i OWASP Top 10",
-              "Regularne audyty bezpieczeństwa i testy penetracyjne",
-            ].map((item, i) => (
-              // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-              <div key={i} className="flex items-start gap-2">
-                <span className="inline-block w-2 h-2 rounded-full bg-indigo-500 mt-1.5" />
-                <span className="text-gray-300">{item}</span>
+              {
+                title: "Analiza przed-po",
+                description:
+                  "Porównanie kluczowych metryk przed i po wdrożeniu, uwzględniające naturalne trendy i sezonowość",
+                icon: BarChart,
+              },
+              {
+                title: "Długoterminowe pomiary",
+                description:
+                  "Monitorowanie korzyści w czasie, aby potwierdzić trwałość i stabilność osiągniętych rezultatów",
+                icon: Clock,
+              },
+              {
+                title: "Analiza finansowa",
+                description:
+                  "Szczegółowa kalkulacja oszczędności i zwrotu z inwestycji (ROI) wykorzystująca standardowe wskaźniki finansowe",
+                icon: DollarSign,
+              },
+            ].map((item, idx) => (
+              <div
+                key={`method-${
+                  // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                  idx
+                }`}
+                className="bg-gray-800/40 p-4 rounded-lg"
+              >
+                <div className="flex items-center gap-3 mb-3">
+                  <item.icon className="w-5 h-5 text-indigo-400" />
+                  <h4 className="font-medium">{item.title}</h4>
+                </div>
+                <p className="text-sm text-gray-400">{item.description}</p>
               </div>
             ))}
           </div>
@@ -954,22 +1090,265 @@ const InfrastructureConcept: React.FC = () => {
     );
   };
 
-  return (
-    <section className="py-20 px-4 relative overflow-hidden bg-gray-900/40">
-      {/* Background effects */}
-      <div className="absolute inset-0 z-0">
-        <FloatingBubbles
-          count={25}
-          minSize={2}
-          maxSize={6}
-          color="rgba(99, 102, 241, 0.3)"
-          minSpeed={0.5}
-          maxSpeed={1}
-          fixed
-          className="h-full w-full opacity-50"
-        />
-      </div>
+  // Render the case studies view
+  const renderCaseStudiesView = () => {
+    const activeCase = caseStudies.find((cs) => cs.id === activeCaseStudy);
 
+    if (!activeCase) return null;
+
+    return (
+      <div className="relative py-6">
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold mb-3">
+            <GradientText from="indigo-500" to="purple-600">
+              Historie sukcesu naszych klientów
+            </GradientText>
+          </h3>
+          <p className="text-gray-300">
+            Zobacz jak nowoczesna architektura pomogła firmom podobnym do Twojej
+            osiągnąć wymierne rezultaty biznesowe.
+          </p>
+        </div>
+
+        <div className="flex gap-4 mb-8 overflow-x-auto pb-2">
+          {caseStudies.map((caseStudy) => (
+            <motion.button
+              key={caseStudy.id}
+              type="button"
+              onClick={() => setActiveCaseStudy(caseStudy.id)}
+              className={`px-6 py-3 rounded-lg whitespace-nowrap transition-colors ${
+                activeCaseStudy === caseStudy.id
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-800/50 text-gray-300 hover:bg-gray-800"
+              }`}
+              whileHover={{ y: -3 }}
+              whileTap={{ y: 0 }}
+            >
+              {caseStudy.company} ({caseStudy.industry})
+            </motion.button>
+          ))}
+        </div>
+
+        <Card3D
+          interactive={false}
+          glowEffect
+          glowColor="rgba(99, 102, 241, 0.4)"
+          shadow
+          bgColor="bg-gray-900/50"
+          borderColor="border-indigo-500/30"
+        >
+          <div className="p-8">
+            <div className="grid md:grid-cols-2 gap-8">
+              <div>
+                <div className="flex items-center gap-4 mb-6">
+                  <div className="w-16 h-16 rounded-lg bg-indigo-900/50 flex items-center justify-center">
+                    <span className="text-2xl font-bold text-indigo-400">
+                      {activeCase.company.substring(0, 2)}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="text-2xl font-bold">{activeCase.company}</h3>
+                    <p className="text-gray-400">{activeCase.industry}</p>
+                  </div>
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold mb-2">Wyzwanie</h4>
+                  <p className="text-gray-300">{activeCase.challenge}</p>
+                </div>
+
+                <div className="mb-6">
+                  <h4 className="text-lg font-semibold mb-2">Rozwiązanie</h4>
+                  <p className="text-gray-300">{activeCase.solution}</p>
+                </div>
+              </div>
+
+              <div>
+                <div className="bg-gray-800/50 p-6 rounded-xl mb-6">
+                  <h4 className="text-lg font-semibold mb-4">Rezultaty</h4>
+                  <ul className="space-y-3">
+                    {activeCase.results.map((result, idx) => (
+                      <li
+                        key={`result-${
+                          // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                          idx
+                        }`}
+                        className="flex items-start gap-3"
+                      >
+                        <div className="w-6 h-6 rounded-full bg-indigo-900/50 text-indigo-400 flex items-center justify-center flex-shrink-0 mt-0.5">
+                          <Check className="w-4 h-4" />
+                        </div>
+                        <span className="text-gray-200">{result}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="bg-indigo-900/10 border border-indigo-500/20 p-6 rounded-xl">
+                  <div className="flex items-start gap-3 mb-4">
+                    <div className="w-8 h-8 rounded-full bg-indigo-900/50 text-indigo-400 flex items-center justify-center flex-shrink-0 mt-1">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        className="inline-block w-5 h-5 stroke-current"
+                      >
+                        <title>quote</title>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                        />
+                      </svg>
+                    </div>
+                    <div className="italic text-gray-300">
+                      &quot;{activeCase.testimonial.quote}&quot;
+                    </div>
+                  </div>
+                  <div className="ml-11">
+                    <div className="font-semibold">
+                      {activeCase.testimonial.author}
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      {activeCase.testimonial.position}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="mt-8 pt-6 border-t border-gray-700">
+              <EnhancedButton
+                variant="tech"
+                size="lg"
+                href="/kontakt"
+                magneticEffect
+                glowOnHover
+                rippleEffect
+              >
+                Chcę osiągnąć podobne rezultaty
+              </EnhancedButton>
+            </div>
+          </div>
+        </Card3D>
+      </div>
+    );
+  };
+
+  // Render the FAQ view
+  const renderFaqView = () => {
+    return (
+      <div ref={faqRef} className="relative py-6">
+        <div className="mb-8">
+          <h3 className="text-2xl font-bold mb-3">
+            <GradientText from="indigo-500" to="purple-600">
+              Najczęściej zadawane pytania
+            </GradientText>
+          </h3>
+          <p className="text-gray-300">
+            Masz pytania dotyczące naszej nowoczesnej architektury? Oto
+            odpowiedzi na najczęściej zadawane pytania.
+          </p>
+        </div>
+
+        <div className="space-y-4 mb-8">
+          {faqs.map((faq, index) => (
+            <div
+              key={`faq-${
+                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                index
+              }`}
+              className={`border border-gray-800 rounded-lg overflow-hidden transition-all ${
+                activeQuestion === faq.question
+                  ? "bg-gray-800/30"
+                  : "bg-gray-900/30"
+              }`}
+            >
+              <button
+                type="button"
+                className="w-full flex justify-between items-center p-5 text-left"
+                onClick={() => handleFaqClick(faq.question)}
+              >
+                <h4 className="text-lg font-medium">{faq.question}</h4>
+                <ChevronRight
+                  className={`w-5 h-5 text-gray-400 transition-transform duration-300 ${
+                    activeQuestion === faq.question ? "rotate-90" : ""
+                  }`}
+                />
+              </button>
+
+              <AnimatePresence>
+                {activeQuestion === faq.question && (
+                  <motion.div
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="px-5 pb-5 text-gray-300">{faq.answer}</div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </div>
+
+        <AnimatedGradientBorder
+          borderWidth={1}
+          borderColor="from-indigo-500 via-purple-500 to-pink-500"
+          glowEffect
+          glowIntensity={5}
+          animated
+          backgroundColor="bg-gray-900/70"
+          direction="diagonal"
+        >
+          <div className="p-6">
+            <div className="flex flex-col md:flex-row md:items-center gap-6">
+              <div className="md:w-2/3">
+                <h3 className="text-xl font-bold mb-2">
+                  <GradientText
+                    from="indigo-500"
+                    via="purple-500"
+                    to="pink-500"
+                  >
+                    Nie znalazłeś odpowiedzi na swoje pytanie?
+                  </GradientText>
+                </h3>
+
+                <p className="text-gray-300">
+                  Skontaktuj się z nami, aby uzyskać szczegółowe informacje
+                  dotyczące Twojego konkretnego przypadku. Pierwsze konsultacje
+                  są bezpłatne i niezobowiązujące.
+                </p>
+              </div>
+
+              <div className="md:w-1/3 flex justify-center">
+                <EnhancedButton
+                  variant="tech"
+                  size="lg"
+                  href="/kontakt"
+                  magneticEffect
+                  glowOnHover
+                  rippleEffect
+                  animatedBg
+                  fullWidth
+                >
+                  Zadaj pytanie
+                </EnhancedButton>
+              </div>
+            </div>
+          </div>
+        </AnimatedGradientBorder>
+      </div>
+    );
+  };
+
+  return (
+    <section
+      ref={containerRef}
+      className="py-20 px-4 relative overflow-hidden bg-gray-900/40"
+    >
       <div className="max-w-6xl mx-auto relative z-10">
         <AnimatedSection animation="fadeIn">
           <SectionHeading
@@ -982,10 +1361,11 @@ const InfrastructureConcept: React.FC = () => {
                   highlightActive
                   highlightClass="text-indigo-400"
                   shuffleSpeed={20}
-                />
+                />{" "}
+                dla Twojego biznesu
               </span>
             }
-            subtitle="Elastyczne, skalowalne i bezpieczne rozwiązania chmurowe dla wymagających projektów"
+            subtitle="Elastyczne, skalowalne i bezpieczne rozwiązania chmurowe zapewniające wymierne korzyści biznesowe"
             alignment="center"
             size="lg"
             gradient
@@ -997,16 +1377,17 @@ const InfrastructureConcept: React.FC = () => {
 
         {/* View selector tabs */}
         <div className="mt-12 mb-8 flex justify-center">
-          <div className="bg-gray-800/50 p-1 rounded-lg inline-flex">
+          <div className="bg-gray-800/50 p-1 rounded-lg inline-flex flex-wrap justify-center">
             {[
-              { id: "layers", label: "Warstwy" },
-              { id: "connections", label: "Połączenia" },
-              { id: "deployment", label: "Wdrożenia" },
-              { id: "security", label: "Bezpieczeństwo" },
+              { id: "overview", label: "Przegląd" },
+              { id: "layers", label: "Architektura" },
+              { id: "benefits", label: "Korzyści" },
+              { id: "cases", label: "Historie sukcesu" },
+              { id: "faq", label: "FAQ" },
             ].map((tab) => (
               <button
                 key={tab.id}
-                className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                className={`px-4 py-2 m-1 rounded-md text-sm font-medium transition-all ${
                   viewMode === tab.id
                     ? "bg-indigo-600 text-white"
                     : "text-gray-300 hover:bg-gray-700/50"
@@ -1021,43 +1402,50 @@ const InfrastructureConcept: React.FC = () => {
         </div>
 
         {/* Main content container */}
-        <div
-          ref={containerRef}
-          className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 overflow-hidden"
-        >
+        <div className="bg-gray-900/50 backdrop-blur-sm rounded-xl border border-gray-800 overflow-hidden">
           <div className="p-6">
+            {viewMode === "overview" && renderOverview()}
             {viewMode === "layers" && renderLayersView()}
-            {viewMode === "connections" && renderConnectionsView()}
-            {viewMode === "deployment" && renderDeploymentView()}
-            {viewMode === "security" && renderSecurityView()}
+            {viewMode === "benefits" && renderBenefitsView()}
+            {viewMode === "cases" && renderCaseStudiesView()}
+            {viewMode === "faq" && renderFaqView()}
           </div>
         </div>
 
         {/* Call to action */}
         <div className="mt-12 text-center">
-          <RevealText className="text-xl font-bold mb-4" delay={0.3}>
-            Zbuduj swoją infrastrukturę z myślą o przyszłości
+          <RevealText className="text-2xl font-bold mb-4" delay={0.3}>
+            Gotów zrewolucjonizować swoją infrastrukturę IT?
           </RevealText>
 
           <p className="text-gray-400 max-w-2xl mx-auto mb-8">
-            Nowoczesna architektura musi być elastyczna, skalowalna i
-            bezpieczna. Skonsultuj swoje potrzeby i dowiedz się, jak
-            zaprojektować optymalną infrastrukturę dla swojego projektu.
+            Umów bezpłatną konsultację, podczas której omówimy Twoje potrzeby i
+            zaproponujemy optymalną architekturę dostosowaną do specyfiki
+            Twojego biznesu.
           </p>
 
-          <EnhancedButton
-            variant="tech"
-            size="lg"
-            href="/kontakt"
-            animatedBg
-            magneticEffect
-            borderGradient
-            glowOnHover
-            rippleEffect
-            className="mt-2"
-          >
-            Skonsultuj swój projekt
-          </EnhancedButton>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <EnhancedButton
+              variant="tech"
+              size="lg"
+              href="/kontakt"
+              animatedBg
+              magneticEffect
+              borderGradient
+              glowOnHover
+              rippleEffect
+            >
+              Umów bezpłatną konsultację
+            </EnhancedButton>
+
+            <EnhancedButton
+              variant="outline"
+              size="lg"
+              onClick={() => handleViewChange("cases")}
+            >
+              Zobacz historie sukcesu
+            </EnhancedButton>
+          </div>
         </div>
       </div>
     </section>

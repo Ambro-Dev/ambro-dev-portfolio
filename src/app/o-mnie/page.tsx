@@ -399,7 +399,7 @@ export default function AboutPage() {
                     <h3 className="text-2xl font-bold mb-6">Kim jestem</h3>
 
                     <div className="space-y-4 text-gray-300">
-                      <p>
+                      <div>
                         <RevealText delay={0.1}>
                           Jestem doświadczonym Full Stack Developerem z ponad
                           8-letnim doświadczeniem w tworzeniu nowoczesnych
@@ -409,9 +409,9 @@ export default function AboutPage() {
                           która napędza mnie do ciągłego rozwoju i podejmowania
                           nowych wyzwań technologicznych.
                         </RevealText>
-                      </p>
+                      </div>
 
-                      <p>
+                      <div>
                         <RevealText delay={0.2}>
                           Specjalizuję się w ekosystemie JavaScript/TypeScript,
                           ze szczególnym uwzględnieniem React.js, Next.js,
@@ -420,9 +420,9 @@ export default function AboutPage() {
                           przyjaznych dla użytkownika rozwiązań, które realnie
                           rozwiązują problemy biznesowe moich klientów.
                         </RevealText>
-                      </p>
+                      </div>
 
-                      <p>
+                      <div>
                         <RevealText delay={0.3}>
                           Poza pracą nad projektami komercyjnymi, aktywnie
                           udzielam się w społeczności Open Source, prowadzę blog
@@ -431,7 +431,7 @@ export default function AboutPage() {
                           nieustannie poszerzam swoje kompetencje, śledząc
                           najnowsze trendy i technologie w branży IT.
                         </RevealText>
-                      </p>
+                      </div>
                     </div>
 
                     <div className="mt-8">

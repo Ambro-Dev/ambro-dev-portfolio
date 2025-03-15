@@ -15,7 +15,7 @@ export const AboutMeSection = () => {
             alignment="center"
             size="xl"
             gradient
-            highlightWords={[1]}
+            highlightWords={[2]}
             animation="fade"
             delay={0.2}
           />
@@ -25,15 +25,15 @@ export const AboutMeSection = () => {
           <AnimatedSection animation="slideLeft" delay={0.3}>
             <Card3D
               interactive
-              interactiveStrength={12}
+              interactiveStrength={10}
               glowEffect
-              glowColor="rgba(99, 102, 241, 0.6)"
+              glowColor="rgba(99, 102, 241, 0.5)"
               shadow
-              bgColor="bg-gray-900/90"
-              borderColor="border-indigo-500/30"
+              bgColor="bg-gray-900/80"
+              borderColor="border-indigo-500/20"
               height="100%"
             >
-              <div className="p-8 flex flex-col h-full">
+              <div className="p-8">
                 <h3 className="text-2xl font-bold mb-6 text-white bg-clip-text bg-gradient-to-r from-indigo-400 to-purple-400">
                   Moja wizja
                 </h3>
