@@ -1,13 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { GradientText } from "@/components/ambro-ui/gradient-text";
 import { EnhancedButton } from "@/components/ambro-ui/enhanced-button";
+import { throttle } from "lodash"; // Add this import for performance
 
-// Lista linków nawigacyjnych
+// Navigation links list
 const navLinks = [
   { href: "/", label: "Strona główna" },
   { href: "/o-mnie", label: "O mnie" },
@@ -17,59 +18,58 @@ const navLinks = [
   { href: "/kontakt", label: "Kontakt" },
 ];
 
+/**
+ * Main navigation component with mobile and desktop views
+ */
 const Navigation = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const pathname = usePathname();
 
-  // Obsługa scrollowania z debounce
+  // Optimized scroll handling with throttle
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    // Initial check for scroll position
+    const checkScroll = () => setIsScrolled(window.scrollY > 20);
+    checkScroll();
 
-    // Wywołaj od razu, aby ustawić stan na podstawie początkowej pozycji scrollowania
-    handleScroll();
+    // Throttle scroll events for better performance
+    const handleScroll = throttle(checkScroll, 100);
 
-    // Dodanie debounce dla lepszej wydajności
-    let timeout: NodeJS.Timeout;
-    const debouncedHandleScroll = () => {
-      clearTimeout(timeout);
-      timeout = setTimeout(handleScroll, 10);
-    };
-
-    window.addEventListener("scroll", debouncedHandleScroll);
+    window.addEventListener("scroll", handleScroll);
     return () => {
-      window.removeEventListener("scroll", debouncedHandleScroll);
-      clearTimeout(timeout);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
-  // Zamykanie menu mobilnego po zmianie trasy
+  // Close mobile menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
-  }, []);
+  }, [pathname]); // Add pathname as dependency to close menu on route change
 
-  // Blokowanie scrollowania gdy menu mobilne jest otwarte
+  // Handle body scroll lock when mobile menu is open
   useEffect(() => {
     if (mobileMenuOpen) {
-      // Zapisujemy aktualną pozycję scrollowania przed zablokowaniem
+      // Store current scroll position
       const scrollY = window.scrollY;
+      // Apply fixed position to prevent scrolling
       document.body.style.position = "fixed";
       document.body.style.top = `-${scrollY}px`;
       document.body.style.width = "100%";
-      document.body.style.overflowY = "scroll"; // Zapobiega przesunięciu strony
+      document.body.style.overflowY = "scroll";
     } else {
-      // Przywracamy pozycję scrollowania po zamknięciu menu
+      // Restore scroll position
       const scrollY = document.body.style.top;
       document.body.style.position = "";
       document.body.style.top = "";
       document.body.style.width = "";
       document.body.style.overflowY = "";
+
       if (scrollY) {
         window.scrollTo(0, Number.parseInt(scrollY || "0") * -1);
       }
     }
+
+    // Clean up body styles on unmount
     return () => {
       document.body.style.position = "";
       document.body.style.top = "";
@@ -78,35 +78,49 @@ const Navigation = () => {
     };
   }, [mobileMenuOpen]);
 
-  // Sprawdzanie czy link jest aktywny
-  const isLinkActive = (href: string) => {
-    if (href === "/" && pathname === "/") return true;
-    if (href !== "/" && pathname.startsWith(href)) return true;
-    return false;
-  };
-
-  // Warianty animacji dla menu mobilnego
-  const menuVariants = {
-    closed: {
-      opacity: 0,
-      y: -20,
-      transition: { staggerChildren: 0.05, staggerDirection: -1 },
+  // Check if link is active - memoized for performance
+  const isLinkActive = useCallback(
+    (href: string) => {
+      if (href === "/" && pathname === "/") return true;
+      if (href !== "/" && pathname.startsWith(href)) return true;
+      return false;
     },
-    open: {
-      opacity: 1,
-      y: 0,
-      transition: { staggerChildren: 0.1, delayChildren: 0.2 },
-    },
-  };
+    [pathname]
+  );
 
-  const itemVariants = {
-    closed: { opacity: 0, y: -10 },
-    open: { opacity: 1, y: 0 },
-  };
+  // Animation variants - memoized to prevent recreation
+  const menuVariants = useMemo(
+    () => ({
+      closed: {
+        opacity: 0,
+        y: -20,
+        transition: { staggerChildren: 0.05, staggerDirection: -1 },
+      },
+      open: {
+        opacity: 1,
+        y: 0,
+        transition: { staggerChildren: 0.1, delayChildren: 0.2 },
+      },
+    }),
+    []
+  );
+
+  const itemVariants = useMemo(
+    () => ({
+      closed: { opacity: 0, y: -10 },
+      open: { opacity: 1, y: 0 },
+    }),
+    []
+  );
+
+  // Toggle mobile menu
+  const toggleMobileMenu = useCallback(() => {
+    setMobileMenuOpen((prev) => !prev);
+  }, []);
 
   return (
     <>
-      {/* Mobilne menu - jako niezależny element */}
+      {/* Mobile menu overlay */}
       <AnimatePresence>
         {mobileMenuOpen && (
           <motion.div
@@ -117,7 +131,7 @@ const Navigation = () => {
             className="fixed inset-0 bg-gradient-to-b from-black/95 to-indigo-950/95 backdrop-blur-xl z-[55]"
           >
             <div className="flex flex-col h-full">
-              {/* Pasek górny z logo i przyciskiem zamykania */}
+              {/* Top bar with logo and close button */}
               <div
                 className={`py-6 px-6 flex items-center justify-between ${
                   isScrolled ? "py-3" : ""
@@ -139,9 +153,9 @@ const Navigation = () => {
                   </GradientText>
                 </Link>
 
-                {/* Przycisk zamykania w menu mobilnym */}
+                {/* Close button */}
                 <motion.button
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={toggleMobileMenu}
                   className="relative z-[60] p-2 -mr-2"
                   type="button"
                   aria-label="Zamknij menu"
@@ -175,7 +189,7 @@ const Navigation = () => {
                 </motion.button>
               </div>
 
-              {/* Treść menu mobilnego */}
+              {/* Mobile menu content */}
               <div className="flex-grow flex flex-col items-center justify-center">
                 <motion.nav
                   className="flex flex-col items-center space-y-8"
@@ -234,22 +248,22 @@ const Navigation = () => {
         )}
       </AnimatePresence>
 
-      {/* Header nawigacyjny */}
+      {/* Main navigation header */}
       <header
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-500 ${
           isScrolled
             ? "bg-black/85 backdrop-blur-xl py-3 shadow-lg shadow-indigo-500/10"
             : "bg-transparent py-6"
         }`}
       >
         <div className="max-w-6xl mx-auto px-6 flex items-center justify-between">
-          {/* Logo z animacją */}
+          {/* Logo with animation */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <Link href="/" className="relative z-50 group">
+            <Link href="/" className="relative z-20 group">
               <GradientText
                 from="indigo-500"
                 via="purple-500"
@@ -269,7 +283,7 @@ const Navigation = () => {
             </Link>
           </motion.div>
 
-          {/* Nawigacja desktop z ulepszonymi efektami hover */}
+          {/* Desktop navigation */}
           <nav className="hidden md:flex items-center space-x-8">
             {navLinks.map((link) => (
               <Link key={link.href} href={link.href} className="relative group">
@@ -314,11 +328,11 @@ const Navigation = () => {
             </motion.div>
           </nav>
 
-          {/* Przycisk menu mobilne - tylko do otwierania */}
+          {/* Mobile menu button */}
           {!mobileMenuOpen && (
             <motion.button
-              onClick={() => setMobileMenuOpen(true)}
-              className="relative z-[60] md:hidden p-2 -mr-2"
+              onClick={toggleMobileMenu}
+              className="relative z-20 md:hidden p-2 -mr-2"
               type="button"
               aria-label="Otwórz menu"
               whileTap={{ scale: 0.9 }}

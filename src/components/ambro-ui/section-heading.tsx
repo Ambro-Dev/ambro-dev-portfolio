@@ -1,10 +1,11 @@
 "use client";
 
-import type { FC, ReactNode } from "react";
+import { type FC, type ReactNode, useMemo, memo } from "react";
 import { motion } from "framer-motion";
 import { twMerge } from "tailwind-merge";
 import { HighlightText } from "@/components/ambro-ui/highlight-text";
 import React from "react";
+import { JsonLd } from "../JsonLd";
 
 export interface SectionHeadingProps {
   title: ReactNode;
@@ -32,145 +33,229 @@ export interface SectionHeadingProps {
   highlightColor?: string;
   icon?: ReactNode;
   iconPosition?: "left" | "right" | "top";
+  reducedMotion?: boolean;
+  seoHeading?: boolean;
 }
 
-export const SectionHeading: FC<SectionHeadingProps> = ({
-  title,
-  subtitle,
-  alignment = "left",
-  size = "lg",
-  className = "",
-  titleClassName = "",
-  subtitleClassName = "",
-  divider = true,
-  dividerWidth = "40px",
-  dividerColor = "bg-indigo-500",
-  underline = false,
-  underlineColor = "bg-indigo-500",
-  underlineWidth = "2px",
-  titleTag: TitleTag = "h2",
-  subtitleTag: SubtitleTag = "p",
-  uppercase = false,
-  gradient = false,
-  gradientFrom = "from-blue-500",
-  gradientTo = "to-indigo-600",
-  delay = 0,
-  animation = "fade",
-  highlightWords = [],
-  highlightColor = "bg-indigo-500/10",
-  icon,
-  iconPosition = "left",
-}) => {
-  // Size classes
-  const getSizeClasses = () => {
-    switch (size) {
-      case "sm":
-        return {
-          title: "text-xl md:text-2xl",
-          subtitle: "text-sm md:text-base",
-          spacing: "space-y-1",
-          iconSize: "w-5 h-5",
-        };
-      case "md":
-        return {
-          title: "text-2xl md:text-3xl",
-          subtitle: "text-base md:text-lg",
-          spacing: "space-y-2",
-          iconSize: "w-6 h-6",
-        };
-      case "xl":
-        return {
-          title: "text-4xl md:text-5xl",
-          subtitle: "text-lg md:text-xl",
-          spacing: "space-y-4",
-          iconSize: "w-8 h-8",
-        };
-      default:
-        return {
-          title: "text-3xl md:text-4xl",
-          subtitle: "text-base md:text-lg",
-          spacing: "space-y-3",
-          iconSize: "w-7 h-7",
-        };
-    }
-  };
-
-  // Alignment classes
-  const getAlignmentClasses = () => {
-    switch (alignment) {
-      case "right":
-        return "text-right items-end";
-      case "center":
-        return "text-center items-center";
-      default:
-        return "text-left items-start";
-    }
-  };
-
-  // Animation variants
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: delay,
-      },
+// Extract animation variants outside component
+const createContainerVariants = (delay: number) => ({
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.2,
+      delayChildren: delay,
     },
-  };
+  },
+});
 
-  const getChildVariants = () => {
-    switch (animation) {
-      case "slide":
-        return {
-          hidden: { opacity: 0, y: 20 },
-          visible: {
-            opacity: 1,
-            y: 0,
-            transition: { duration: 0.5 },
-          },
-        };
-      case "fade":
-        return {
-          hidden: { opacity: 0 },
-          visible: {
-            opacity: 1,
-            transition: { duration: 0.5 },
-          },
-        };
-      default:
-        return {
-          hidden: { opacity: 1 },
-          visible: { opacity: 1 },
-        };
-    }
-  };
+// Create child variants
+const createChildVariants = (animation: string) => {
+  switch (animation) {
+    case "slide":
+      return {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+          opacity: 1,
+          y: 0,
+          transition: { duration: 0.5 },
+        },
+      };
+    case "fade":
+      return {
+        hidden: { opacity: 0 },
+        visible: {
+          opacity: 1,
+          transition: { duration: 0.5 },
+        },
+      };
+    default:
+      return {
+        hidden: { opacity: 1 },
+        visible: { opacity: 1 },
+      };
+  }
+};
 
-  const {
-    title: titleSize,
-    subtitle: subtitleSize,
-    spacing,
-    iconSize,
-  } = getSizeClasses();
-  const alignClasses = getAlignmentClasses();
-  const childVariants = getChildVariants();
+// Size configuration map
+const SIZE_CONFIG = {
+  sm: {
+    title: "text-xl md:text-2xl",
+    subtitle: "text-sm md:text-base",
+    spacing: "space-y-1",
+    iconSize: "w-5 h-5",
+  },
+  md: {
+    title: "text-2xl md:text-3xl",
+    subtitle: "text-base md:text-lg",
+    spacing: "space-y-2",
+    iconSize: "w-6 h-6",
+  },
+  lg: {
+    title: "text-3xl md:text-4xl",
+    subtitle: "text-base md:text-lg",
+    spacing: "space-y-3",
+    iconSize: "w-7 h-7",
+  },
+  xl: {
+    title: "text-4xl md:text-5xl",
+    subtitle: "text-lg md:text-xl",
+    spacing: "space-y-4",
+    iconSize: "w-8 h-8",
+  },
+};
 
-  // Highlight specific words in title if title is a string and highlightWords are provided
-  const renderHighlightedTitle = () => {
-    // Jeśli title nie jest stringiem, zwracamy go bez zmian
-    if (typeof title !== "string" || highlightWords.length === 0) {
-      return title;
-    }
+// Alignment configuration map
+const ALIGNMENT_CLASSES = {
+  left: "text-left items-start",
+  center: "text-center items-center",
+  right: "text-right items-end",
+};
 
-    const words = title.split(" ");
+export const SectionHeading: FC<SectionHeadingProps> = memo(
+  ({
+    title,
+    subtitle,
+    alignment = "left",
+    size = "lg",
+    className = "",
+    titleClassName = "",
+    subtitleClassName = "",
+    divider = true,
+    dividerWidth = "40px",
+    dividerColor = "bg-indigo-500",
+    underline = false,
+    underlineColor = "bg-indigo-500",
+    underlineWidth = "2px",
+    titleTag: TitleTag = "h2",
+    subtitleTag: SubtitleTag = "p",
+    uppercase = false,
+    gradient = false,
+    gradientFrom = "from-blue-500",
+    gradientTo = "to-indigo-600",
+    delay = 0,
+    animation = "fade",
+    highlightWords = [],
+    highlightColor = "bg-indigo-500/10",
+    icon,
+    iconPosition = "left",
+    reducedMotion = false,
+    seoHeading = true,
+  }) => {
+    // Memoize size classes
+    const {
+      title: titleSize,
+      subtitle: subtitleSize,
+      spacing,
+      iconSize,
+    } = useMemo(() => SIZE_CONFIG[size] || SIZE_CONFIG.lg, [size]);
 
-    return (
-      <>
-        {words.map((word, index) => {
-          // Add space before words (except the first one)
-          const spaceBefore = index > 0 ? " " : "";
+    // Memoize alignment classes
+    const alignClasses = useMemo(
+      () => ALIGNMENT_CLASSES[alignment] || ALIGNMENT_CLASSES.left,
+      [alignment]
+    );
 
-          if (highlightWords.includes(index)) {
+    // Memoize animation variants
+    const containerVariants = useMemo(
+      () => createContainerVariants(delay),
+      [delay]
+    );
+
+    const childVariants = useMemo(
+      () => createChildVariants(animation),
+      [animation]
+    );
+
+    // Determine if we should skip animation
+    const shouldSkipAnimation = reducedMotion || animation === "none";
+
+    // Memoize element flex direction classes
+    const flexDirectionClasses = useMemo(() => {
+      let flexDir = iconPosition === "top" ? "flex-col" : "flex-row";
+      if (iconPosition === "right") flexDir += " flex-row-reverse";
+      return flexDir;
+    }, [iconPosition]);
+
+    // Memoize item alignment classes
+    const itemAlignClasses = useMemo(
+      () => `items-${alignment === "center" ? "center" : alignment}`,
+      [alignment]
+    );
+
+    // Memoize title classes
+    const titleClasses = useMemo(
+      () =>
+        twMerge(
+          titleSize,
+          uppercase && "uppercase tracking-wider",
+          gradient &&
+            `bg-gradient-to-r ${gradientFrom} ${gradientTo} bg-clip-text text-transparent`,
+          "font-bold",
+          titleClassName
+        ),
+      [titleSize, uppercase, gradient, gradientFrom, gradientTo, titleClassName]
+    );
+
+    // Memoize subtitle classes
+    const subtitleClasses = useMemo(
+      () =>
+        twMerge(subtitleSize, "text-gray-400 font-light", subtitleClassName),
+      [subtitleSize, subtitleClassName]
+    );
+
+    // Memoize underline styles
+    const underlineStyles = useMemo(() => {
+      const styles: Record<string, string> = {
+        height: underlineWidth,
+        width:
+          alignment === "center"
+            ? "50%"
+            : alignment === "right"
+            ? "30%"
+            : "70%",
+      };
+
+      if (alignment === "center") {
+        styles.left = "25%";
+      } else if (alignment === "right") {
+        styles.right = "0";
+      } else {
+        styles.left = "0";
+      }
+
+      return styles;
+    }, [alignment, underlineWidth]);
+
+    // Efficiently highlight specific words
+    const renderHighlightedTitle = useMemo(() => {
+      if (typeof title !== "string" || highlightWords.length === 0) {
+        return title;
+      }
+
+      const words = title.split(" ");
+
+      return (
+        <>
+          {words.map((word, index) => {
+            const spaceBefore = index > 0 ? " " : "";
+
+            if (highlightWords.includes(index)) {
+              return (
+                <React.Fragment
+                  key={`word-${
+                    // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
+                    index
+                  }`}
+                >
+                  {spaceBefore}
+                  <HighlightText color={highlightColor} className="font-medium">
+                    {word}
+                  </HighlightText>
+                </React.Fragment>
+              );
+            }
+
             return (
               <React.Fragment
                 key={`word-${
@@ -179,112 +264,103 @@ export const SectionHeading: FC<SectionHeadingProps> = ({
                 }`}
               >
                 {spaceBefore}
-                <HighlightText color={highlightColor} className="font-medium">
-                  {word}
-                </HighlightText>
+                {word}
               </React.Fragment>
             );
-          }
+          })}
+        </>
+      );
+    }, [title, highlightWords, highlightColor]);
 
-          return (
-            <React.Fragment
-              key={`word-${
-                // biome-ignore lint/suspicious/noArrayIndexKey: <explanation>
-                index
-              }`}
-            >
-              {spaceBefore}
-              {word}
-            </React.Fragment>
-          );
-        })}
-      </>
-    );
-  };
+    // For SEO, if it's a primary heading and h1 isn't selected, add structured data
+    const seoData = useMemo(() => {
+      if (seoHeading && TitleTag !== "h1") {
+        const headingData = {
+          "@context": "https://schema.org",
+          "@type": "WebPageElement",
+          name: typeof title === "string" ? title : "Section heading",
+        };
+        return JSON.stringify(headingData);
+      }
+      return null;
+    }, [seoHeading, TitleTag, title]);
 
-  return (
-    <motion.div
-      className={twMerge(`flex flex-col ${spacing} ${alignClasses}`, className)}
-      variants={containerVariants}
-      initial="hidden"
-      animate="visible"
-    >
-      {/* Title with optional icon */}
+    return (
       <motion.div
-        className={`flex ${iconPosition === "top" ? "flex-col" : "flex-row"} ${
-          iconPosition === "right" ? "flex-row-reverse" : "flex-row"
-        } items-${alignment === "center" ? "center" : alignment} gap-3`}
-        variants={childVariants}
+        className={twMerge(
+          `flex flex-col ${spacing} ${alignClasses}`,
+          className
+        )}
+        variants={containerVariants}
+        initial={shouldSkipAnimation ? "visible" : "hidden"}
+        animate="visible"
+        data-testid="section-heading"
       >
-        {icon && <div className={iconSize}>{icon}</div>}
+        {/* Hidden SEO Schema if needed */}
+        {seoData && <JsonLd data={seoData} />}
 
-        <TitleTag
-          className={twMerge(
-            titleSize,
-            uppercase && "uppercase tracking-wider",
-            gradient &&
-              `bg-gradient-to-r ${gradientFrom} ${gradientTo} bg-clip-text text-transparent`,
-            "font-bold",
-            titleClassName
-          )}
-        >
-          {renderHighlightedTitle()}
-        </TitleTag>
-      </motion.div>
-
-      {/* Divider */}
-      {divider && (
+        {/* Title with optional icon */}
         <motion.div
-          className={`${dividerColor} h-1 rounded-full mx-${
-            alignment === "center" ? "auto" : "0"
-          } ${alignment === "right" ? "ml-auto" : ""}`}
-          style={{ width: dividerWidth }}
+          className={`flex ${flexDirectionClasses} ${itemAlignClasses} gap-3`}
           variants={childVariants}
-        />
-      )}
+        >
+          {icon && <div className={iconSize}>{icon}</div>}
 
-      {/* Subtitle */}
-      {subtitle && (
-        <motion.div className="relative" variants={childVariants}>
-          <SubtitleTag
-            className={twMerge(
-              subtitleSize,
-              "text-gray-400 font-light",
-              subtitleClassName
-            )}
+          <TitleTag
+            className={titleClasses}
+            data-testid="section-heading-title"
           >
-            {subtitle}
-          </SubtitleTag>
-
-          {/* Underline */}
-          {underline && (
-            <motion.div
-              className={`absolute bottom-0 left-0 ${underlineColor}`}
-              style={{
-                height: underlineWidth,
-                width:
-                  alignment === "center"
-                    ? "50%"
-                    : alignment === "right"
-                    ? "30%"
-                    : "70%",
-                left:
-                  alignment === "center"
-                    ? "25%"
-                    : alignment === "right"
-                    ? "auto"
-                    : "0",
-                right: alignment === "right" ? "0" : "auto",
-              }}
-              initial={{ scaleX: 0 }}
-              animate={{ scaleX: 1 }}
-              transition={{ duration: 0.8, delay: delay + 0.4 }}
-            />
-          )}
+            {renderHighlightedTitle}
+          </TitleTag>
         </motion.div>
-      )}
-    </motion.div>
-  );
-};
+
+        {/* Divider */}
+        {divider && (
+          <motion.div
+            className={`${dividerColor} h-1 rounded-full mx-${
+              alignment === "center" ? "auto" : "0"
+            } ${alignment === "right" ? "ml-auto" : ""}`}
+            style={{ width: dividerWidth, willChange: "opacity, transform" }}
+            variants={childVariants}
+            data-testid="section-heading-divider"
+            aria-hidden="true"
+          />
+        )}
+
+        {/* Subtitle */}
+        {subtitle && (
+          <motion.div
+            className="relative"
+            variants={childVariants}
+            data-testid="section-heading-subtitle"
+          >
+            <SubtitleTag className={subtitleClasses}>{subtitle}</SubtitleTag>
+
+            {/* Underline */}
+            {underline && (
+              <motion.div
+                className={`absolute bottom-0 ${underlineColor}`}
+                style={{
+                  ...underlineStyles,
+                  willChange: "transform",
+                }}
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: 1 }}
+                transition={{
+                  duration: reducedMotion ? 0 : 0.8,
+                  delay: reducedMotion ? 0 : delay + 0.4,
+                }}
+                aria-hidden="true"
+              />
+            )}
+          </motion.div>
+        )}
+      </motion.div>
+    );
+  }
+);
+
+// Add display name for better debugging
+SectionHeading.displayName = "SectionHeading";
 
 export default SectionHeading;

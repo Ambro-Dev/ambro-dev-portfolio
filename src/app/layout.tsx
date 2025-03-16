@@ -105,15 +105,18 @@ export default function RootLayout({
           forcedTheme="dark"
           disableTransitionOnChange
         >
-          {/* Background Effect */}
-
-          {/* Scroll Progress Indicator */}
+          {/* Scroll Progress Indicator - Higher z-index to ensure it stays on top */}
           <ScrollProgress
             position="top"
             color="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500"
+            zIndex={60}
+            height={3}
+            borderRadius="rounded-none"
           />
 
+          {/* Navigation comes after ScrollProgress in the DOM for proper stacking */}
           <Navigation />
+
           <div className="flex-grow relative overflow-hidden">
             <div className="absolute inset-0 z-0">
               <FloatingBubbles
@@ -129,7 +132,6 @@ export default function RootLayout({
             </div>
             {children}
           </div>
-          <Footer />
         </ThemeProvider>
       </body>
     </html>
