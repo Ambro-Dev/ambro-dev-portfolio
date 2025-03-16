@@ -388,7 +388,7 @@ const InfrastructureConcept: React.FC = () => {
       // Adjust container size or other responsive elements
     };
 
-    window.addEventListener("resize", handleResize);
+    if (window) (window as Window).addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 

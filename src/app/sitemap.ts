@@ -1,25 +1,51 @@
-import { baseURL, routes as routesConfig } from "@/app/resources";
-import { getPosts } from "@/app/utils/utils";
+// src/app/sitemap.ts
+import type { MetadataRoute } from "next";
+import { serviceCategories } from "@/data/services";
 
-export default async function sitemap() {
-	const blogs = getPosts(["src", "app", "blog", "posts"]).map((post) => ({
-		url: `https://${baseURL}/blog/${post.slug}`,
-		lastModified: post.metadata.publishedAt,
+export default function sitemap(): MetadataRoute.Sitemap {
+	const baseUrl = "https://ambro.dev";
+
+	// Get service URLs
+	const serviceUrls = serviceCategories.map((service) => ({
+		url: `${baseUrl}/uslugi/${service.id}`,
+		lastModified: new Date(),
+		changeFrequency: "monthly" as const,
+		priority: 0.8,
 	}));
 
-	const works = getPosts(["src", "app", "work", "projects"]).map((post) => ({
-		url: `https://${baseURL}/work/${post.slug}`,
-		lastModified: post.metadata.publishedAt,
-	}));
+	// Add other pages
+	const staticPages = [
+		{
+			url: baseUrl,
+			lastModified: new Date(),
+			changeFrequency: "weekly" as const,
+			priority: 1.0,
+		},
+		{
+			url: `${baseUrl}/uslugi`,
+			lastModified: new Date(),
+			changeFrequency: "weekly" as const,
+			priority: 0.9,
+		},
+		{
+			url: `${baseUrl}/o-mnie`,
+			lastModified: new Date(),
+			changeFrequency: "monthly" as const,
+			priority: 0.7,
+		},
+		{
+			url: `${baseUrl}/kontakt`,
+			lastModified: new Date(),
+			changeFrequency: "monthly" as const,
+			priority: 0.7,
+		},
+		{
+			url: `${baseUrl}/blog`,
+			lastModified: new Date(),
+			changeFrequency: "weekly" as const,
+			priority: 0.8,
+		},
+	];
 
-	const activeRoutes = Object.keys(routesConfig).filter(
-		(route) => routesConfig[route],
-	);
-
-	const routes = activeRoutes.map((route) => ({
-		url: `https://${baseURL}${route !== "/" ? route : ""}`,
-		lastModified: new Date().toISOString().split("T")[0],
-	}));
-
-	return [...routes, ...blogs, ...works];
+	return [...staticPages, ...serviceUrls];
 }

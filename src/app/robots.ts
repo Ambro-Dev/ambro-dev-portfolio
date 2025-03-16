@@ -1,12 +1,13 @@
-import { baseURL } from "@/app/resources";
+// src/app/robots.ts
+import type { MetadataRoute } from "next";
 
-export default function robots() {
+export default function robots(): MetadataRoute.Robots {
 	return {
-		rules: [
-			{
-				userAgent: "*",
-			},
-		],
-		sitemap: `${baseURL}/sitemap.xml`,
+		rules: {
+			userAgent: "*",
+			allow: "/",
+			disallow: ["/admin/", "/api/"],
+		},
+		sitemap: "https://ambro.dev/sitemap.xml",
 	};
 }

@@ -81,8 +81,14 @@ const ServiceCard = memo(
             </div>
 
             <h3 className="text-xl font-bold mb-3">
-              <GradientText from="indigo-500" to="pink-600">
-                {service.title}
+              <GradientText
+                preset="tech"
+                glowEffect
+                glowPreset="strong"
+                fontWeight="bold"
+                letterSpacing="wide"
+              >
+                &gt; {service.title}
               </GradientText>
             </h3>
 

@@ -1,0 +1,81 @@
+{
+  "name": "Ambro-Dev - DevOps, Automatyzacja, Aplikacje Webowe",
+  "short_name": "Ambro-Dev",
+  "description": "Kompleksowe usługi DevOps, automatyzacja procesów IT, administracja serwerami, tworzenie aplikacji webowych i optymalizacja infrastruktury.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#6366f1",
+  "orientation": "portrait-primary",
+  "dir": "ltr",
+  "lang": "pl-PL",
+  "categories": ["business", "technology", "productivity"],
+  "shortcuts": [
+    {
+      "name": "Kontakt",
+      "url": "/kontakt",
+      "description": "Skontaktuj się z nami"
+    },
+    {
+      "name": "Usługi",
+      "url": "/uslugi",
+      "description": "Zobacz nasze usługi"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/homepage-540x720.webp",
+      "sizes": "540x720",
+      "type": "image/webp",
+      "platform": "narrow",
+      "label": "Strona główna Ambro-Dev na urządzeniach mobilnych"
+    },
+    {
+      "src": "/screenshots/homepage-720x540.webp",
+      "sizes": "720x540",
+      "type": "image/webp",
+      "platform": "wide",
+      "label": "Strona główna Ambro-Dev na desktopie"
+    }
+  ],
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-192x192-maskable.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-512x512-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "web"
+    }
+  ],
+  "prefer_related_applications": false,
+  "display_override": ["window-controls-overlay", "standalone", "browser"],
+  "handle_links": "preferred",
+  "launch_handler": {
+    "client_mode": "auto"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  }
+}

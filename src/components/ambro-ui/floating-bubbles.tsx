@@ -96,7 +96,7 @@ export const FloatingBubbles: FC<{
         setCanvasSize();
       }, 100);
 
-      window.addEventListener("resize", handleResize);
+      if (window) (window as Window).addEventListener("resize", handleResize);
 
       // Create bubbles with optimized random values
       const bubbles = Array.from({ length: count }, () => ({
@@ -130,7 +130,7 @@ export const FloatingBubbles: FC<{
         mouseRef.current = { x: null, y: null };
       };
 
-      if (interactive) {
+      if (interactive && canvas) {
         canvas.addEventListener("mousemove", handleMouseMove);
         canvas.addEventListener("mouseleave", handleMouseLeave);
       }

@@ -2,7 +2,7 @@ import { EnhancedButton } from "@/components/ambro-ui/enhanced-button";
 import { GradientText } from "@/components/ambro-ui/gradient-text";
 import { RevealText } from "@/components/ambro-ui/reveal-text";
 import { AnimatedSection } from "@/components/ambro-ui/animated-section";
-import { FloatingBubbles } from "./ambro-ui/floating-bubbles";
+import { FloatingBubbles } from "@/components/ambro-ui/floating-bubbles";
 
 export default function CTASection() {
   return (
